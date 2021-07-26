@@ -1,0 +1,128 @@
+//색상을 유동성있게 활용할 수 있도록 css VAR 설정
+$title-active: var(--title-active-color);
+$body: var(--body-color);
+$label: var(--label-color);
+$placeholder: var(--placeholder-color);
+$line: var(--line-color);
+$background: var(--background-color);
+$off-white: var(--off-white-color);
+$primary: var(--primary-color);
+$primary2: var(--primary2-color);
+$primary3: var(--primary3-color);
+$error: var(--error-color);
+$category1: var(--category1-color);
+$category2: var(--category2-color);
+$category3: var(--category3-color);
+$category4: var(--category4-color);
+$category5: var(--category5-color);
+$category6: var(--category6-color);
+$category7: var(--category7-color);
+$category8: var(--category8-color);
+$category9: var(--category9-color);
+$category10: var(--category10-color);
+
+$config: (
+  dark: (
+    title-active: #1e2222,
+    body: #626666,
+    label: #8d9393,
+    placeholder: #c1c5c5,
+    line: #ccd3d3,
+    background: #f5f5f5,
+    off-white: #fcfcfc,
+    primary: #2ac1bc,
+    primary2: #a0e1e0,
+    primary3: #219a95,
+    error: #f45452,
+    category1: #6ed5eb,
+    category2: #4cb8b8,
+    category3: #94d3cc,
+    category4: #4ca1de,
+    category5: #d092e2,
+    category6: #817dce,
+    category7: #4a6cc3,
+    category8: #b9d58c,
+    category9: #e6d267,
+    category10: #e2b765,
+  ),
+  light: (
+    title-active: rgb(84, 84, 207),
+    body: #626666,
+    label: #8d9393,
+    placeholder: #c1c5c5,
+    line: #ccd3d3,
+    background: #f5f5f5,
+    off-white: #fcfcfc,
+    primary: #2ac1bc,
+    primary2: #a0e1e0,
+    primary3: #219a95,
+    error: #f45452,
+    category1: #6ed5eb,
+    category2: #4cb8b8,
+    category3: #94d3cc,
+    category4: #4ca1de,
+    category5: #d092e2,
+    category6: #817dce,
+    category7: #4a6cc3,
+    category8: #b9d58c,
+    category9: #e6d267,
+    category10: #e2b765,
+  ),
+);
+
+@function setStyle($map, $object, $style) {
+  @if map-has-key($map, $object) {
+    @return map-get(map-get($map, $object), $style);
+  }
+  @warn "The key ´#{$object} is not available in the map.";
+  @return null;
+}
+
+@mixin theme($key) {
+  --title-active-color: #{setStyle($config, $key, title-active)};
+  --body-color: #{setStyle($config, $key, body)};
+  --label-color: #{setStyle($config, $key, label)};
+  --placeholder-color: #{setStyle($config, $key, placeholder)};
+  --line-color: #{setStyle($config, $key, line)};
+  --background-color: #{setStyle($config, $key, background)};
+  --off-white-color: #{setStyle($config, $key, off-white)};
+  --primary-color: #{setStyle($config, $key, primary)};
+  --primary2-color: #{setStyle($config, $key, primary2)};
+  --primary3-color: #{setStyle($config, $key, primary3)};
+  --error-color: #{setStyle($config, $key, error)};
+  --category1-color: #{setStyle($config, $key, category1)};
+  --category2-color: #{setStyle($config, $key, category2)};
+  --category3-color: #{setStyle($config, $key, category3)};
+  --category4-color: #{setStyle($config, $key, category4)};
+  --category5-color: #{setStyle($config, $key, category5)};
+  --category6-color: #{setStyle($config, $key, category6)};
+  --category7-color: #{setStyle($config, $key, category7)};
+  --category8-color: #{setStyle($config, $key, category8)};
+  --category9-color: #{setStyle($config, $key, category9)};
+  --category10-color: #{setStyle($config, $key, category10)};
+}
+
+//기본적으로 lightTheme 적용
+body {
+  @include theme(light);
+}
+
+//컴퓨터가 dark모드로 되있을 경우 상태적용
+@media (prefers-color-scheme: dark) {
+  body {
+    @include theme(dark);
+  }
+}
+
+//body에 클래스 토글시 컬러 변경
+@each $theme in dark, light {
+  body.#{$theme}-mode {
+    @include theme($theme);
+  }
+}
+
+//media Query를 위한 width 설정
+html {
+  font-size: clamp(10px, 2vw, 16px);
+}
+$pc-max-width: 1050px;
