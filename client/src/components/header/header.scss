@@ -1,5 +1,49 @@
+@import '../../global.scss';
 
 .hader-wrap {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  background: $primary;
+  ul {
+    list-style: none;
+    display: grid;
+    max-width: $pc-max-width;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding: 2em 2em 3em;
+    color: $off-white;
+    grid-template-columns: 1.1fr 0.8fr 1.1fr;
+
+    li.left {
+      font-size: 1.3em;
+    }
+
+    li.center {
+      display: flex;
+      text-align: center;
+      justify-content: space-between;
+      align-items: center;
+
+      .arrow {
+        font-size: 2.5em;
+      }
+
+      .date-wrap {
+        display: grid;
+        grid-template-rows: 1fr;
+        grid-row-gap: 1em;
+        div:first-child {
+          font-size: 3em;
+          font-weight: bold;
+        }
+        div:last-child {
+          font-size: 1.8em;
+          font-weight: bold;
+        }
+      }
+    }
+    li.right {
+      justify-self: end;
+      font-size: 1.3em;
+    }
+  }
 }

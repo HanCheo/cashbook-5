@@ -122,4 +122,7 @@ body {
 }
 
 //media Query를 위한 width 설정
+html {
+  font-size: clamp(10px, 2vw, 16px);
+}
 $pc-max-width: 1050px;
