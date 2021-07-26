@@ -1,7 +1,6 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
-import * as http from 'http';
 import router from './api/index';
 
 dotenv.config({ path: './config/.env' });
@@ -9,8 +8,6 @@ dotenv.config({ path: './config/.env' });
 const port: number = Number(process.env.PORT) || 3000;
 
 const app: Application = express();
-
-const httpServer = http.createServer(app);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -33,6 +30,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-httpServer.listen(port, () => {
+app.listen(port, () => {
   console.log(`Express server listening at ${port}`);
 });
