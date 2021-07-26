@@ -6,6 +6,7 @@ export default class Component {
   constructor($target: HTMLElement, $props?: any) {
     this.$target = $target;
     this.$props = { ...$props };
+    this.$state = {};
     this.setup();
     this.render();
     this.setEvent();
