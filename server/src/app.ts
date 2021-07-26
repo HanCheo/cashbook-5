@@ -1,9 +1,12 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
+import dotenv from 'dotenv';
 import path from 'path';
 import * as http from 'http';
-import router from './src/api';
+import router from './api/index';
 
-const port = process.env.PORT || 3000;
+dotenv.config({ path: './config/.env' });
+
+const port: number = Number(process.env.PORT) || 3000;
 
 const app: Application = express();
 
@@ -23,6 +26,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.locals.message = err.message;
+
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500).json({
     error: err.message,
@@ -30,5 +34,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 httpServer.listen(port, () => {
-  console.log(`Server Port: ${port}`);
+  console.log(`Express server listening at ${port}`);
 });
