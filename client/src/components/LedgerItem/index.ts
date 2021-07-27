@@ -2,11 +2,11 @@ import Component from '@/src/interfaces/Component';
 
 export default class extends Component {
   setup() {
-    this.$state = this.$props.state as _Ledger;
+    this.$state = this.$props.state as ILedger;
   }
 
   template() {
-    const state = this.$state as _Ledger;
+    const state = this.$state as ILedger;
 
     return /*html*/ `
       <li>

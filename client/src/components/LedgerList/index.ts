@@ -4,11 +4,11 @@ import './index.scss';
 
 export default class extends Component {
   setup() {
-    this.$state = this.$props.state as _LedgerList;
+    this.$state = this.$props.state as ILedgerList;
   }
 
   template() {
-    const state = this.$state as _LedgerList;
+    const state = this.$state as ILedgerList;
 
     return /*html*/ `
       <div class="ledger-wraper">
@@ -29,10 +29,10 @@ export default class extends Component {
   }
 
   mounted() {
-    const state = this.$state as _LedgerList;
+    const state = this.$state as ILedgerList;
     const target = this.$target.querySelector(`.ledger-list[data-key="${state.numDate}"]`) as HTMLElement;
 
-    state.ledgers.forEach((ledger: _Ledger) => {
+    state.ledgers.forEach((ledger: ILedger) => {
       new LedgerItem(target, { state: ledger });
     });
 

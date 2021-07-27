@@ -2,7 +2,7 @@ import Component from '@/src/interfaces/Component';
 import LedgerList from '../LedgerList';
 import './index.scss';
 
-const TEST_DATA: _LedgerList[] = [
+const TEST_DATA: ILedgerList[] = [
   {
     numDate: '0727',
     date: '07월 27일',
@@ -73,9 +73,9 @@ export default class extends Component {
     let totalIncomes = 0;
     let totalSpand = 0;
     let totalCount = 0;
-    TEST_DATA.forEach((ledgerList: _LedgerList) => {
+    TEST_DATA.forEach((ledgerList: ILedgerList) => {
       totalCount += ledgerList.ledgers.length;
-      ledgerList.ledgers.forEach((ledger: _Ledger) => {
+      ledgerList.ledgers.forEach((ledger: ILedger) => {
         ledger.balance < 0 ? (totalSpand += ledger.balance) : (totalIncomes += ledger.balance);
       });
     });
@@ -102,7 +102,7 @@ export default class extends Component {
   mounted() {
     const wrapper = this.$target.querySelector('.ledger-list-wrapper') as HTMLElement;
 
-    this.$state.forEach((ledgerList: _LedgerList) => {
+    this.$state.forEach((ledgerList: ILedgerList) => {
       new LedgerList(wrapper, { state: ledgerList });
     });
 
