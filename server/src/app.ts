@@ -2,9 +2,11 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import router from './api/index';
+import { connectDB } from './models/sequlze';
+import SequelizeAccountsStore from './models/Account/account-sequelize';
+import Account from './models/Account/Account';
 
-dotenv.config({ path: './config/.env' });
-
+dotenv.config({ path: './src/config/.env' });
 const port: number = Number(process.env.PORT) || 3000;
 
 const app: Application = express();
@@ -33,3 +35,16 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 app.listen(port, () => {
   console.log(`Express server listening at ${port}`);
 });
+
+async function test() {
+  const store = new SequelizeAccountsStore();
+  let account: Account;
+  try {
+    account = await store.get('TEST');
+  } catch (err) {
+    account = await store.create('TEST', 'TEST_USER');
+  }
+  console.log(account);
+}
+
+test();
