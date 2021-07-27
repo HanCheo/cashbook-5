@@ -134,18 +134,3 @@ export default class PieChart {
     return [x, y];
   }
 }
-
-const data = [
-  { name: '카드', value: 10000, color: 'Coral' },
-  { name: '현금', value: 2500, color: '#00ab6b' },
-  { name: '적금', value: 5000, color: '#00ab6b' },
-];
-
-// const $svg = document.querySelector('svg');
-
-// new PieChart($svg, data, {
-//   radius: 100,
-//   onClick: d => {
-//     console.log('click: ' + d);
-//   },
-// });
