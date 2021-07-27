@@ -3,6 +3,7 @@ const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin'); 
 
 module.exports = {
   entry: './src/index.ts',
@@ -38,6 +39,7 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin(),
+    new OptimizeCssAssetsPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: './index.html',
