@@ -1,0 +1,94 @@
+@import '../../global.scss';
+
+.ledger-header {
+  display: flex;
+  font-size: 1.1em;
+  justify-content: space-between;
+  position: relative;
+  padding-bottom: 1em;
+  border-bottom: 1px solid $line;
+
+  .ledger-day {
+    color: $label;
+  }
+  .ledger-balance {
+    color: $label;
+  }
+
+  &.active {
+    + .ledger-list {
+      font-size: 0;
+      transform: scaleY(0.001);
+    }
+  }
+}
+
+.ledger-list {
+  padding: 0;
+  margin-top: 0;
+  overflow: hidden;
+  font-size: 1.2em;
+  transition: font-size 0.2s ease-in-out, transform 0.3s ease-in-out;
+  transform-origin: top;
+  display: grid;
+
+  li {
+    border-bottom: 1px solid $line;
+    display: grid;
+    padding: 1em 0;
+    grid-template-columns: 5em 3fr 1.5fr 1fr;
+    grid-column-gap: 0.5em;
+    align-items: center;
+
+    div {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.ledger-category {
+  border-radius: 3em;
+  color: $off-white;
+  padding: 0.3em 0 0.2em;
+  font-size: 0.85em;
+  text-align: center;
+
+  &[data-category-type='1'] {
+    background-color: $category1;
+  }
+  &[data-category-type='2'] {
+    background-color: $category2;
+  }
+  &[data-category-type='3'] {
+    background-color: $category3;
+  }
+  &[data-category-type='4'] {
+    background-color: $category4;
+  }
+  &[data-category-type='5'] {
+    background-color: $category5;
+  }
+  &[data-category-type='6'] {
+    background-color: $category6;
+  }
+  &[data-category-type='7'] {
+    background-color: $category7;
+  }
+  &[data-category-type='8'] {
+    background-color: $category8;
+  }
+  &[data-category-type='9'] {
+    background-color: $category9;
+  }
+  &[data-category-type='10'] {
+    background-color: $category10;
+  }
+}
+
+.ledger-cardType {
+  text-align: center;
+}
+.ledger-balance {
+  justify-self: flex-end;
+}

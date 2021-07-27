@@ -1,0 +1,43 @@
+@import '../../global.scss';
+
+.ledger-container {
+  max-width: $pc-max-width;
+  width: 95%;
+  margin: 0 auto;
+
+  .ledger-container-header {
+    margin-top: 2em;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .fillter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 1em;
+    input[type='checkbox'] {
+      position: fixed;
+      top: -100vh;
+      visibility: hidden;
+
+      &:checked {
+        + label:before {
+          content: 'ck';
+          width: 1em;
+          height: 1em;
+        }
+      }
+    }
+    label:before {
+      content: 'no';
+      width: 1em;
+      margin-right: 10px;
+      height: 1em;
+    }
+  }
+}
+.ledger-list-wrapper {
+  margin: 2em auto;
+  display: grid;
+  grid-row-gap: 2em;
+}
