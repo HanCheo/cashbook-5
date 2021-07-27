@@ -67,9 +67,11 @@ const TEST_DATA: ILedgerList[] = [
 
 export default class extends Component {
   setup() {
+    // TODO 옵저버 이동 필요
     this.$state = TEST_DATA;
   }
   template() {
+    // TODO 옵저버 이동 필요
     let totalIncomes = 0;
     let totalSpand = 0;
     let totalCount = 0;
