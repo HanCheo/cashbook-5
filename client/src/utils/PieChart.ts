@@ -6,11 +6,11 @@ const defaultOption = {
   viewboxHeight: 300,
 };
 
-interface PiChartOption {
+export interface PiChartOption {
   [key: string]: number | string | Function | null;
 }
 
-interface PiChartData {
+export interface PiChartData {
   name: string;
   value: number;
   color?: string;
