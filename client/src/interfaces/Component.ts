@@ -1,9 +1,9 @@
 export default class Component {
   $target: HTMLElement;
-  $state: any;
-  $props?: any;
+  $state: { [key: string]: any };
+  $props: { [key: string]: any };
 
-  constructor($target: HTMLElement, $props?: any) {
+  constructor($target: HTMLElement, $props: { [key: string]: any } = {}) {
     this.$target = $target;
     this.$props = { ...$props };
     this.$state = {};
