@@ -1,59 +1,6 @@
-import Component from '@/src/interfaces/Component';
-import calendarModel from '@/src/models/Canlendar';
-import './header.scss';
-import SvgIcon from '@/src/assets/svg';
+import { MONTH_SHORT, MONTH_LONG, MONTH_UNIT } from '../utils/calender';
 
-export default class Header extends Component {
-  template() {
-    return /*html*/ `
-      <div class="hader-wrap">
-        <ul>
-          <li class="left">우아한 가계부</li>
-          <li class="center">
-            <div class="arrow"><</div>
-            <div class="date-wrap">
-              <div class="month">7월</div>
-              <div class="year">2021</div>
-            </div>
-            <div class="arrow">></div>
-          </li>
-          <li class="right">
-            <div class="selected" data-page="fileText">${SvgIcon.fileText}</div>
-            <div data-page="calender">${SvgIcon.calender}</div>
-            <div data-page="chart">${SvgIcon.chart}</div>
-          </li>
-        </ul>
-      </div>
-    `;
-  }
-
-  mounted() {
-    const dataWrap = document.querySelector('.date-wrap') as HTMLElement;
-
-    // const $monthLabelElement = document.querySelector('.month');
-    // $monthLabelElement?.addEventListener('click', () => {
-    //   calendarModel.setDate(new Date());
-    // });
-
-    dataWrap.addEventListener('click', () => {
-      let Month: string | string[] | undefined = dataWrap.querySelector('.month')?.innerHTML.split('');
-      Month?.splice(-1);
-      Month = Month?.join('');
-      const Year = dataWrap.querySelector('.year')?.innerHTML;
-      new MonthPicker(dataWrap, new Date(`${Year}-${Month}`));
-    });
-  }
-
-  setup() {
-    calendarModel.subscribe(() => {
-      this.setState({
-        date: calendarModel.getDate(),
-      });
-    });
-  }
-}
-
-class MonthPicker {
+export default class MonthPicker {
   date: Date;
   month: string;
   monthShort: string;
@@ -69,21 +16,8 @@ class MonthPicker {
     this.monthShort = date.toLocaleString('eng', { month: 'short' });
     this.year = date.getFullYear();
     this.$target = target;
-    this.monthName = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    this.monthShortName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    this.monthName = MONTH_LONG;
+    this.monthShortName = MONTH_SHORT;
     this.render();
   }
 
@@ -197,7 +131,7 @@ class MonthPicker {
         const monthTarget = this.$target.querySelector('.month') as HTMLElement;
         const yearTarget = this.$target.querySelector('.year') as HTMLElement;
 
-        monthTarget.textContent = target.dataset.monthNumber + '월';
+        monthTarget.textContent = target.dataset.monthNumber + MONTH_UNIT;
         yearTarget.textContent = year;
 
         MonthPicker.remove();
