@@ -22,7 +22,7 @@ export default class PieChart {
   public element: HTMLElement;
   public data: PiChartData[];
 
-  constructor(element: HTMLElement, data = [], settings = {}) {
+  constructor(element: HTMLElement, data: PiChartData[] = [], settings: PiChartOption = {}) {
     if (!(element instanceof Node)) {
       throw "Can't initialize PieChart because " + element + ' is not a Node.';
     }
@@ -115,7 +115,7 @@ export default class PieChart {
       pathEl.setAttribute('data-name', entry.name);
       if (this.settings.onClick) {
         pathEl.addEventListener('click', (e: MouseEvent) => {
-          if (e.target instanceof HTMLElement) {
+          if (e.target instanceof SVGElement) {
             const { name } = e.target.dataset;
             if (this.settings.onClick instanceof Function) {
               this.settings.onClick(name);

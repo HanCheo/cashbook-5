@@ -1,7 +1,7 @@
 import './normalize.css';
 import Header from './components/Header/';
 import { initRouter } from './core/router';
-import { Main } from './pages';
+import { Main, StatisticPage } from './pages';
 
 /**
  * route
@@ -15,7 +15,10 @@ import { Main } from './pages';
  * - redirect: string
  *   - redirect로 바로 이동합니다.
  */
-const routes = [{ path: '/', component: Main }];
+const routes = [
+  { path: '/', component: Main },
+  { path: '/statistic', component: StatisticPage },
+];
 
 const $header = document.querySelector('#header') as HTMLElement;
 const $app = document.querySelector('#app') as HTMLElement;
