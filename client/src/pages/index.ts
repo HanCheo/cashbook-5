@@ -1,3 +1,4 @@
 import Main from './Main';
+import StatisticPage from './StatisticPage';
 
-export { Main };
+export { Main, StatisticPage };

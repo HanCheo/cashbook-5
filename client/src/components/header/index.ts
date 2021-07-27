@@ -1,6 +1,6 @@
 import Component from '@/src/interfaces/Component';
 import calendarModel from '@/src/models/Canlendar';
-import './header.scss';
+import './index.scss';
 import SvgIcon from '@/src/assets/svg';
 import MonthPicker from '../MonthPicker';
 

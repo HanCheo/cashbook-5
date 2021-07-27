@@ -3,9 +3,20 @@ const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin'); 
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
+  mode: 'development',
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    publicPath: '/',
+    overlay: true,
+    port: 8081,
+    stats: 'errors-only',
+    historyApiFallback: true,
+    proxy: {},
+  },
   entry: './src/index.ts',
   output: {
     filename: 'app.js',
@@ -33,8 +44,8 @@ module.exports = {
       { test: /\.html$/, loader: 'html-loader' },
       {
         test: /\.(png|jpg|jpeg)$/,
-        use: ['file-loader']
-      }
+        use: ['file-loader'],
+      },
     ],
   },
   plugins: [
@@ -45,5 +56,4 @@ module.exports = {
       filename: './index.html',
     }),
   ],
-  devtool: 'source-map',
 };
