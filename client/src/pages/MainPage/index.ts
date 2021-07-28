@@ -27,9 +27,7 @@ export default class MainPage extends Component<IProps, IState> {
 
     const $addLedgerButton = this.$target.querySelector('#ledger-add-button') as HTMLElement;
     new LedgerAddButton($addLedgerButton, {
-      onClick: () => {
-        ledgerAddModal.show();
-      },
+      onClick: () => ledgerAddModal.show(),
     });
   }
 }

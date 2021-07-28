@@ -51,20 +51,23 @@
   &--submit-box {
     margin-top: 1rem;
     width: 90%;
-    flex-grow: 1;
     padding: 10px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
 
-    & > cancel-btn {
+    & > .cancel-btn {
       border-radius: 999px;
       color: white;
       background-color: $primary;
+      font-size: 1rem;
+      padding: 4px 8px;
     }
 
-    & > submit-btn {
+    & > .submit-btn {
       border-radius: 999px;
       color: white;
+      padding: 4px 8px;
+      font-size: 1rem;
       background-color: $primary;
     }
   }

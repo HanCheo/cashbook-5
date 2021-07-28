@@ -6,7 +6,7 @@ interface IState {}
 
 interface IProps {
   categories: ICategoryItem[];
-  onClickCategory: (d: number) => void;
+  onClickCategory: (value: string) => void;
 }
 
 export default class CategorySelector extends Component<IState, IProps> {
@@ -22,7 +22,8 @@ export default class CategorySelector extends Component<IState, IProps> {
            ${categories
              ?.map(
                (category: ICategoryItem) => /* html */ `
-                    <li class="category-selector--list--item" data-category="${category.id}">${category.name}</li>
+                    <li class="category-selector--list--item ledger-category"
+                    data-category="${category.name}" data-category-type="${category.id}">${category.name}</li>
                 `
              )
              .join('')}
@@ -58,7 +59,7 @@ export default class CategorySelector extends Component<IState, IProps> {
       if (target === itemElement) {
         const { category } = target.dataset;
         if (category) {
-          onClickCategory(Number(category));
+          onClickCategory(category);
           this.toggleCategoryList(false);
         }
       }
