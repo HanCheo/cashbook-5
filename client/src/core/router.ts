@@ -1,5 +1,5 @@
 import { isClass } from './routerHelper';
-import { customEvent, listen } from '../utils/customEvent';
+import { emitCustomEvent, listen } from '../utils/CustomEvent';
 
 /**
  * **DO NOT MODIFY THIS FILE**
@@ -79,7 +79,7 @@ class Router {
 
   //커스텀 이벤트 발생
   unmountComponent() {
-    customEvent('componentWillUnmount');
+    emitCustomEvent('componentWillUnmount');
   }
 
   //path와 정보를 이용하여 컴포넌트 렌더링
@@ -103,7 +103,7 @@ class Router {
 
   //Page에서 동적으로 route하기 위한 함수.
   push(path: string) {
-    customEvent('routechange', {
+    emitCustomEvent('routechange', {
       ...history.state,
       path,
     });
@@ -111,18 +111,18 @@ class Router {
 }
 
 //외부에서 router.push에 접근하기 위한 변수
-export let $router: {
+export let router: {
   push: (path: string) => void;
 };
 
 //router init;
 export function initRouter(options: RouterType) {
-  const router = new Router(options);
-  $router = {
-    push: (path: string) => router.push(path),
+  const _router = new Router(options);
+  router = {
+    push: (path: string) => _router.push(path),
   };
 
-  customEvent(
+  emitCustomEvent(
     'routechange',
     history.state ?? {
       path: '/',

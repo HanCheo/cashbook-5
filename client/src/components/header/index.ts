@@ -3,7 +3,7 @@ import calendarModel from '@/src/models/Canlendar';
 import './index.scss';
 import SvgIcon from '@/src/assets/svg';
 import MonthPicker from '../MonthPicker';
-import { $router } from '@/src/core/router';
+import { router } from '@/src/core/router';
 
 export default class Header extends Component {
   template() {
@@ -20,7 +20,7 @@ export default class Header extends Component {
             <div class="arrow">></div>
           </li>
           <li class="header-wrap-right">
-            <div class="svg-icon selected" data-page="/fileText">${SvgIcon.fileText}</div>
+            <div class="svg-icon selected" data-page="/">${SvgIcon.fileText}</div>
             <div class="svg-icon" data-page="/calender">${SvgIcon.calender}</div>
             <div class="svg-icon" data-page="/statistic">${SvgIcon.chart}</div>
           </li>
@@ -36,9 +36,12 @@ export default class Header extends Component {
 
     //router
     iconsWrap.addEventListener('click', e => {
-      const path = (e.target as HTMLElement).closest('.svg-icon') as HTMLElement;
-      const page = path.dataset.page;
-      if (path && location.pathname != page) $router.push(`${page}`);
+      const target = (e.target as HTMLElement).closest('.svg-icon') as HTMLElement;
+      const page = target.dataset.page;
+      if (target && location.pathname != page) {
+        target.classList.add('selected');
+        router.push(`${page}`);
+      }
     });
   }
 
