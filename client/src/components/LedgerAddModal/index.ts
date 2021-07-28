@@ -79,7 +79,7 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     const $categorySelectorElement = qs('#category-selector-container', this.$target) as HTMLElement;
     new CategorySelector($categorySelectorElement, {
       categories: mockCategories,
-      onClickCategory: this.handleSelectCategory,
+      onClickCategory: (category: string) => this.handleSelectCategory(category),
     });
 
     this.bindingEvents();
@@ -105,9 +105,9 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     });
   }
 
-  handleSelectCategory = (category: string) => {
+  handleSelectCategory(category: string) {
     this.$state.$categoryInput.value = category;
-  };
+  }
 
   submit() {
     const { $amountInput, $categoryInput, $contentInput, $cardTypeInput, $dateInput } = this.$state;
