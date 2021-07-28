@@ -24,7 +24,7 @@ const $header = document.querySelector('#header') as HTMLElement;
 const $app = document.querySelector('#app') as HTMLElement;
 
 async function init() {
+  new Header($header);
   initRouter({ $app, routes });
 }
 init();
-new Header($header);
