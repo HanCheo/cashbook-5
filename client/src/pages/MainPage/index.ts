@@ -1,11 +1,15 @@
-import LedgerBody from '@/src/components/LedgerContainer';
+import LedgerContainer from '@/src/components/LedgerContainer';
 import LedgerAddModal from '@/src/components/LedgerAddModal';
 import Component from '@/src/core/Component';
 import LedgerAddButton from '@/src/components/LedgerAddButton';
 
 import './index.scss';
 
-export default class MainPage extends Component {
+interface IState {}
+
+interface IProps {}
+
+export default class MainPage extends Component<IProps, IState> {
   template() {
     return /* html */ `
         <div id='body'></div>
@@ -16,7 +20,7 @@ export default class MainPage extends Component {
 
   mounted() {
     const body = this.$target.querySelector('#body') as HTMLElement;
-    new LedgerBody(body);
+    new LedgerContainer(body);
 
     const $addModal = this.$target.querySelector('#ledger-add-modal') as HTMLElement;
     const ledgerAddModal = new LedgerAddModal($addModal);

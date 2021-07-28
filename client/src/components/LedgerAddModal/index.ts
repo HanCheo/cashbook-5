@@ -3,7 +3,18 @@ import CategorySelector from './CategorySelector';
 
 import './index.scss';
 
-export default class LedgerAddModal extends Component {
+const mockCategories = [
+  { id: 1, name: '취미' },
+  { id: 2, name: '월급' },
+  { id: 3, name: '적금' },
+  { id: 4, name: '예금' },
+];
+
+interface IState {}
+
+interface IProps {}
+
+export default class LedgerAddModal extends Component<IState, IProps> {
   setup() {
     // state
   }
@@ -27,6 +38,7 @@ export default class LedgerAddModal extends Component {
                 type="text"
                 placeholder="선택하세요"
               />
+
               <div id="category-selector-container"></div>
             </div>
             <span class="spliter"></span>
@@ -55,7 +67,12 @@ export default class LedgerAddModal extends Component {
 
   mounted() {
     const $categorySelectorElement = this.$target.querySelector('#category-selector-container') as HTMLElement;
-    new CategorySelector($categorySelectorElement);
+    new CategorySelector($categorySelectorElement, {
+      categories: mockCategories,
+      onClickCategory: (categoryId: number) => {
+        console.log(categoryId);
+      },
+    });
 
     const $submitBtnElement = this.$target.querySelector('.submit-btn') as HTMLElement;
     $submitBtnElement.addEventListener('click', () => {

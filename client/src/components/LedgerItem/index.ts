@@ -1,19 +1,31 @@
 import Component from '@/src/core/Component';
+import { ILedger } from '@/src/interfaces/Ledger';
 
-export default class LedgerItem extends Component {
+interface IState {
+  ledger: ILedger;
+}
+
+interface IProps {
+  ledger: ILedger;
+}
+
+export default class LedgerItem extends Component<IState, IProps> {
   setup() {
-    this.$state = this.$props.state as ILedger;
+    const { ledger } = this.$props;
+    this.$state = {
+      ledger,
+    };
   }
 
   template() {
-    const state = this.$state as ILedger;
+    const { ledger } = this.$state;
 
     return /*html*/ `
       <li>
-        <div class="ledger-category" data-category-type="${state.categoryType}">${state.category}</div>
-        <div class="ledger-content" >${state.content}</div>
-        <div class="ledger-cardType" >${state.cardType}</div>
-        <div class="ledger-balance" >${state.balance}</div>
+        <div class="ledger-category" data-category-type="${ledger.categoryType}">${ledger.category}</div>
+        <div class="ledger-content" >${ledger.content}</div>
+        <div class="ledger-cardType" >${ledger.cardType}</div>
+        <div class="ledger-balance" >${ledger.balance}</div>
       </li>
     `;
   }

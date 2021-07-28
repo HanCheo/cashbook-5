@@ -2,11 +2,17 @@ import Component from '@/src/core/Component';
 
 import './index.scss';
 
+interface IState {}
+
+interface IProps {
+  onClick: () => void;
+}
+
 /**
  * Ledger Add Button is used as FAB(Floating Action Button)
  * by peanut-lover
  * */
-export default class LedgerAddButton extends Component {
+export default class LedgerAddButton extends Component<IState, IProps> {
   template() {
     return /* html */ `
         <div class="ledger-add-button">

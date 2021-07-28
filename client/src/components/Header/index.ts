@@ -5,7 +5,11 @@ import SvgIcon from '@/src/assets/svg';
 import MonthPicker from '../MonthPicker';
 import { router } from '@/src/core/router';
 
-export default class Header extends Component {
+interface IProp {}
+
+interface IState {}
+
+export default class Header extends Component<IState, IProp> {
   template() {
     return /*html*/ `
       <div class="header-wrap">

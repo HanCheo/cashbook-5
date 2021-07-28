@@ -15,18 +15,24 @@ const mockData: PiChartData[] = [
 interface IState {
   data?: PiChartData[];
 }
+interface IProps {}
 
-export default class StatisticPage extends Component {
+export default class StatisticPage extends Component<IState, IProps> {
   template() {
+    const { data } = this.$state;
+
     return /* html */ `
             <div class='statistic-container'>
                 <svg id="piechart" class="chart-container"></svg>
                 <div class="category-container">
                   <h1 class="category-container--title">이번 달 지출 금액 843,000 </h1>
                   <ul class="category-container--list">
-                  ${this.$state.data
-                    .map(
-                      (d: any) => /*html */ `
+                  
+                  ${
+                    data &&
+                    data
+                      .map(
+                        (d: any) => /*html */ `
                     <li class="category-container--list--item">
                         <div class="category" >
                           <span class="ledger-category" data-category-type="2"> ${d.name}</span>
@@ -34,8 +40,9 @@ export default class StatisticPage extends Component {
                         <div class="percent">${d.value}%</div>
                         <div class="cost">${d.value}</div>
                     </li>`
-                    )
-                    .join('')}
+                      )
+                      .join('')
+                  }
                   </ul>
                 </div>
             </div>

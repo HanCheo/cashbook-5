@@ -1,4 +1,4 @@
-interface ILedger {
+export interface ILedger {
   categoryType: string;
   category: string;
   content: string;
@@ -6,7 +6,7 @@ interface ILedger {
   balance: number;
 }
 
-interface ILedgerList {
+export interface ILedgerList {
   numDate: string; //mmdd 형태 list의 키로 사용하기 위함
   date: string; //mm월 dd일
   day: string; //요일

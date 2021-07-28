@@ -1,5 +1,8 @@
 import Component from '@/src/core/Component';
 import LedgerList from '../LedgerList';
+
+import { ILedgerList, ILedger } from '@/src/interfaces/Ledger';
+
 import './index.scss';
 
 const TEST_DATA: ILedgerList[] = [
@@ -65,17 +68,24 @@ const TEST_DATA: ILedgerList[] = [
   },
 ];
 
-export default class LedgerContainer extends Component {
+interface IProp {}
+
+interface IState {
+  ledgerLists: ILedgerList[];
+}
+
+export default class LedgerContainer extends Component<IState, IProp> {
   setup() {
     // TODO 옵저버 이동 필요
-    this.$state = TEST_DATA;
+    this.$state = { ledgerLists: TEST_DATA };
   }
+
   template() {
     // TODO 옵저버 이동 필요
     let totalIncomes = 0;
     let totalSpand = 0;
     let totalCount = 0;
-    TEST_DATA.forEach((ledgerList: ILedgerList) => {
+    this.$state.ledgerLists.forEach((ledgerList: ILedgerList) => {
       totalCount += ledgerList.ledgers.length;
       ledgerList.ledgers.forEach((ledger: ILedger) => {
         ledger.balance < 0 ? (totalSpand += ledger.balance) : (totalIncomes += ledger.balance);
@@ -104,8 +114,10 @@ export default class LedgerContainer extends Component {
   mounted() {
     const wrapper = this.$target.querySelector('.ledger-list-wrapper') as HTMLElement;
 
-    this.$state.forEach((ledgerList: ILedgerList) => {
-      new LedgerList(wrapper, { state: ledgerList });
+    const { ledgerLists } = this.$state;
+
+    ledgerLists.forEach((ledgerList: ILedgerList) => {
+      new LedgerList(wrapper, { ledgerList });
     });
 
     wrapper.addEventListener('click', e => {
