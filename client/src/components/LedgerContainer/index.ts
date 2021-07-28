@@ -1,4 +1,4 @@
-import Component from '@/src/interfaces/Component';
+import Component from '@/src/core/Component';
 import LedgerList from '../LedgerList';
 import './index.scss';
 
@@ -65,7 +65,7 @@ const TEST_DATA: ILedgerList[] = [
   },
 ];
 
-export default class extends Component {
+export default class LedgerContainer extends Component {
   setup() {
     // TODO 옵저버 이동 필요
     this.$state = TEST_DATA;
@@ -84,7 +84,7 @@ export default class extends Component {
 
     return /*html*/ `
     <div class="ledger-container">
-      <div class="ledger-container-header">
+      <div class="ledger-container--header">
         <div class="total-count">전체 건수 : ${totalCount}</div>
         <div class="fillter">
           <div class="checkbox-wrapper">

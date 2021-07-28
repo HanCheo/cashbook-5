@@ -1,7 +1,7 @@
 import './normalize.css';
 import Header from './components/Header/';
 import { initRouter } from './core/router';
-import { Main, StatisticPage } from './pages';
+import { MainPage, StatisticPage } from './pages';
 
 /**
  * route
@@ -16,7 +16,7 @@ import { Main, StatisticPage } from './pages';
  *   - redirect로 바로 이동합니다.
  */
 const routes = [
-  { path: '/', component: Main },
+  { path: '/', component: MainPage },
   { path: '/statistic', component: StatisticPage },
 ];
 

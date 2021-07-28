@@ -1,12 +1,12 @@
-import Component from '@/src/interfaces/Component';
+import Component from '@/src/core/Component';
 import LedgerItem from '../LedgerItem';
 import './index.scss';
 
-export default class extends Component {
+export default class LedgerList extends Component {
   setup() {
     this.$state = this.$props.state as ILedgerList;
   }
-
+  
   template() {
     const state = this.$state as ILedgerList;
 

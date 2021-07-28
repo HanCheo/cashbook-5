@@ -1,0 +1,59 @@
+@import '../../global.scss';
+
+.ledger-container {
+  max-width: $pc-max-width;
+  width: 95%;
+  margin: 0 auto;
+
+  .ledger-container--header {
+    margin-top: 2em;
+    font-size: 1.3em;
+    display: flex;
+    color: $primary3;
+    justify-content: space-between;
+  }
+
+  .fillter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 1em;
+    input[type='checkbox'] {
+      position: fixed;
+      top: -100vh;
+      visibility: hidden;
+
+      &:checked {
+        + label {
+          color: $primary;
+          &:before {
+            content: '';
+            min-width: calc(1em);
+            min-height: calc(1em);
+            border: 2px solid $primary;
+            background: $primary;
+          }
+        }
+      }
+    }
+    label {
+      position: relative;
+      padding-left: 1.5em;
+      color: $label;
+      &:before {
+        content: '';
+        position: absolute;
+        min-width: calc(1em);
+        min-height: calc(1em);
+        top: 0;
+        left: 0;
+        border: 2px solid $label;
+        border-radius: 0.3em;
+      }
+    }
+  }
+}
+.ledger-list-wrapper {
+  margin: 2em auto;
+  display: grid;
+  grid-row-gap: 2em;
+}

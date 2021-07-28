@@ -1,6 +1,6 @@
-import Component from '@/src/interfaces/Component';
+import Component from '@/src/core/Component';
 
-export default class extends Component {
+export default class LedgerItem extends Component {
   setup() {
     this.$state = this.$props.state as ILedger;
   }

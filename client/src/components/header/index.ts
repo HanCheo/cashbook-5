@@ -1,4 +1,4 @@
-import Component from '@/src/interfaces/Component';
+import Component from '@/src/core/Component';
 import calendarModel from '@/src/models/Canlendar';
 import './index.scss';
 import SvgIcon from '@/src/assets/svg';

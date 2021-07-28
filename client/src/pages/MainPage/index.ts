@@ -1,6 +1,7 @@
-import LedgerBody from '@/src/components/LedgerBody';
-import Component from '@/src/interfaces/Component';
-export default class Main extends Component {
+import LedgerBody from '@/src/components/LedgerContainer';
+import Component from '@/src/core/Component';
+
+export default class MainPage extends Component {
   template() {
     return `
         <div id='body'></div>

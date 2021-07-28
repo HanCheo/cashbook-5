@@ -1,4 +1,4 @@
-import Component from '../interfaces/Component';
+import Component from '../core/Component';
 import { MONTH_SHORT, MONTH_LONG, MONTH_UNIT } from '../utils/calender';
 
 export default class MonthPicker {
