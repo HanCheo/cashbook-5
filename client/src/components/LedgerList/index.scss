@@ -3,6 +3,7 @@
 .ledger-header {
   display: flex;
   font-size: 1.1em;
+  cursor: pointer;
   justify-content: space-between;
   position: relative;
   padding-bottom: 1em;
@@ -11,14 +12,14 @@
   .ledger-day {
     color: $label;
   }
-  .ledger-balance {
+  .ledger-amount {
     color: $label;
   }
 
   &.active {
     + .ledger-list {
       font-size: 0;
-      transform: scaleY(0.001);
+      transform: scaleY(0);
     }
   }
 }
@@ -89,6 +90,6 @@
 .ledger-cardType {
   text-align: center;
 }
-.ledger-balance {
+.ledger-amount {
   justify-self: flex-end;
 }

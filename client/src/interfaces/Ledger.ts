@@ -3,7 +3,7 @@ export interface ILedger {
   category: string;
   content: string;
   cardType: string;
-  balance: number;
+  amount: number;
 }
 
 export interface ILedgerList {

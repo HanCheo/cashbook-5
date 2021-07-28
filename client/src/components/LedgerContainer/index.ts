@@ -1,130 +1,114 @@
 import Component from '@/src/core/Component';
+import LedgerDataModel from '@/src/models/Ledgers';
+import { html } from '@/src/utils/codeHelper';
 import LedgerList from '../LedgerList';
-
 import { ILedgerList, ILedger } from '@/src/interfaces/Ledger';
-
 import './index.scss';
-
-const TEST_DATA: ILedgerList[] = [
-  {
-    numDate: '0727',
-    date: '07월 27일',
-    day: '화',
-    income: 200000,
-    spand: -150000,
-    ledgers: [
-      {
-        categoryType: '6',
-        category: '미분류',
-        content: '온라인 세미나 신청',
-        cardType: '현금',
-        balance: -100000,
-      },
-      {
-        categoryType: '4',
-        category: '식비',
-        content: '저녁밥',
-        cardType: '현대카드',
-        balance: -50000,
-      },
-      {
-        categoryType: '8',
-        category: '월급',
-        content: '7월 급여',
-        cardType: '현급',
-        balance: 200000,
-      },
-    ],
-  },
-  {
-    numDate: '0728',
-    date: '07월 28일',
-    day: '수',
-    income: 300000,
-    spand: -200000,
-    ledgers: [
-      {
-        categoryType: '6',
-        category: '미분류',
-        content: '온라인 세미나 신청',
-        cardType: '국민카드',
-        balance: -150000,
-      },
-      {
-        categoryType: '4',
-        category: '식비',
-        content: '저녁밥',
-        cardType: '삼성카드',
-        balance: -50000,
-      },
-      {
-        categoryType: '8',
-        category: '월급',
-        content: '7월 보너스',
-        cardType: '현급',
-        balance: 300000,
-      },
-    ],
-  },
-];
-
-interface IProp {}
+import Snackbar from '../SnackBar';
 
 interface IState {
-  ledgerLists: ILedgerList[];
+  ledgerData: ILedgerList[];
+  totalCount?: number;
+  totalIncomes?: number;
+  totalSpand?: number;
+  checked?: string[];
 }
 
-export default class LedgerContainer extends Component<IState, IProp> {
+interface IProps {}
+
+export default class LedgerContainer extends Component<IState, IProps> {
   setup() {
-    // TODO 옵저버 이동 필요
-    this.$state = { ledgerLists: TEST_DATA };
+    this.$state.ledgerData = LedgerDataModel.getData();
+    this.$state.totalCount = 0;
+    this.$state.totalIncomes = 0;
+    this.$state.totalSpand = 0;
+    this.$state.checked = ['spand', 'income'];
+
+    this.$state.ledgerData.forEach((ledgerList: ILedgerList) => {
+      (this.$state.totalCount as number) += ledgerList.ledgers.length;
+      ledgerList.ledgers.forEach((ledger: ILedger) => {
+        ledger.amount < 0
+          ? ((this.$state.totalSpand as number) += ledger.amount)
+          : ((this.$state.totalIncomes as number) += ledger.amount);
+      });
+    });
   }
 
   template() {
-    // TODO 옵저버 이동 필요
-    let totalIncomes = 0;
-    let totalSpand = 0;
-    let totalCount = 0;
-    this.$state.ledgerLists.forEach((ledgerList: ILedgerList) => {
-      totalCount += ledgerList.ledgers.length;
-      ledgerList.ledgers.forEach((ledger: ILedger) => {
-        ledger.balance < 0 ? (totalSpand += ledger.balance) : (totalIncomes += ledger.balance);
-      });
-    });
-
-    return /*html*/ `
-    <div class="ledger-container">
-      <div class="ledger-container--header">
-        <div class="total-count">전체 건수 : ${totalCount}</div>
-        <div class="fillter">
-          <div class="checkbox-wrapper">
-            <input type="checkbox" id="income"/>
-            <label for="income">수입 ${totalIncomes}</label>
-          </div>
-          <div class="checkbox-wrapper">
-            <input type="checkbox" id="spand"/>
-            <label for="spand">지출 ${totalSpand}</label>
+    return html`
+      <div class="ledger-container">
+        <div class="ledger-container--header">
+          <div class="total-count">전체 건수 : ${this.$state.totalCount}</div>
+          <div class="fillter">
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="income" name="filterCheckbox" />
+              <label for="income">수입 ${this.$state.totalIncomes}</label>
+            </div>
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="spand" name="filterCheckbox" />
+              <label for="spand">지출 ${this.$state.totalSpand}</label>
+            </div>
           </div>
         </div>
+        <div class="ledger-list-wrapper"></div>
       </div>
-      <div class="ledger-list-wrapper"></div>
-    </div>
     `;
   }
   mounted() {
     const wrapper = this.$target.querySelector('.ledger-list-wrapper') as HTMLElement;
-
-    const { ledgerLists } = this.$state;
-
-    ledgerLists.forEach((ledgerList: ILedgerList) => {
-      new LedgerList(wrapper, { ledgerList });
+    const checkBoxs = [...this.$target.querySelectorAll('input[name="filterCheckbox"]')] as HTMLInputElement[];
+    const { ledgerData, checked } = this.$state;
+    //checkBok
+    checked?.forEach((id: string) => {
+      (this.$target.querySelector(`input#${id}`) as HTMLInputElement).checked = true;
     });
 
+    //Get filter Data
+    checkBoxs.forEach(box => {
+      box.addEventListener('change', () => this.getFilterData(checkBoxs));
+    });
+
+    //ledger-header Dropdown Event
     wrapper.addEventListener('click', e => {
       const target = e.target as HTMLElement;
       if (target.classList.contains('ledger-header')) {
         target.classList.toggle('active');
       }
+    });
+
+    if (!ledgerData.length) {
+      new Snackbar(document.body, { text: '앗 ! 데이터가 없어요 !' });
+    }
+
+    ledgerData.forEach((ledgerList: ILedgerList) => {
+      new LedgerList(wrapper, { ledgerList: ledgerList });
+    });
+  }
+
+  getFilterData(checkBoxs: HTMLInputElement[]) {
+    let filter = '';
+    checkBoxs.forEach(e => (e.checked ? (filter += e.getAttribute('id')) : ''));
+
+    switch (filter) {
+      case 'spand':
+        this.setState({ ledgerData: LedgerDataModel.getSpandData(), checked: ['spand'] });
+        break;
+      case 'income':
+        this.setState({ ledgerData: LedgerDataModel.getIncomeData(), checked: ['income'] });
+        break;
+      case '':
+        this.setState({ ledgerData: [], checked: [] });
+        break;
+      default:
+        this.setState({ ledgerData: LedgerDataModel.getData(), checked: ['spand', 'income'] });
+    }
+  }
+
+  setEvent() {
+    LedgerDataModel.subscribe(() => {
+      this.setState({
+        ledgerData: LedgerDataModel.getData(),
+      });
     });
   }
 }
