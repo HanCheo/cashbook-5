@@ -5,10 +5,14 @@ import SvgIcon from '@/src/assets/svg';
 import MonthPicker from '../MonthPicker';
 import { router } from '@/src/core/router';
 
-export default class Header extends Component {
+interface IProp {}
+
+interface IState {}
+
+export default class Header extends Component<IState, IProp> {
   template() {
     return /*html*/ `
-      <div class="hader-wrap">
+      <div class="header-wrap">
         <ul>
           <li class="left">우아한 가계부</li>
           <li class="center">

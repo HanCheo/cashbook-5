@@ -3,16 +3,21 @@ interface IEventListener {
   listener: (e: Event) => void;
 }
 
-export default class Component {
+/**
+ * S: State Type
+ * P: PropertyType
+ */
+
+export default class Component<S, P> {
   $target: HTMLElement;
-  $state: { [key: string]: any };
-  $props: { [key: string]: any };
+  $state: S;
+  $props: P;
   eventlisteners: IEventListener[];
 
-  constructor($target: HTMLElement, $props: { [key: string]: any } = {}) {
+  constructor($target: HTMLElement, $props: P = {} as P) {
     this.$target = $target;
     this.$props = { ...$props };
-    this.$state = {};
+    this.$state = {} as S;
     this.eventlisteners = [];
     this.setup();
     this.render();
@@ -54,7 +59,7 @@ export default class Component {
   // 컴포넌트 단위에서 언마운트 되는 시점에 지정할 작업을 작성하는 메서드
   setUnmount() {}
 
-  setState(newState: any) {
+  setState(newState: S) {
     this.$state = { ...this.$state, ...newState };
     this.render();
   }
