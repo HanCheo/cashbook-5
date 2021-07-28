@@ -2,6 +2,8 @@ import Component from '@/src/core/Component';
 import CategorySelector from './CategorySelector';
 import { qs } from '@/src/utils/selecthelper';
 import './index.scss';
+import { html } from '@/src/utils/codeHelper';
+import CardTypeSelector from './CardTypeSelector';
 
 const mockCategories = [
   { id: 1, name: '취미' },
@@ -24,48 +26,41 @@ interface IProps {}
 
 export default class LedgerAddModal extends Component<IState, IProps> {
   template() {
-    return /*html*/ `
-        <div class="blur-background"></div>
-        <div class="ledger-modal-container">
-            <div class="ledger-modal-container--input-box">
-              <label for="date-input">날짜</label>
-              <input 
-                id="date-input" 
-                type="date" />
-            </div>
-            <span class="spliter"></span>
-            <div class="ledger-modal-container--input-box">
-              <label for="category-input">분류</label>
-              <input 
-                id="category-input" 
-                type="text"
-                placeholder="선택하세요"
-                readonly
-              />
-              <div id="category-selector-container"></div>
-            </div>
-            <span class="spliter"></span>
-            <div class="ledger-modal-container--input-box">
-              <label for="content-input">내용</label>
-              <input id="content-input" type="text"  placeholder="입력하세요"/>
-            </div>
-            <span class="spliter"></span>
-            <div class="ledger-modal-container--input-box">
-              <label for="card-type-input">결제수단</label>
-              <input id="card-type-input" type="text"  placeholder="선택하세요" readonly/>
-              <div id="card-type-selector-container"></div>
-            </div>
-            <span class="spliter"></span>
-            <div class="ledger-modal-container--input-box">
-              <label for="amount-input">금액</label>
-              <input id="amount-input" type="text" placeholder="입력하세요"/>
-            </div>
-            <span class="spliter"></span>
-            <div class="ledger-modal-container--submit-box">
-              <div class="cancel-btn">취소</div>
-              <div class="submit-btn">완료</div>
-            </div>
+    return html`
+      <div class="blur-background"></div>
+      <div class="ledger-modal-container">
+        <div class="ledger-modal-container--input-box">
+          <label for="date-input">날짜</label>
+          <input id="date-input" type="date" />
         </div>
+        <span class="spliter"></span>
+        <div class="ledger-modal-container--input-box">
+          <label for="category-input">분류</label>
+          <input id="category-input" type="text" placeholder="선택하세요" readonly />
+          <div id="category-selector-container"></div>
+        </div>
+        <span class="spliter"></span>
+        <div class="ledger-modal-container--input-box">
+          <label for="content-input">내용</label>
+          <input id="content-input" type="text" placeholder="입력하세요" />
+        </div>
+        <span class="spliter"></span>
+        <div class="ledger-modal-container--input-box">
+          <label for="card-type-input">결제수단</label>
+          <input id="card-type-input" type="text" placeholder="선택하세요" readonly />
+          <div id="card-type-selector-container"></div>
+        </div>
+        <span class="spliter"></span>
+        <div class="ledger-modal-container--input-box">
+          <label for="amount-input">금액</label>
+          <input id="amount-input" type="text" placeholder="입력하세요" />
+        </div>
+        <span class="spliter"></span>
+        <div class="ledger-modal-container--submit-box">
+          <div class="cancel-btn">취소</div>
+          <div class="submit-btn">완료</div>
+        </div>
+      </div>
     `;
   }
 
@@ -80,6 +75,22 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     new CategorySelector($categorySelectorElement, {
       categories: mockCategories,
       onClickCategory: (category: string) => this.handleSelectCategory(category),
+    });
+
+    const $cardTypeSelectorElement = qs('#card-type-selector-container', this.$target) as HTMLElement;
+    new CardTypeSelector($cardTypeSelectorElement, {
+      cardTypes: [
+        { id: 'test', name: 'test card', color: 'blue' },
+        { id: 'test', name: 'test card', color: 'red' },
+        { id: 'test', name: 'test card', color: 'tomato' },
+        { id: 'test', name: 'test card', color: 'green' },
+        { id: 'test', name: 'test card', color: '#000000' },
+        { id: 'test', name: 'test card', color: '#000000' },
+        { id: 'test', name: 'test card', color: '#000000' },
+      ],
+      onClickCard: (card: string) => {
+        this.handleSelectCardType(card);
+      },
     });
 
     this.bindingEvents();
@@ -103,6 +114,10 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     $blurBgElement.addEventListener('click', () => {
       this.hide();
     });
+  }
+
+  handleSelectCardType(card: string) {
+    this.$state.$cardTypeInput.value = card;
   }
 
   handleSelectCategory(category: string) {

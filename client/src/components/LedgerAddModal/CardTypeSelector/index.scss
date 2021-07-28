@@ -1,0 +1,73 @@
+@import '../../../global.scss';
+
+.card-type-selector {
+  margin: auto 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  &--toggle {
+    background-color: $primary;
+    color: white;
+    border-radius: 999px;
+    padding: 4px 8px;
+    user-select: none;
+    cursor: pointer;
+  }
+  &--list {
+    display: none;
+    position: absolute;
+    max-height: 90vh;
+    overflow-y: scroll;
+    border-right: 2px solid $primary;
+    margin: 0;
+    padding: 1.5rem;
+    transform: translate(80%, -50%);
+    @media (max-width: $table-max-width) {
+      transform: translateX(50%, -50%);
+    }
+
+    animation-name: card-fade-in-effect;
+    animation-duration: 0.5s;
+    &--item {
+      display: block;
+      position: relative;
+      height: 80px;
+      width: 200px;
+      padding: 1.5rem;
+      border-radius: 16px;
+      background-color: $label;
+      box-shadow: 0 -0.5rem 0.5rem rgba(255, 255, 255, 0.2);
+      color: white;
+      transition: 0.2s;
+
+      & > * {
+        pointer-events: none;
+      }
+
+      &:hover {
+        transform: translateX(-1rem);
+      }
+
+      &:hover ~ & {
+        transform: translateY(40px);
+      }
+
+      &:not(:first-child) {
+        margin-top: -40px;
+      }
+    }
+  }
+}
+
+@keyframes card-fade-in-effect {
+  from {
+    opacity: 0;
+    transform: translate(90%, -50%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(80%, -50%);
+  }
+}

@@ -25,7 +25,7 @@
     position: absolute;
     transform: translate(100%, -50%);
 
-    animation-name: fade-in-effect;
+    animation-name: category-fade-in-effect;
     animation-duration: 0.5s;
     &--item {
       border-radius: 999px;
@@ -33,11 +33,14 @@
       margin-bottom: 10px;
       display: flex;
       justify-content: center;
+      & > * {
+        pointer-events: none;
+      }
     }
   }
 }
 
-@keyframes fade-in-effect {
+@keyframes category-fade-in-effect {
   from {
     opacity: 0;
     transform: translate(150%, -50%);
