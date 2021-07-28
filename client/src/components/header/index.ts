@@ -33,12 +33,13 @@ export default class Header extends Component {
     const dataWrap = document.querySelector('.date-wrap') as HTMLElement;
     const iconsWrap = this.$target.querySelector('.header-wrap-right') as HTMLElement;
     dataWrap.addEventListener('click', () => this.showDatePiceker(dataWrap));
-
+    (iconsWrap.querySelector(`[data-page="${location.pathname}"]`) as HTMLElement).classList.add('selected');
     //router
     iconsWrap.addEventListener('click', e => {
-      const target = (e.target as HTMLElement).closest('.svg-icon') as HTMLElement;
+      const target = e.target as HTMLElement;
       const page = target.dataset.page;
-      if (target && location.pathname != page) {
+
+      if (page && location.pathname != page) {
         target.classList.add('selected');
         router.push(`${page}`);
       }
