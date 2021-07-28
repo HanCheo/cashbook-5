@@ -1,9 +1,10 @@
 const defaultOption = {
   radius: 100,
-  hoverScaleRate: 1.3,
+  hoverScaleRate: 1.2,
   hoverEffectSpeed: 0.5,
   viewboxWidth: 400,
   viewboxHeight: 300,
+  animationDuration: 0.5,
 };
 
 export interface PiChartOption {
@@ -40,6 +41,7 @@ export default class PieChart {
       hoverEffectSpeed: 0.5,
       viewboxWidth: 400,
       viewboxHeight: 300,
+      animationDuration: 0.5,
       onClick: null,
     };
 
@@ -89,14 +91,14 @@ export default class PieChart {
       const pathData = [
         `M ${startX * r} ${startY * r}`,
         `A ${r} ${r} 0 ${largeArcFlag} 1 ${endX * r} ${endY * r}`,
-        `L 0,0Z`,
       ].join(' ');
 
       const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
       pathEl.setAttribute('d', pathData);
-      if (entry.color) pathEl.setAttribute('fill', entry.color);
-      pathEl.setAttribute('stroke', 'white');
+      pathEl.setAttribute('fill', 'none');
+      if (entry.color) pathEl.setAttribute('stroke', entry.color);
+      pathEl.setAttribute('stroke-width', (r * 0.8).toString());
       pathEl.setAttribute('opacity', '0.7');
 
       pathEl.addEventListener('mouseover', () => {
@@ -123,6 +125,21 @@ export default class PieChart {
           }
         });
       }
+
+      const l = 2 * Math.PI * entry.percent * r;
+      pathEl.setAttribute('stroke-dasharray', `0 ${l} ${l} 0`);
+      pathEl.setAttribute('stroke-dashoffset', `${l}`);
+
+      const animateEl = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+
+      animateEl.setAttribute('attributeType', 'XML');
+      animateEl.setAttribute('attributeName', 'stroke-dashoffset');
+      animateEl.setAttribute('from', '0');
+      animateEl.setAttribute('to', `${l}`);
+      animateEl.setAttribute('dur', `${this.settings.animationDuration}s`);
+      animateEl.setAttribute('repeatCount', '1');
+      animateEl.setAttribute('fill', 'freeze');
+      pathEl.appendChild(animateEl);
 
       this.element.appendChild(pathEl);
     });

@@ -60,7 +60,7 @@ export default class StatisticPage extends Component {
       onClick: (d: string) => {
         console.log('click: ' + d);
       },
-      radius: 125,
+      radius: 100,
     });
   }
 }
