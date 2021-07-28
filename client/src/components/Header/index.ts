@@ -4,6 +4,7 @@ import './index.scss';
 import SvgIcon from '@/src/assets/svg';
 import MonthPicker from '../MonthPicker';
 import { router } from '@/src/core/router';
+import { html, sibling } from '@/src/utils/codeHelper';
 
 interface IProp {}
 
@@ -11,7 +12,7 @@ interface IState {}
 
 export default class Header extends Component<IState, IProp> {
   template() {
-    return /*html*/ `
+    return html`
       <div class="header-wrap">
         <ul>
           <li class="left">우아한 가계부</li>
@@ -24,7 +25,7 @@ export default class Header extends Component<IState, IProp> {
             <div class="arrow">></div>
           </li>
           <li class="header-wrap-right">
-            <div class="svg-icon selected" data-page="/">${SvgIcon.fileText}</div>
+            <div class="svg-icon" data-page="/">${SvgIcon.fileText}</div>
             <div class="svg-icon" data-page="/calender">${SvgIcon.calender}</div>
             <div class="svg-icon" data-page="/statistic">${SvgIcon.chart}</div>
           </li>
@@ -36,7 +37,8 @@ export default class Header extends Component<IState, IProp> {
   mounted() {
     const dataWrap = document.querySelector('.date-wrap') as HTMLElement;
     const iconsWrap = this.$target.querySelector('.header-wrap-right') as HTMLElement;
-    dataWrap.addEventListener('click', () => this.showDatePiceker(dataWrap));
+    dataWrap.addEventListener('click', () => this.showMonthPiceker(dataWrap));
+
     (iconsWrap.querySelector(`[data-page="${location.pathname}"]`) as HTMLElement).classList.add('selected');
     //router
     iconsWrap.addEventListener('click', e => {
@@ -44,13 +46,14 @@ export default class Header extends Component<IState, IProp> {
       const page = target.dataset.page;
 
       if (page && location.pathname != page) {
+        sibling(target).forEach((el: Element) => el.classList.remove('selected'));
         target.classList.add('selected');
         router.push(`${page}`);
       }
     });
   }
 
-  showDatePiceker = (target: HTMLElement) => {
+  showMonthPiceker = (target: HTMLElement) => {
     let Month: string | string[] | undefined = target.querySelector('.month')?.innerHTML.split('');
     Month?.splice(-1);
     Month = Month?.join('');
