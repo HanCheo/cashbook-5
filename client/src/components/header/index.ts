@@ -19,9 +19,9 @@ export default class Header extends Component {
             <div class="arrow">></div>
           </li>
           <li class="header-wrap-right">
-            <div class="svg-icon selected" data-page="fileText">${SvgIcon.fileText}</div>
-            <div class="svg-icon" data-page="calender">${SvgIcon.calender}</div>
-            <div class="svg-icon" data-page="chart">${SvgIcon.chart}</div>
+            <div class="svg-icon selected" data-page="/fileText">${SvgIcon.fileText}</div>
+            <div class="svg-icon" data-page="/calender">${SvgIcon.calender}</div>
+            <div class="svg-icon" data-page="/statistic">${SvgIcon.chart}</div>
           </li>
         </ul>
       </div>
@@ -30,8 +30,15 @@ export default class Header extends Component {
 
   mounted() {
     const dataWrap = document.querySelector('.date-wrap') as HTMLElement;
-
+    const iconsWrap = this.$target.querySelector('.header-wrap-right') as HTMLElement;
     dataWrap.addEventListener('click', () => this.showDatePiceker(dataWrap));
+
+    //router
+    iconsWrap.addEventListener('click', e => {
+      const path = (e.target as HTMLElement).closest('.svg-icon') as HTMLElement;
+      const page = path.dataset.page;
+      if (path && location.pathname != page) $router.push(`${page}`);
+    });
   }
 
   showDatePiceker = (target: HTMLElement) => {
