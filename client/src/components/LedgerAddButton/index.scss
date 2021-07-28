@@ -1,0 +1,14 @@
+@import '../../global.scss';
+
+.ledger-add-button {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  background-color: $primary;
+  color: white;
+  font-size: 22px;
+  padding: 4px 8px;
+  width: 200px;
+  height: 100px;
+  border-radius: 8px 8px 0 0;
+}
