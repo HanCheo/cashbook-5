@@ -3,6 +3,7 @@ import calendarModel from '@/src/models/Canlendar';
 import './index.scss';
 import SvgIcon from '@/src/assets/svg';
 import MonthPicker from '../MonthPicker';
+import { $router } from '@/src/core/router';
 
 export default class Header extends Component {
   template() {
