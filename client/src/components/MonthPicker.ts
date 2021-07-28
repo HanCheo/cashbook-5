@@ -1,5 +1,6 @@
 import Component from '../core/Component';
 import { MONTH_SHORT, MONTH_LONG, MONTH_UNIT } from '../utils/calender';
+import { html } from '../utils/codeHelper';
 
 export default class MonthPicker {
   date: Date;
@@ -77,9 +78,11 @@ export default class MonthPicker {
 
   template() {
     const currentYear = this.date.getFullYear() == this.year;
-    return /*html*/ `
+    return html`
       <div class="calender-wrapper">
-        <style>${this.style()}</style>
+        <style>
+          ${this.style()}
+        </style>
         <div class="calender-inner">
           <div class="calender-header">
             <div class="prev"><</div>
@@ -87,14 +90,18 @@ export default class MonthPicker {
             <div class="next">></div>
           </div>
           <div class="calender-body">
-          ${this.monthShortName
-            .map((month, i) => {
-              return /*html*/ ` <div class="month ${
-                currentYear && this.monthShort == month ? 'selected' : ''
-              }" data-month-number="${i + 1}">${month}</div>
-              `;
-            })
-            .join('')}
+            ${this.monthShortName
+              .map((month, i) => {
+                return html`
+                  <div
+                    class="month ${currentYear && this.monthShort == month ? 'selected' : ''}"
+                    data-month-number="${i + 1}"
+                  >
+                    ${month}
+                  </div>
+                `;
+              })
+              .join('')}
           </div>
         </div>
       </div>

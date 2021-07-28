@@ -1,5 +1,6 @@
 import Component from '@/src/core/Component';
 import { ILedger } from '@/src/interfaces/Ledger';
+import { html } from '@/src/utils/codeHelper';
 
 interface IState {
   ledger: ILedger;
@@ -20,12 +21,12 @@ export default class LedgerItem extends Component<IState, IProps> {
   template() {
     const { ledger } = this.$state;
 
-    return /*html*/ `
+    return html`
       <li>
         <div class="ledger-category" data-category-type="${ledger.categoryType}">${ledger.category}</div>
-        <div class="ledger-content" >${ledger.content}</div>
-        <div class="ledger-cardType" >${ledger.cardType}</div>
-        <div class="ledger-balance" >${ledger.balance}</div>
+        <div class="ledger-content">${ledger.content}</div>
+        <div class="ledger-cardType">${ledger.cardType}</div>
+        <div class="ledger-amount">${ledger.amount}</div>
       </li>
     `;
   }

@@ -25,10 +25,13 @@
       &:checked {
         + label {
           color: $primary;
+
           &:before {
-            content: '';
-            min-width: calc(1em);
-            min-height: calc(1em);
+            content: '✓';
+            color: $off-white;
+            max-width: 1em;
+            max-height: 1em;
+            text-align: center;
             border: 2px solid $primary;
             background: $primary;
           }
@@ -42,8 +45,9 @@
       &:before {
         content: '';
         position: absolute;
-        min-width: calc(1em);
-        min-height: calc(1em);
+        min-width: 1em;
+        transition: background 0.1s ease-in-out;
+        min-height: 1em;
         top: 0;
         left: 0;
         border: 2px solid $label;
