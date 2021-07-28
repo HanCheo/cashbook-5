@@ -1,3 +1,4 @@
+import Component from '../core/Component';
 import { MONTH_SHORT, MONTH_LONG, MONTH_UNIT } from '../utils/calender';
 
 export default class MonthPicker {
@@ -10,7 +11,6 @@ export default class MonthPicker {
   monthShortName: string[];
   constructor(target: HTMLElement, date: Date | null) {
     if (!date) date = new Date();
-    console.log(date);
     this.date = date;
     this.month = date.toLocaleString('eng', { month: 'long' });
     this.monthShort = date.toLocaleString('eng', { month: 'short' });
@@ -40,18 +40,10 @@ export default class MonthPicker {
         left: 50%;
         border-radius: 9px;
         font-size: 16px;
+        z-index: 9;
         color: black;
         transform: translate(-50%, 110%);
         box-shadow: 0 3px 5px grey;
-      }
-      .calender-wrapper::before {
-        content: '';
-        position : fixed;
-        top: 0;
-        z-index: 1;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
       }
       .calender-wrapper .calender-inner {
         position: relative;

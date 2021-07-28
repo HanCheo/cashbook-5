@@ -1,4 +1,4 @@
-import Component from '@/src/interfaces/Component';
+import Component from '@/src/core/Component';
 import PieChart, { PiChartData } from '@/src/utils/PieChart';
 
 import './index.scss';
