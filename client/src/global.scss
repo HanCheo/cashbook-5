@@ -105,6 +105,13 @@ $config: (
 //기본적으로 lightTheme 적용
 body {
   @include theme(light);
+
+  // body 스코롤바 제거
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
 }
 
 //컴퓨터가 dark모드로 되있을 경우 상태적용
