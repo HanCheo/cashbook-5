@@ -1,4 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap');
+@font-face {
+  font-family: 'BMDOHYEON';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMDOHYEON.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'BMJUA';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJUA.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 //색상을 유동성있게 활용할 수 있도록 css VAR 설정
+$font-family: var(--font-family);
 $text-color: var(--text-color);
 $body: var(--body-color);
 $label: var(--label-color);
@@ -23,6 +38,7 @@ $category10: var(--category10-color);
 
 $config: (
   dark: (
+    font-family: 'Noto Sans Kr' sans-serif,
     text-color: #fcfcfc,
     body: #626666,
     label: #f5f5f5,
@@ -46,6 +62,7 @@ $config: (
     category10: #e2b765,
   ),
   light: (
+    font-family: 'BMJUA',
     text-color: #1e2222,
     body: #f1f1f1,
     label: #8d9393,
@@ -79,6 +96,7 @@ $config: (
 }
 
 @mixin theme($key) {
+  --font-family: #{setStyle($config, $key, font-family)};
   --text-color: #{setStyle($config, $key, text-color)};
   --title-active-color: #{setStyle($config, $key, title-active)};
   --body-color: #{setStyle($config, $key, body)};
@@ -105,6 +123,7 @@ $config: (
 
 //기본적으로 lightTheme 적용
 body {
+  font-family: $font-family;
   @include theme(light);
   background-image: linear-gradient(180deg, $background, $background, $body);
   color: $text-color;
