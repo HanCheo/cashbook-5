@@ -15,4 +15,6 @@ const MONTH_LONG = [
 ];
 const MONTH_UNIT = '월';
 
-export { MONTH_SHORT, MONTH_LONG, MONTH_UNIT };
+const YOIL_ENG_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+export { MONTH_SHORT, MONTH_LONG, MONTH_UNIT, YOIL_ENG_SHORT };
