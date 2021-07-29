@@ -8,7 +8,7 @@
   align-items: center;
 
   width: 600px;
-  @media (max-width: $table-max-width) {
+  @media (max-width: $tablet-max-width) {
     flex-wrap: wrap;
     width: 400px;
   }
