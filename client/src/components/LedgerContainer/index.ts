@@ -1,6 +1,6 @@
 import Component from '@/src/core/Component';
 import LedgerDataModel from '@/src/models/Ledgers';
-import { html } from '@/src/utils/codeHelper';
+import { addComma, html } from '@/src/utils/codeHelper';
 import LedgerList from '../LedgerList';
 import { ILedgerList, ILedger } from '@/src/interfaces/Ledger';
 import './index.scss';
@@ -35,18 +35,20 @@ export default class LedgerContainer extends Component<IState, IProps> {
   }
 
   template() {
+    const { totalCount, totalIncomes, totalSpand } = this.$state;
+
     return html`
       <div class="ledger-container">
         <div class="ledger-container--header">
-          <div class="total-count">전체 건수 : ${this.$state.totalCount}</div>
+          <div class="total-count">전체 건수 : ${addComma(totalCount as number)}</div>
           <div class="fillter">
             <div class="checkbox-wrapper">
               <input type="checkbox" id="income" name="filterCheckbox" />
-              <label for="income">수입 ${this.$state.totalIncomes}</label>
+              <label for="income">수입 ${addComma(totalIncomes as number)}</label>
             </div>
             <div class="checkbox-wrapper">
               <input type="checkbox" id="spand" name="filterCheckbox" />
-              <label for="spand">지출 ${this.$state.totalSpand}</label>
+              <label for="spand">지출 ${addComma(totalSpand as number)}</label>
             </div>
           </div>
         </div>

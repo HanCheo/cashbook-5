@@ -1,6 +1,6 @@
 import Component from '@/src/core/Component';
 import { ILedger } from '@/src/interfaces/Ledger';
-import { html } from '@/src/utils/codeHelper';
+import { addComma, html } from '@/src/utils/codeHelper';
 
 interface IState {
   ledger: ILedger;
@@ -26,7 +26,7 @@ export default class LedgerItem extends Component<IState, IProps> {
         <div class="ledger-category" data-category-type="${ledger.categoryType}">${ledger.category}</div>
         <div class="ledger-content">${ledger.content}</div>
         <div class="ledger-cardType">${ledger.cardType}</div>
-        <div class="ledger-amount">${ledger.amount}</div>
+        <div class="ledger-amount">${addComma(ledger.amount)}</div>
       </li>
     `;
   }
