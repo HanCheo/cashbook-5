@@ -10,7 +10,7 @@
   width: 600px;
   @media (max-width: $table-max-width) {
     flex-wrap: wrap;
-    min-width: 300px;
+    width: 400px;
   }
 
   padding: 35px;
@@ -21,7 +21,6 @@
 }
 
 .chart-container {
-  flex-grow: 1;
   width: 400px;
   height: 400px;
 }
