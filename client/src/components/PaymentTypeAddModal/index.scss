@@ -49,6 +49,7 @@
     &--input {
       background-color: transparent;
       flex-grow: 1;
+      color: inherit;
       outline: none;
       border: none;
       border-bottom: 1px solid $label;
