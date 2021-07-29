@@ -1,6 +1,6 @@
 import Observer from './Observer';
 
-export class calendarModel extends Observer {
+export class CalendarModel extends Observer {
   datetime: Date;
   constructor() {
     super();
@@ -15,5 +15,5 @@ export class calendarModel extends Observer {
   }
 }
 
-const _model = new calendarModel();
+const _model = new CalendarModel();
 export default _model;
