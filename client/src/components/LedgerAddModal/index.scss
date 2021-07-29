@@ -15,9 +15,10 @@
   top: 50%;
   left: 50%;
   width: 50%;
-  height: 500px;
+  max-height: 80%;
+  min-height: 50%;
   transform: translate(-50%, -50%);
-  padding: 10px;
+  padding: 2rem;
   border-radius: 8px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1), 0px 4px 20px rgba(0, 0, 0, 0.1);
   animation-name: spring-effect;
@@ -31,15 +32,14 @@
   justify-content: flex-start;
 
   &--input-box {
-    width: 90%;
+    width: 100%;
     flex-grow: 1;
     display: flex;
-    padding: 1rem;
     & > label {
       width: 100px;
       color: $primary;
       margin: auto 0;
-      text-align: center;
+      text-align: left;
     }
     & > input {
       flex-grow: 1;
@@ -51,26 +51,29 @@
   &--submit-box {
     margin-top: 1rem;
     width: 90%;
-    flex-grow: 1;
     padding: 10px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
 
-    & > cancel-btn {
+    & > .cancel-btn {
       border-radius: 999px;
       color: white;
       background-color: $primary;
+      font-size: 1rem;
+      padding: 4px 8px;
     }
 
-    & > submit-btn {
+    & > .submit-btn {
       border-radius: 999px;
       color: white;
+      padding: 4px 8px;
+      font-size: 1rem;
       background-color: $primary;
     }
   }
 
   & > .spliter {
-    width: 90%;
+    width: 100%;
     border: 1px solid $placeholder;
   }
 }
@@ -85,6 +88,11 @@
 }
 
 #category-selector-container {
+  display: flex;
+  align-content: center;
+}
+
+#card-type-selector-container {
   display: flex;
   align-content: center;
 }
