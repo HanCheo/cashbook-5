@@ -2,7 +2,7 @@ import Component from '@/src/core/Component';
 import { ILedgerList } from '@/src/interfaces/Ledger';
 import LedgerDataModel from '@/src/models/Ledgers';
 import { YOIL_ENG_SHORT } from '@/src/utils/calendar';
-import { addComma } from '@/src/utils/codeHelper';
+import { addComma, html } from '@/src/utils/codeHelper';
 import { qs } from '@/src/utils/selecthelper';
 import LedgerList from '../LedgerList';
 import './index.scss';
@@ -42,17 +42,17 @@ export default class calendar extends Component<IState, IProps> {
 
     // 지난 달 마지막 Date, 이번 달 마지막 Date
     const prevLast = new Date(viewYear, viewMonth - 1, 0);
-    const thisLast = new Date(viewYear, viewMonth, 0);
+    const curLast = new Date(viewYear, viewMonth, 0);
 
     const PLDate = prevLast.getDate();
     const PLDay = prevLast.getDay();
 
-    const TLDate = thisLast.getDate();
-    const TLDay = thisLast.getDay();
+    const TLDate = curLast.getDate();
+    const TLDay = curLast.getDay();
 
     // Dates 기본 배열들
     const prevDates: number[] = [];
-    const thisDates = [...Array(TLDate + 1).keys()].slice(1);
+    const curDates = [...Array(TLDate + 1).keys()].slice(1);
     const nextDates: number[] = [];
 
     // prevDates 계산
@@ -68,7 +68,7 @@ export default class calendar extends Component<IState, IProps> {
     }
 
     // Dates 합치기
-    const dates = prevDates.concat(thisDates, nextDates);
+    const dates = prevDates.concat(curDates, nextDates);
 
     // 현재달이 아닌 일자 확인용
     const firstDateIndex = dates.indexOf(1);
@@ -82,7 +82,7 @@ export default class calendar extends Component<IState, IProps> {
         key += viewMonth < 10 ? '0' + viewMonth : viewMonth;
         key += day < 10 ? '0' + day : day;
 
-        return `
+        return html`
         <li class="date" ${condition ? `data-key="${key}"` : ''}>
           <div ${condition ? '' : 'class="other"'}>${day}</div>
         </li>`;
@@ -92,23 +92,13 @@ export default class calendar extends Component<IState, IProps> {
 
   mounted() {
     this.renderCalendar();
-    this.ledgerFetchCalendar();
+    this.renderLedgersInCalendar();
 
     const calendarBody = qs('.calendar-container .body', this.$target) as HTMLElement;
     calendarBody.addEventListener('click', this.showDayLedger.bind(this));
-
-    //ledger-header Dropdown Event
-    // 의견 공유 필요 어차피 하루 일자밖에 나오지 않아서 드롭다운이 필요 없을 것 같이 느껴짐
-    // const dayLedgerInfo = qs('.day-ledger-info', this.$target) as HTMLElement;
-    // dayLedgerInfo.addEventListener('click', e => {
-    //   const target = e.target as HTMLElement;
-    //   if (target.classList.contains('ledger-header')) {
-    //     target.classList.toggle('active');
-    //   }
-    // });
   }
 
-  ledgerFetchCalendar() {
+  renderLedgersInCalendar() {
     const { ledgerData } = this.$state;
 
     ledgerData.forEach(ledgerDayData => {
@@ -133,8 +123,6 @@ export default class calendar extends Component<IState, IProps> {
     const dayLedgerInfo = qs('.day-ledger-info', this.$target) as HTMLElement;
 
     const ledgerList = ledgerData.find(data => data.numDate == key);
-
-    console.log(ledgerData, key, dayLedgerInfo);
     if (!ledgerList) return;
 
     dayLedgerInfo.innerHTML = '';
