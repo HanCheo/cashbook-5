@@ -56,14 +56,14 @@
 
       &:hover ~ & {
         transform: translateY(40px);
-        @media (max-width: $table-max-width) {
+        @media (max-width: $tablet-max-width) {
           transform: translateY(20px);
         }
       }
 
       &:not(:first-child) {
         margin-top: -40px;
-        @media (max-width: $table-max-width) {
+        @media (max-width: $tablet-max-width) {
           margin-top: -20px;
         }
       }

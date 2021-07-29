@@ -130,11 +130,11 @@ body {
 
 //media Query를 위한 설정
 $pc-max-width: 1050px;
-$table-max-width: 767px;
+$tablet-max-width: 768px;
 $phone-max-width: 425px;
 html {
   font-size: clamp(10px, 2vw, 16px);
-  @media (max-width: $table-max-width) {
+  @media (max-width: $tablet-max-width) {
     font-size: clamp(10px, 2.5vw, 14px);
   }
   @media (max-width: $phone-max-width) {
