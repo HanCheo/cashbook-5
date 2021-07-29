@@ -1,5 +1,5 @@
 //색상을 유동성있게 활용할 수 있도록 css VAR 설정
-$title-active: var(--title-active-color);
+$text-color: var(--text-color);
 $body: var(--body-color);
 $label: var(--label-color);
 $placeholder: var(--placeholder-color);
@@ -23,12 +23,12 @@ $category10: var(--category10-color);
 
 $config: (
   dark: (
-    title-active: #1e2222,
+    text-color: #fcfcfc,
     body: #626666,
-    label: #8d9393,
-    placeholder: #c1c5c5,
+    label: #f5f5f5,
+    placeholder: #f5f5f5,
     line: #ccd3d3,
-    background: #f5f5f5,
+    background: #1e2222,
     off-white: #fcfcfc,
     primary: #2ac1bc,
     primary2: #a0e1e0,
@@ -46,8 +46,8 @@ $config: (
     category10: #e2b765,
   ),
   light: (
-    title-active: rgb(84, 84, 207),
-    body: #626666,
+    text-color: #1e2222,
+    body: #f1f1f1,
     label: #8d9393,
     placeholder: #c1c5c5,
     line: #ccd3d3,
@@ -79,6 +79,7 @@ $config: (
 }
 
 @mixin theme($key) {
+  --text-color: #{setStyle($config, $key, text-color)};
   --title-active-color: #{setStyle($config, $key, title-active)};
   --body-color: #{setStyle($config, $key, body)};
   --label-color: #{setStyle($config, $key, label)};
@@ -105,7 +106,9 @@ $config: (
 //기본적으로 lightTheme 적용
 body {
   @include theme(light);
-
+  background-image: linear-gradient(180deg, $background, $background, $body);
+  color: $text-color;
+  min-height: 100vh;
   // body 스코롤바 제거
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */

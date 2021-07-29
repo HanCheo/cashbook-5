@@ -1,7 +1,7 @@
 @import '../../global.scss';
 
 .header-wrap {
-  background: $primary;
+  // background: $primary;
   ul {
     list-style: none;
     display: grid;
@@ -10,7 +10,6 @@
     align-items: center;
     margin: 0 auto;
     padding: 2em 2em 3em;
-    color: $off-white;
     grid-template-columns: 1.1fr 0.8fr 1.1fr;
 
     @media (max-width: $tablet-max-width) {
@@ -66,8 +65,8 @@ li.header-wrap-right {
       width: 1.8em;
       height: 1.8em;
       path {
+        stroke: currentColor;
         transition: stroke-width 0.3s ease-in-out;
-        stroke: $off-white;
       }
     }
     &.selected {
