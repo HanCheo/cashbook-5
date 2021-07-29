@@ -28,6 +28,9 @@ export default class Snackbar extends Component<IState, IProps> {
   }
 
   render() {
+    const check = this.$target.querySelector('.snack-bar') as HTMLElement;
+    if (check) return;
+
     this.$target.insertAdjacentHTML('beforeend', this.template());
     this.mounted();
   }
