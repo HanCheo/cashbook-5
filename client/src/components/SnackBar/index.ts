@@ -39,8 +39,8 @@ export default class Snackbar extends Component<IState, IProps> {
   mounted() {
     const { duration } = this.$props;
     if (duration) {
-      const dropDuration = duration / 4;
-      const progressDuration = duration;
+      const dropDuration = duration * 0.25;
+      const progressDuration = duration * 0.75;
       const snackBar = this.$target.querySelector('.snack-bar') as HTMLElement;
       const snackBarProgress = this.$target.querySelector('.snack-bar > hr') as HTMLElement;
       setTimeout(() => {
