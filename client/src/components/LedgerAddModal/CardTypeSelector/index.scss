@@ -10,9 +10,16 @@
     background-color: $primary;
     color: white;
     border-radius: 999px;
-    padding: 4px 8px;
+    padding: 0.5em 1em;
     user-select: none;
     cursor: pointer;
+    border: 1px solid $primary;
+    background-color: transparent;
+    color: $primary;
+    &:hover {
+      background-color: $primary;
+      color: $off-white;
+    }
   }
   &--list {
     display: none;
@@ -22,14 +29,12 @@
     border-right: 2px solid $primary;
     margin: 0;
     padding: 1.5rem;
-    transform: translate(80%, -50%);
-    @media (max-width: $table-max-width) {
-      transform: translateX(50%, -50%);
-    }
+    transform: translate(60%, -50%);
 
     animation-name: card-fade-in-effect;
     animation-duration: 0.5s;
     &--item {
+      cursor: pointer;
       display: block;
       position: relative;
       height: 80px;
@@ -51,10 +56,16 @@
 
       &:hover ~ & {
         transform: translateY(40px);
+        @media (max-width: $table-max-width) {
+          transform: translateY(20px);
+        }
       }
 
       &:not(:first-child) {
         margin-top: -40px;
+        @media (max-width: $table-max-width) {
+          margin-top: -20px;
+        }
       }
     }
   }
@@ -68,6 +79,6 @@
 
   to {
     opacity: 1;
-    transform: translate(80%, -50%);
+    transform: translate(60%, -50%);
   }
 }

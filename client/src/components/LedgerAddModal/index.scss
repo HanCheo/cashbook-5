@@ -15,8 +15,12 @@
   top: 50%;
   left: 50%;
   width: 50%;
-  max-height: 80%;
+  @media (max-width: $table-max-width) {
+    width: 60%;
+  }
+
   min-height: 50%;
+
   transform: translate(-50%, -50%);
   padding: 2rem;
   border-radius: 8px;
@@ -24,7 +28,7 @@
   animation-name: spring-effect;
   animation-duration: 0.2s;
   will-change: transform;
-  background-color: white;
+  background-color: $off-white;
 
   display: flex;
   flex-direction: column;
@@ -34,22 +38,27 @@
   &--input-box {
     width: 100%;
     flex-grow: 1;
+    flex-basis: 5em;
     display: flex;
+    background-color: transparent;
     & > label {
-      width: 100px;
+      flex-basis: 4em;
+      flex-shrink: 0;
+      flex-grow: 0;
       color: $primary;
       margin: auto 0;
       text-align: left;
     }
     & > input {
+      background-color: transparent;
       flex-grow: 1;
+      flex-shrink: 1;
       border: none;
       outline: none;
     }
   }
 
   &--submit-box {
-    margin-top: 1rem;
     width: 90%;
     padding: 10px;
     display: flex;
@@ -57,18 +66,29 @@
 
     & > .cancel-btn {
       border-radius: 999px;
-      color: white;
-      background-color: $primary;
       font-size: 1rem;
-      padding: 4px 8px;
+      padding: 1em 1.5em;
+      border: 1px solid $primary;
+      background-color: transparent;
+      color: $primary;
+      &:hover {
+        background-color: $primary;
+        color: $off-white;
+      }
     }
 
     & > .submit-btn {
       border-radius: 999px;
       color: white;
-      padding: 4px 8px;
+      padding: 1em 1.5em;
       font-size: 1rem;
-      background-color: $primary;
+      border: 1px solid $primary;
+      background-color: transparent;
+      color: $primary;
+      &:hover {
+        background-color: $primary;
+        color: $off-white;
+      }
     }
   }
 

@@ -1,9 +1,10 @@
-import Component from '@/src/core/Component';
-import CategorySelector from './CategorySelector';
-import { qs } from '@/src/utils/selecthelper';
 import './index.scss';
+import Component from '@/src/core/Component';
+import { qs } from '@/src/utils/selecthelper';
 import { html } from '@/src/utils/codeHelper';
+import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
+import Snackbar from '../SnackBar';
 
 const mockCategories = [
   { id: 1, name: '취미' },
@@ -13,6 +14,10 @@ const mockCategories = [
   { id: 5, name: '비상금' },
   { id: 6, name: '보험비' },
 ];
+
+interface Error {
+  [key: string]: string;
+}
 
 interface IState {
   $amountInput: HTMLInputElement;
@@ -99,9 +104,11 @@ export default class LedgerAddModal extends Component<IState, IProps> {
   bindingEvents() {
     const $submitBtnElement = qs('.submit-btn', this.$target) as HTMLElement;
     $submitBtnElement.addEventListener('click', () => {
-      this.submit();
-      this.clear();
-      this.hide();
+      const result = this.submit();
+      if (result) {
+        this.clear();
+        this.hide();
+      }
     });
 
     const $cancelBtnElement = this.$target.querySelector('.cancel-btn') as HTMLElement;
@@ -125,10 +132,43 @@ export default class LedgerAddModal extends Component<IState, IProps> {
   }
 
   submit() {
-    const { $amountInput, $categoryInput, $contentInput, $cardTypeInput, $dateInput } = this.$state;
-
     // TODO: 입력값 validation 추가
     // TODO: data inset api call
+    const errors = this.validateForm();
+    const errorNames = Object.keys(errors);
+    if (errorNames.length > 0) {
+      new Snackbar(document.body, { text: errors[errorNames[0]], duration: 2 });
+      return false;
+    }
+
+    return true;
+  }
+
+  validateForm(): Error {
+    const { $amountInput, $categoryInput, $contentInput, $cardTypeInput, $dateInput } = this.$state;
+    const error: Error = {};
+
+    if (!$dateInput.value) {
+      error.date = '날짜를 입력해주세요.';
+    }
+
+    if (!$categoryInput.value) {
+      error.category = '분류를 선택해주세요.';
+    }
+
+    if (!$contentInput.value) {
+      error.content = '내용을 입력해주세요.';
+    }
+
+    if (!$cardTypeInput.value) {
+      error.cardType = '결제 수단을 선택해주세요.';
+    }
+
+    if (!$amountInput.value) {
+      error.amount = '금액을 입력해주세요.';
+      // TODO Number Validation
+    }
+    return error;
   }
 
   clear() {
