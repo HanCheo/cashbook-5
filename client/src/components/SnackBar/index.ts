@@ -8,19 +8,23 @@ interface IState {
 
 interface IProps {
   text: string;
+  duration?: number;
 }
+
+const defaultProperty = {
+  text: '',
+  duration: 2,
+};
 
 export default class Snackbar extends Component<IState, IProps> {
   setup() {
-    const { text } = this.$props;
-
-    this.$state = {
-      text,
-    };
+    const { text, duration } = this.$props;
+    if (duration === undefined) this.$props.duration = defaultProperty.duration;
+    if (text === undefined) this.$props.text = defaultProperty.text;
   }
 
   template() {
-    const { text } = this.$state;
+    const { text } = this.$props;
     return html`<div class="snack-bar">
       ${text}
       <hr class="progress" />
@@ -33,12 +37,19 @@ export default class Snackbar extends Component<IState, IProps> {
   }
 
   mounted() {
-    const snackBar = this.$target.querySelector('.snack-bar') as HTMLElement;
-    setTimeout(() => {
-      snackBar.classList.add('show');
+    const { duration } = this.$props;
+    if (duration) {
+      const dropDuration = duration / 4;
+      const progressDuration = duration;
+      const snackBar = this.$target.querySelector('.snack-bar') as HTMLElement;
+      const snackBarProgress = this.$target.querySelector('.snack-bar > hr') as HTMLElement;
       setTimeout(() => {
-        snackBar.remove();
-      }, 2000);
-    }, 10);
+        snackBar.style.animation = `topShow ${dropDuration}s ease-in-out forwards`;
+        snackBarProgress.style.animation = `progress ${progressDuration}s linear 1 forwards;`;
+        setTimeout(() => {
+          snackBar.remove();
+        }, (progressDuration + dropDuration) * 1000);
+      }, 10);
+    }
   }
 }
