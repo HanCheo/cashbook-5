@@ -1,5 +1,5 @@
 import Component from '@/src/core/Component';
-import { html } from '@/src/utils/codeHelper';
+import { addComma, html } from '@/src/utils/codeHelper';
 import LedgerItem from '../LedgerItem';
 import { ILedger, ILedgerList } from '@/src/interfaces/Ledger';
 
@@ -24,12 +24,13 @@ export default class LedgerList extends Component<IState, IProps> {
 
   template() {
     const { ledgerList } = this.$state;
-    
+
     return html` <div class="ledger-wraper">
       <div class="ledger-header">
         <div class="ledger-date">${ledgerList.date} <span class="ledger-day">${ledgerList.day}</span></div>
         <div class="ledger-amount">
-          ${ledgerList.income ? `수입 ${ledgerList.income}` : ``}&nbsp; ${ledgerList.spand ? `지출 ${ledgerList.spand}` : ``}
+          ${ledgerList.income ? `수입 ${addComma(ledgerList.income)}` : ``}&nbsp;
+          ${ledgerList.spand ? `지출 ${addComma(ledgerList.spand)}` : ``}
         </div>
       </div>
       <ul class="ledger-list" data-key=${ledgerList.numDate}></ul>

@@ -1,1 +1,7 @@
 @import '../../global.scss';
+
+.calendar-wrapper {
+  max-width: $pc-max-width;
+  position: relative;
+  margin: 0 auto;
+}
