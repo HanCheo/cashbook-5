@@ -67,26 +67,6 @@
       color: $label;
       font-size: 1.5em;
     }
-    .bg-color-picker {
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-grow: 1;
-      &--item {
-        padding: 2px;
-        margin-right: 1rem;
-        border-radius: 4px;
-        .box {
-          border-radius: 4px;
-          width: 25px;
-          height: 25px;
-          background-color: turquoise;
-        }
-        &.select {
-          border: 1px solid $primary;
-        }
-      }
-    }
   }
 
   &--font-section {
@@ -101,24 +81,26 @@
       color: $label;
       font-size: 1.5em;
     }
-    .font-color-picker {
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-grow: 1;
-      &--item {
-        padding: 2px;
-        margin-right: 1rem;
+  }
+
+  .color-picker {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-grow: 1;
+    &--item {
+      padding: 2px;
+      margin-right: 1rem;
+      border-radius: 4px;
+      .box {
+        pointer-events: none;
         border-radius: 4px;
-        .box {
-          border-radius: 4px;
-          width: 25px;
-          height: 25px;
-          background-color: turquoise;
-        }
-        &.select {
-          border: 1px solid $primary;
-        }
+        width: 25px;
+        height: 25px;
+        background-color: turquoise;
+      }
+      &.select {
+        border: 1px solid $primary;
       }
     }
   }
