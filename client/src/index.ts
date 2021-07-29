@@ -1,11 +1,12 @@
 import './normalize.css';
 import Header from './components/Header/';
 import { initRouter } from './core/router';
-import { MainPage, StatisticPage } from './pages';
+import { CalendarPage, MainPage, StatisticPage } from './pages';
 
 const routes = [
   { path: '/', component: MainPage },
   { path: '/statistic', component: StatisticPage },
+  { path: '/calendar', component: CalendarPage },
 ];
 
 const $header = document.querySelector('#header') as HTMLElement;

@@ -1,5 +1,5 @@
 import Component from '@/src/core/Component';
-import calendarModel from '@/src/models/Canlendar';
+import calenderModel from '@/src/models/Calendar';
 import './index.scss';
 import SvgIcon from '@/src/assets/svg';
 import MonthPicker from '../MonthPicker';
@@ -26,7 +26,7 @@ export default class Header extends Component<IState, IProp> {
           </li>
           <li class="header-wrap-right">
             <div class="svg-icon" data-page="/">${SvgIcon.fileText}</div>
-            <div class="svg-icon" data-page="/calender">${SvgIcon.calender}</div>
+            <div class="svg-icon" data-page="/calendar">${SvgIcon.calendar}</div>
             <div class="svg-icon" data-page="/statistic">${SvgIcon.chart}</div>
           </li>
         </ul>
@@ -62,9 +62,9 @@ export default class Header extends Component<IState, IProp> {
   };
 
   setup() {
-    calendarModel.subscribe(() => {
+    calenderModel.subscribe(() => {
       this.setState({
-        date: calendarModel.getDate(),
+        date: calenderModel.getDate(),
       });
     });
   }

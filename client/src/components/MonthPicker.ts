@@ -1,5 +1,5 @@
 import Component from '../core/Component';
-import { MONTH_SHORT, MONTH_LONG, MONTH_UNIT } from '../utils/calender';
+import { MONTH_SHORT, MONTH_LONG, MONTH_UNIT } from '../utils/calendar';
 import { html } from '../utils/codeHelper';
 
 export default class MonthPicker {
@@ -33,7 +33,7 @@ export default class MonthPicker {
 
   style() {
     return ` 
-      .calender-wrapper {
+      .calendar-wrapper {
         position: absolute;
         bottom: 0;
         background: white;
@@ -46,30 +46,30 @@ export default class MonthPicker {
         transform: translate(-50%, 110%);
         box-shadow: 0 3px 5px grey;
       }
-      .calender-wrapper .calender-inner {
+      .calendar-wrapper .calendar-inner {
         position: relative;
         z-index:9;
       }
-      .calender-wrapper .calender-header {
+      .calendar-wrapper .calendar-header {
         display: flex;
         justify-content: space-around;
         align-items: center;
       }
-      .calender-wrapper .calender-header div {
+      .calendar-wrapper .calendar-header div {
         cursor: pointer;
       }
-      .calender-wrapper .calender-body {
+      .calendar-wrapper .calendar-body {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         grid-column-gap: .5em;
         padding: 1em 1em 0;
       }
-      .calender-wrapper .calender-body .month {
+      .calendar-wrapper .calendar-body .month {
         padding: 10px;
         cursor: pointer;
       }
 
-      .calender-wrapper .calender-body .month.selected { 
+      .calendar-wrapper .calendar-body .month.selected { 
         background: var(--primary-color);
         border-radius: 9px;
       }
@@ -79,17 +79,17 @@ export default class MonthPicker {
   template() {
     const currentYear = this.date.getFullYear() == this.year;
     return html`
-      <div class="calender-wrapper">
+      <div class="calendar-wrapper">
         <style>
           ${this.style()}
         </style>
-        <div class="calender-inner">
-          <div class="calender-header">
+        <div class="calendar-inner">
+          <div class="calendar-header">
             <div class="prev"><</div>
             <div class="year">${this.year}</div>
             <div class="next">></div>
           </div>
-          <div class="calender-body">
+          <div class="calendar-body">
             ${this.monthShortName
               .map((month, i) => {
                 return html`
@@ -109,14 +109,14 @@ export default class MonthPicker {
   }
 
   render() {
-    const MonthPicker = document.querySelector('.calender-wrapper') as HTMLElement;
+    const MonthPicker = document.querySelector('.calendar-wrapper') as HTMLElement;
     MonthPicker?.remove();
     this.$target.insertAdjacentHTML('afterend', this.template());
     this.mounted();
   }
 
   mounted() {
-    const MonthPicker = document.querySelector('.calender-wrapper') as HTMLElement;
+    const MonthPicker = document.querySelector('.calendar-wrapper') as HTMLElement;
     const prev = MonthPicker.querySelector('.prev') as HTMLElement;
     const next = MonthPicker.querySelector('.next') as HTMLElement;
 
