@@ -128,13 +128,21 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
     const currentTarget = e.currentTarget as HTMLElement;
     const target = e.target as HTMLElement;
 
+    const pickers = qsAll('.color-picker', this.$target);
+    for (const picker of pickers) {
+      if (picker === target) return;
+    }
+
     const colorItems = qsAll('.color-picker--item', currentTarget);
     for (const colorItem of colorItems) {
       if (target === colorItem) {
         const { color } = target.dataset;
+        colorItem.classList.add('select');
         if (typeof color === 'string') {
           cb(color);
         }
+      } else {
+        colorItem.classList.remove('select');
       }
     }
   }
