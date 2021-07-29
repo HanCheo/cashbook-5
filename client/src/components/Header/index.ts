@@ -28,6 +28,7 @@ export default class Header extends Component<IState, IProp> {
             <div class="svg-icon" data-page="/">${SvgIcon.fileText}</div>
             <div class="svg-icon" data-page="/calendar">${SvgIcon.calendar}</div>
             <div class="svg-icon" data-page="/statistic">${SvgIcon.chart}</div>
+            <div class="svg-icon" data-page="/wallet">${SvgIcon.card}</div>
           </li>
         </ul>
       </div>

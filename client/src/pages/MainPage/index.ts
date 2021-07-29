@@ -15,6 +15,7 @@ export default class MainPage extends Component<IProps, IState> {
         <div id='body'></div>
         <div id="ledger-add-button"></div>
         <div id="ledger-add-modal"></div>
+        <div id="card-add-modal"></div>
       `;
   }
 
