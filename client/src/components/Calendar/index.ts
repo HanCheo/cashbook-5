@@ -1,15 +1,22 @@
 import Component from '@/src/core/Component';
+import { ILedgerList } from '@/src/interfaces/Ledger';
+import LedgerDataModel from '@/src/models/Ledgers';
 import { YOIL_ENG_SHORT } from '@/src/utils/calendar';
+import { addComma } from '@/src/utils/codeHelper';
+import { qs } from '@/src/utils/selecthelper';
+import LedgerList from '../LedgerList';
 import './index.scss';
 
 interface IState {
   date: Date;
+  ledgerData: ILedgerList[];
 }
 
 interface IProps {}
 
 export default class calendar extends Component<IState, IProps> {
   setup() {
+    this.$state.ledgerData = LedgerDataModel.getData();
     this.$state.date = new Date();
   }
 
@@ -17,24 +24,25 @@ export default class calendar extends Component<IState, IProps> {
     return `<div class="calendar-container">
               <ul class="header"></ul>
               <ul class="body"></ul>
-            </div>`;
+            </div>
+            <div class="day-ledger-info"></div>`;
   }
 
   renderCalendar() {
     //calendar headers
-    const calendarHeader = this.$target.querySelector('.calendar-container .header') as HTMLElement;
+    const calendarHeader = qs('.calendar-container .header', this.$target) as HTMLElement;
     const yoil = YOIL_ENG_SHORT;
     calendarHeader.innerHTML = yoil.map(yi => `<li>${yi}</li>`).join('');
 
     //calendar body
-    const calendarBody = this.$target.querySelector('.calendar-container .body') as HTMLElement;
+    const calendarBody = qs('.calendar-container .body', this.$target) as HTMLElement;
     const date = this.$state.date;
     const viewYear = date.getFullYear();
-    const viewMonth = date.getMonth();
+    const viewMonth = date.getMonth() + 1;
 
     // 지난 달 마지막 Date, 이번 달 마지막 Date
-    const prevLast = new Date(viewYear, viewMonth, 0);
-    const thisLast = new Date(viewYear, viewMonth + 1, 0);
+    const prevLast = new Date(viewYear, viewMonth - 1, 0);
+    const thisLast = new Date(viewYear, viewMonth, 0);
 
     const PLDate = prevLast.getDate();
     const PLDay = prevLast.getDay();
@@ -70,9 +78,13 @@ export default class calendar extends Component<IState, IProps> {
     calendarBody.innerHTML = dates
       .map((day, i) => {
         const condition = i >= firstDateIndex && i < lastDateIndex + 1;
+        let key: string = '';
+        key += viewMonth < 10 ? '0' + viewMonth : viewMonth;
+        key += day < 10 ? '0' + day : day;
+
         return `
-        <li class="date">
-          <div class="${condition ? '' : 'other'}" data-key="${day}">${day}</div>
+        <li class="date" ${condition ? `data-key="${key}"` : ''}>
+          <div ${condition ? '' : 'class="other"'}>${day}</div>
         </li>`;
       })
       .join('');
@@ -80,5 +92,54 @@ export default class calendar extends Component<IState, IProps> {
 
   mounted() {
     this.renderCalendar();
+    this.ledgerFetchCalendar();
+
+    const calendarBody = qs('.calendar-container .body', this.$target) as HTMLElement;
+    calendarBody.addEventListener('click', this.showDayLedger.bind(this));
+
+    //ledger-header Dropdown Event
+    // 의견 공유 필요 어차피 하루 일자밖에 나오지 않아서 드롭다운이 필요 없을 것 같이 느껴짐
+    // const dayLedgerInfo = qs('.day-ledger-info', this.$target) as HTMLElement;
+    // dayLedgerInfo.addEventListener('click', e => {
+    //   const target = e.target as HTMLElement;
+    //   if (target.classList.contains('ledger-header')) {
+    //     target.classList.toggle('active');
+    //   }
+    // });
+  }
+
+  ledgerFetchCalendar() {
+    const { ledgerData } = this.$state;
+
+    ledgerData.forEach(ledgerDayData => {
+      const { numDate, income, spand } = ledgerDayData;
+
+      const day = qs(`li[data-key="${numDate}"]`, this.$target) as HTMLElement;
+
+      day.insertAdjacentHTML(
+        'beforeend',
+        `<div class="day-amount">
+        <div class="income">${addComma(income)}</div>
+        <div class="spand">${addComma(spand)}</div>
+        <div class="amount">${addComma(spand + income)}</div>
+      </div>`
+      );
+    });
+  }
+
+  showDayLedger(e: MouseEvent) {
+    const { ledgerData } = this.$state;
+    const key = (e.target as HTMLElement).dataset.key;
+    const dayLedgerInfo = qs('.day-ledger-info', this.$target) as HTMLElement;
+
+    const ledgerList = ledgerData.find(data => data.numDate == key);
+
+    console.log(ledgerData, key, dayLedgerInfo);
+    if (!ledgerList) return;
+
+    dayLedgerInfo.innerHTML = '';
+    new LedgerList(dayLedgerInfo, { ledgerList: ledgerList });
+
+    dayLedgerInfo.scrollIntoView({ behavior: 'smooth' });
   }
 }

@@ -45,8 +45,27 @@
     .date {
       padding: 0.4em;
       height: 5em;
+      cursor: pointer;
       border-right: 1px solid $line;
       border-bottom: 1px solid $line;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      > * {
+        pointer-events: none;
+      }
+
+      .day-amount {
+        text-align: right;
+        font-size: 0.9em;
+        .income {
+          color: $primary;
+        }
+        .spand {
+          color: $error;
+        }
+      }
     }
 
     .date:nth-child(7n) {
@@ -59,4 +78,11 @@
       }
     }
   }
+}
+
+.day-ledger-info {
+  max-width: $pc-max-width;
+  width: 95%;
+  margin: 0 auto;
+  padding-top: 1em;
 }
