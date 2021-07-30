@@ -27,7 +27,7 @@ export default class Header extends Component<IState, IProp> {
     return html`
       <div class="header-wrap">
         <ul>
-          <li class="left">우아한 가계부</li>
+          <li class="left">Woowa<br />Money Diary</li>
           <li class="center">
             <div class="arrow" data-click="prev"><</div>
             <div class="date-wrap">
