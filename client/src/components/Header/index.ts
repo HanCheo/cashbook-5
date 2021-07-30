@@ -1,28 +1,40 @@
 import Component from '@/src/core/Component';
-import calenderModel from '@/src/models/Calendar';
+import CalendarModel from '@/src/models/Calendar';
 import './index.scss';
 import SvgIcon from '@/src/assets/svg';
 import MonthPicker from '../MonthPicker';
 import { router } from '@/src/core/router';
 import { html, sibling } from '@/src/utils/codeHelper';
+import { qs } from '@/src/utils/selecthelper';
 
 interface IProp {}
 
-interface IState {}
+interface IState {
+  date: Date;
+}
 
 export default class Header extends Component<IState, IProp> {
+  setup() {
+    this.$state.date = CalendarModel.getDate();
+    CalendarModel.subscribe(() => {
+      this.setState({
+        date: CalendarModel.getDate(),
+      });
+    });
+  }
   template() {
+    const { date } = this.$state;
     return html`
       <div class="header-wrap">
         <ul>
           <li class="left">우아한 가계부</li>
           <li class="center">
-            <div class="arrow"><</div>
+            <div class="arrow" data-click="prev"><</div>
             <div class="date-wrap">
-              <div class="month">7월</div>
-              <div class="year">2021</div>
+              <div class="month">${date.getMonth() + 1}월</div>
+              <div class="year">${date.getFullYear()}</div>
             </div>
-            <div class="arrow">></div>
+            <div class="arrow" data-click="next">></div>
           </li>
           <li class="header-wrap-right">
             <div class="svg-icon" data-page="/">${SvgIcon.fileText}</div>
@@ -52,6 +64,21 @@ export default class Header extends Component<IState, IProp> {
         router.push(`${page}`);
       }
     });
+
+    const headerCenter = qs('.header-wrap .center', this.$target) as HTMLElement;
+
+    headerCenter.addEventListener('click', e => {
+      const target = e.target as HTMLElement;
+
+      switch (target.dataset.click) {
+        case 'prev':
+          CalendarModel.prevMonth();
+          break;
+        case 'next':
+          CalendarModel.nextMonth();
+          break;
+      }
+    });
   }
 
   showMonthPiceker = (target: HTMLElement) => {
@@ -59,14 +86,6 @@ export default class Header extends Component<IState, IProp> {
     Month?.splice(-1);
     Month = Month?.join('');
     const Year = target.querySelector('.year')?.innerHTML;
-    new MonthPicker(target, new Date(`${Year}-${Month}`));
+    new MonthPicker(target);
   };
-
-  setup() {
-    calenderModel.subscribe(() => {
-      this.setState({
-        date: calenderModel.getDate(),
-      });
-    });
-  }
 }
