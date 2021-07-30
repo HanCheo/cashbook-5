@@ -4,12 +4,13 @@
   max-width: $pc-max-width;
   width: 95%;
   margin: 0 auto;
+  padding-bottom: 2em;
 
   .ledger-container--header {
     margin-top: 2em;
     font-size: 1.3em;
     display: flex;
-    color: $primary3;
+    color: $primary;
     justify-content: space-between;
   }
 

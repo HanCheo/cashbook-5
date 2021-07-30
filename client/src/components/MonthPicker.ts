@@ -1,6 +1,7 @@
 import Component from '../core/Component';
 import { MONTH_SHORT, MONTH_LONG, MONTH_UNIT } from '../utils/calendar';
 import { html } from '../utils/codeHelper';
+import CalendarModel from '../models/Calendar';
 
 export default class MonthPicker {
   date: Date;
@@ -10,12 +11,12 @@ export default class MonthPicker {
   $target: HTMLElement;
   monthName: string[];
   monthShortName: string[];
-  constructor(target: HTMLElement, date: Date | null) {
-    if (!date) date = new Date();
-    this.date = date;
-    this.month = date.toLocaleString('eng', { month: 'long' });
-    this.monthShort = date.toLocaleString('eng', { month: 'short' });
-    this.year = date.getFullYear();
+
+  constructor(target: HTMLElement) {
+    this.date = CalendarModel.getDate();
+    this.month = this.date.toLocaleString('eng', { month: 'long' });
+    this.monthShort = this.date.toLocaleString('eng', { month: 'short' });
+    this.year = this.date.getFullYear();
     this.$target = target;
     this.monthName = MONTH_LONG;
     this.monthShortName = MONTH_SHORT;
@@ -36,13 +37,12 @@ export default class MonthPicker {
       .calendar-wrapper {
         position: absolute;
         bottom: 0;
-        background: white;
+        background: var(--background-color);
         padding: .9em;
         left: 50%;
         border-radius: 9px;
         font-size: 16px;
         z-index: 9;
-        color: black;
         transform: translate(-50%, 110%);
         box-shadow: 0 3px 5px grey;
       }
@@ -126,13 +126,7 @@ export default class MonthPicker {
     MonthPicker.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
       if (target.classList.contains('month')) {
-        const year = this.year.toString();
-        const monthTarget = this.$target.querySelector('.month') as HTMLElement;
-        const yearTarget = this.$target.querySelector('.year') as HTMLElement;
-
-        monthTarget.textContent = target.dataset.monthNumber + MONTH_UNIT;
-        yearTarget.textContent = year;
-
+        CalendarModel.setDate(new Date(this.year, Number(target.dataset.monthNumber) - 1, 1));
         MonthPicker.remove();
       }
     });

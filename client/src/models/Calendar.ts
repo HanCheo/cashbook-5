@@ -13,6 +13,12 @@ export class CalendarModel extends Observer {
     this.datetime = datetime;
     this.notify();
   }
+  nextMonth() {
+    this.setDate(new Date(this.datetime.getFullYear(), this.datetime.getMonth() + 1, 1));
+  }
+  prevMonth() {
+    this.setDate(new Date(this.datetime.getFullYear(), this.datetime.getMonth() - 1, 1));
+  }
 }
 
 const _model = new CalendarModel();
