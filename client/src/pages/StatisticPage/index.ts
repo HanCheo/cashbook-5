@@ -36,6 +36,16 @@ const mockDataByDate: LineChartData[] = [
     datetime: new Date('2021-07-27'),
     value: 20,
   },
+  {
+    name: 'D',
+    datetime: new Date('2021-07-27'),
+    value: 20,
+  },
+  {
+    name: 'D',
+    datetime: new Date('2021-07-27'),
+    value: 20,
+  },
 ];
 
 interface IState {

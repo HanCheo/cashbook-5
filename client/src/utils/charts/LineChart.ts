@@ -25,7 +25,7 @@ export interface LineChartOptions {
 
 const LEFT_POS = 80;
 const TOP_POS = 10;
-const BOTTOM_POS = 450;
+const BOTTOM_POS = 420;
 const RIGHT_POS = 750;
 const VIEWBOX_X_OFFSET = 0;
 const VIEWBOX_Y_OFFSET = 0;

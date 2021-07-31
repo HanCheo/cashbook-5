@@ -4,13 +4,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-
-  width: 600px;
-  @media (max-width: $tablet-max-width) {
-    flex-wrap: wrap;
-    width: 400px;
-  }
-
+  align-items: center;
   padding: 35px;
   margin: 0 auto;
   border-radius: 8px;
@@ -20,50 +14,68 @@
 
 .chart-container {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: center;
   border: 1px solid $primary;
-}
-
-#pie-chart {
-  width: 300px;
+  width: 70%;
   height: 400px;
-}
-
-.category-container {
-  flex-grow: 1;
-  align-self: flex-start;
-
-  &--title {
-    font-size: 22px;
+  @media (max-width: $tablet-max-width) {
+    flex-wrap: wrap;
+    width: 90%;
   }
 
-  &--list {
-    padding: 0px;
-    margin-top: 35px;
-    &--item {
-      display: flex;
-      padding-bottom: 20px;
-      padding-top: 20px;
-      border-bottom: 1px solid $label;
-      & > .category {
-        flex-grow: 1;
+  #pie-chart {
+    flex-shrink: 0;
+    width: 300px;
+    height: 300px;
+  }
+
+  .category-container {
+    align-self: flex-start;
+
+    &--title {
+      font-size: 22px;
+    }
+
+    &--list {
+      padding: 0px;
+      margin-top: 35px;
+      &--item {
         display: flex;
-        justify-self: center;
-        & > span {
-          width: 80%;
+        padding-bottom: 20px;
+        padding-top: 20px;
+        border-bottom: 1px solid $label;
+        & > .category {
+          flex-grow: 1;
+          display: flex;
+          justify-self: center;
+          & > span {
+            width: 80%;
+          }
         }
-      }
-      & > .percent {
-        flex-grow: 1;
-      }
-      & > .cost {
-        text-align: end;
-        flex-grow: 1;
+        & > .percent {
+          flex-grow: 1;
+        }
+        & > .cost {
+          text-align: end;
+          flex-grow: 1;
+        }
       }
     }
   }
 }
 
 .sub-chart-container {
+  display: flex;
+  justify-content: center;
   border: 1px solid $primary;
+  width: 70%;
+  #line-chart {
+    width: 800px;
+    height: 500px;
+    @media (max-width: $tablet-max-width) {
+      width: 400px;
+      height: 250px;
+    }
+  }
 }
