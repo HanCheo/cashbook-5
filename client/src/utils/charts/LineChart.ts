@@ -1,5 +1,5 @@
 import { transformer } from './scale';
-import { svgGroup, svgLine, svgText } from './svgElement';
+import { svgGroup, svgLine, svgText, svgCircle, svgPath } from './svgElement';
 
 interface ScaleFn {
   (v: number): number;
@@ -9,7 +9,7 @@ export interface LineChartData {
   name: string;
   value: number;
   datetime: Date;
-  milliseconds?: number;
+  color?: string;
 }
 
 interface ProcessedData {
@@ -17,6 +17,7 @@ interface ProcessedData {
   value: number;
   datetime: Date;
   milliseconds: number;
+  color?: string;
 }
 
 export interface LineChartOptions {
@@ -78,6 +79,7 @@ export class LineChart {
         value: d.value,
         datetime: d.datetime,
         milliseconds: d.datetime.getTime(),
+        color: d.color ? d.color : '#ffffff',
       };
     });
 
@@ -91,6 +93,8 @@ export class LineChart {
     if (!this.data || this.data.length == 0) {
       this.countOfYGrid = 1;
       this.countOfXGrid = 1;
+      this.scaleX = transformer();
+      this.scaleY = transformer();
     } else {
       const milliseconds = this.data.map(d => d.milliseconds);
       const values = this.data.map(d => d.value);
@@ -129,13 +133,15 @@ export class LineChart {
   renderGraph() {
     this.element.setAttribute('viewBox', `${VIEWBOX_X_OFFSET} ${VIEWBOX_Y_OFFSET} ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`);
     this.renderAxisGrid();
+    this.renderSurfaces();
+    this.renderPoints();
+
+    // TODO: rendering labels
   }
 
   renderAxisGrid() {
     this.renderXAxisGrid();
     this.renderYAxisGrid();
-    // TODO: rendering data point
-    // TODO: rendering labels
   }
 
   renderXAxisGrid() {
@@ -172,6 +178,59 @@ export class LineChart {
       yAsixGrid.appendChild(line);
     }
     this.element.appendChild(yAsixGrid);
+  }
+
+  renderPoints() {
+    if (!(this.scaleX && this.scaleY)) {
+      throw new Error('Scale Function is undefined.');
+    }
+    const pointGroup = svgGroup();
+    if (this.data && this.data.length > 0) {
+      for (const data of this.data) {
+        const x = this.scaleX(data.milliseconds);
+        const y = this.scaleY(data.value);
+        const point = svgCircle(x, y, 6);
+        point.setAttribute('data-value', data.name);
+        point.setAttribute('opacity', '0.2');
+        point.addEventListener('mouseover', () => {
+          point.style.opacity = '1';
+          point.style.transition = `transform 0.2s 0s ease`;
+        });
+        point.addEventListener('mouseout', () => {
+          setTimeout(() => {
+            point.style.opacity = `0.2`;
+            point.style.transform = '';
+          }, 100);
+        });
+        pointGroup.appendChild(point);
+      }
+    }
+    this.element.appendChild(pointGroup);
+  }
+
+  renderSurfaces() {
+    if (!(this.scaleX && this.scaleY)) {
+      throw new Error('Scale Function is undefined.');
+    }
+
+    const points = [];
+    const surfaces = svgGroup();
+    surfaces.setAttribute('stroke', '#00554d');
+    surfaces.setAttribute('stroke-width', '2');
+    surfaces.setAttribute('fill', 'none');
+    surfaces.setAttribute('stroke-opacity', '0.5');
+
+    if (this.data && this.data.length > 0) {
+      for (const data of this.data) {
+        const x = this.scaleX(data.milliseconds);
+        const y = this.scaleY(data.value);
+        points.push([x, y]);
+      }
+    }
+
+    const $path = svgPath(points);
+    surfaces.appendChild($path);
+    this.element.appendChild(surfaces);
   }
 
   static init(element: SVGElement, data: LineChartData[] = [], options: LineChartOptions = {}) {

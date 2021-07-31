@@ -33,18 +33,18 @@ const mockDataByDate: LineChartData[] = [
   },
   {
     name: 'D',
-    datetime: new Date('2021-07-27'),
-    value: 20,
+    datetime: new Date('2021-07-25'),
+    value: 40,
   },
   {
     name: 'D',
     datetime: new Date('2021-07-27'),
-    value: 20,
+    value: 50,
   },
   {
     name: 'D',
-    datetime: new Date('2021-07-27'),
-    value: 20,
+    datetime: new Date('2021-07-28'),
+    value: 5,
   },
 ];
 
@@ -91,8 +91,10 @@ export default class StatisticPage extends Component<IState, IProps> {
       },
     });
 
-    const $lineChart = document.querySelector('#line-chart') as SVGElement;
-    LineChart.init($lineChart, dataByDate);
+    if (this.$state.dataByDate && this.$state.dataByDate.length > 0) {
+      const $lineChart = document.querySelector('#line-chart') as SVGElement;
+      LineChart.init($lineChart, dataByDate);
+    }
   }
 }
 
