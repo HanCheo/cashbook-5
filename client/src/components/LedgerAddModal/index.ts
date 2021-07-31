@@ -13,6 +13,12 @@ const mockCategories = [
   { id: 4, name: '예금' },
   { id: 5, name: '비상금' },
   { id: 6, name: '보험비' },
+  { id: 6, name: '보험비' },
+  { id: 6, name: '보험비' },
+  { id: 6, name: '보험비' },
+  { id: 6, name: '보험비' },
+  { id: 6, name: '보험비' },
+  { id: 6, name: '보험비' },
 ];
 
 interface Error {
@@ -89,6 +95,10 @@ export default class LedgerAddModal extends Component<IState, IProps> {
         { id: 'test', name: 'test card', color: 'red' },
         { id: 'test', name: 'test card', color: 'tomato' },
         { id: 'test', name: 'test card', color: 'green' },
+        { id: 'test', name: 'test card', color: '#000000' },
+        { id: 'test', name: 'test card', color: '#000000' },
+        { id: 'test', name: 'test card', color: '#000000' },
+        { id: 'test', name: 'test card', color: '#000000' },
         { id: 'test', name: 'test card', color: '#000000' },
         { id: 'test', name: 'test card', color: '#000000' },
         { id: 'test', name: 'test card', color: '#000000' },

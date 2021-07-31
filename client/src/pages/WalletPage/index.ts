@@ -42,6 +42,8 @@ export default class WalletPage extends Component<IState, IProps> {
         throw new Error('Payment Types Fetching Fail.');
       }
     });
+
+    this.$state.isEditMode = false;
   }
 
   renderCardItems() {
@@ -86,20 +88,21 @@ export default class WalletPage extends Component<IState, IProps> {
 
   toggleEditMode() {
     const { isEditMode, $editButton } = this.$state;
-    if (isEditMode) {
+
+    const mode = isEditMode ? !isEditMode : true;
+    this.$state.isEditMode = mode;
+    if (mode) {
       if ($editButton) {
         $editButton.innerText = EDIT_MODE_OFF_STRING;
         $editButton.classList.add('editmode');
         this.changeAllCardsAsEditMode();
       }
-      this.$state.isEditMode = false;
     } else {
       if ($editButton) {
         $editButton.innerText = EDIT_MODE_ON_STRING;
         $editButton.classList.remove('editmode');
         this.changeAllCardsAsReadMode();
       }
-      this.$state.isEditMode = true;
     }
   }
 

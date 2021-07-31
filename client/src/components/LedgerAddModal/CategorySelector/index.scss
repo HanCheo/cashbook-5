@@ -21,20 +21,22 @@
     }
   }
   &--list {
-    border-right: 2px solid $primary;
-    padding: 10px;
     display: none;
-    width: 100px;
+    position: absolute;
+    border-right: 2px solid $primary;
+    padding-left: 1rem;
+    padding-right: 0.5rem;
     max-height: 300px;
     overflow-y: scroll;
     margin: 0;
-    position: absolute;
-    transform: translate(100%, -50%);
+    transform: translate(0%, -50%);
+    background-color: transparent;
 
     animation-name: category-fade-in-effect;
     animation-duration: 0.5s;
     &--item {
       cursor: pointer;
+      width: 100px;
       border-radius: 999px;
       padding: 4px 8px;
       margin-bottom: 10px;
@@ -42,6 +44,7 @@
       justify-content: center;
       & > * {
         pointer-events: none;
+        user-select: none;
       }
     }
   }
@@ -50,11 +53,11 @@
 @keyframes category-fade-in-effect {
   from {
     opacity: 0;
-    transform: translate(150%, -50%);
+    transform: translate(50%, -50%);
   }
 
   to {
     opacity: 1;
-    transform: translate(100%, -50%);
+    transform: translate(0%, -50%);
   }
 }
