@@ -1,17 +1,26 @@
-const defaultOption = {
+import { prototype } from 'webpack-dev-server';
+
+const defaultOptions: PieChartOption = {
   radius: 100,
-  hoverScaleRate: 1.2,
+  hoverScaleRate: 1.3,
   hoverEffectSpeed: 0.5,
   viewboxWidth: 400,
   viewboxHeight: 300,
   animationDuration: 0.5,
+  onClick: null,
 };
 
-export interface PiChartOption {
-  [key: string]: number | string | Function | null;
+export interface PieChartOption {
+  [key: string]: any;
+  radius?: number;
+  hoverScaleRate?: number;
+  hoverEffectSpeed?: number;
+  viewboxWidth?: number;
+  viewboxHeight?: number;
+  animationDuration?: number;
 }
 
-export interface PiChartData {
+export interface PieChartData {
   name: string;
   value: number;
   color?: string;
@@ -19,11 +28,11 @@ export interface PiChartData {
 }
 
 export default class PieChart {
-  public settings: PiChartOption = {};
+  public settings: PieChartOption;
   public element: SVGElement;
-  public data: PiChartData[];
+  public data: PieChartData[];
 
-  constructor(element: SVGElement, data: PiChartData[], settings: PiChartOption = {}) {
+  constructor(element: SVGElement, data: PieChartData[], settings: PieChartOption) {
     if (!(element instanceof Node)) {
       throw "Can't initialize PieChart because " + element + ' is not a Node.';
     }
@@ -34,26 +43,17 @@ export default class PieChart {
     this.update();
   }
 
-  extendSetting(settings: PiChartOption) {
-    let defaultSettings: PiChartOption = {
-      radius: 100,
-      hoverScaleRate: 1.3,
-      hoverEffectSpeed: 0.5,
-      viewboxWidth: 400,
-      viewboxHeight: 300,
-      animationDuration: 0.5,
-      onClick: null,
-    };
-
-    let newSettings: PiChartOption = {};
-    for (var property in defaultSettings) {
-      if (property in settings) {
-        newSettings[property] = settings[property];
+  extendSetting(options: PieChartOption) {
+    let newOptions: PieChartOption = {};
+    let property: keyof PieChartOption;
+    for (property in defaultOptions) {
+      if (property in options) {
+        newOptions[property] = options[property];
       } else {
-        newSettings[property] = defaultSettings[property];
+        newOptions[property] = defaultOptions[property];
       }
     }
-    return newSettings;
+    return newOptions;
   }
 
   viewboxSetting() {
@@ -64,7 +64,7 @@ export default class PieChart {
     this.element.setAttribute('viewBox', `${-1 * halfWidth} ${-1 * halfHeight} ${width} ${height}`);
   }
 
-  processData(data: PiChartData[] = []) {
+  processData(data: PieChartData[] = []) {
     const sumOfValues: number = data.reduce((previsous, currentData) => previsous + currentData.value, 0);
 
     return data.map(d => {
@@ -115,13 +115,12 @@ export default class PieChart {
       });
 
       pathEl.setAttribute('data-name', entry.name);
-      if (this.settings.onClick) {
+      const { onClick } = this.settings;
+      if (onClick) {
         pathEl.addEventListener('click', (e: MouseEvent) => {
           if (e.target instanceof SVGElement) {
             const { name } = e.target.dataset;
-            if (this.settings.onClick instanceof Function) {
-              this.settings.onClick(name);
-            }
+            if (name) onClick(name);
           }
         });
       }
@@ -151,7 +150,7 @@ export default class PieChart {
     return [x, y];
   }
 
-  static init(element: SVGElement, data: PiChartData[] = [], options: PiChartOption = {}) {
-    new PieChart(element, data);
+  static init(element: SVGElement, data: PieChartData[] = [], options: PieChartOption = {}) {
+    new PieChart(element, data, options);
   }
 }

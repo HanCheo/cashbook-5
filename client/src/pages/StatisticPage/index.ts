@@ -1,11 +1,11 @@
 import Component from '@/src/core/Component';
 import { LineChart, LineChartData } from '@/src/utils/charts/LineChart';
-import PieChart, { PiChartData } from '@/src/utils/PieChart';
+import PieChart, { PieChartData } from '@/src/utils/charts/PieChart';
 
 import './index.scss';
 
 // TODO: Mocking Data
-const mockDataByCategory: PiChartData[] = [
+const mockDataByCategory: PieChartData[] = [
   { name: '카드', value: 10, color: 'Coral' },
   { name: '현금', value: 50, color: '#00ab6b' },
   { name: '적금', value: 30, color: '#00ab6b' },
@@ -49,7 +49,7 @@ const mockDataByDate: LineChartData[] = [
 ];
 
 interface IState {
-  dataByCategory?: PiChartData[];
+  dataByCategory?: PieChartData[];
   dataByDate?: LineChartData[];
 }
 interface IProps {}

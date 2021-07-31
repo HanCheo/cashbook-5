@@ -17,8 +17,13 @@ interface ProcessedData {
 }
 
 export interface LineChartOptions {
-  [key: string]: number | string | Function | null;
+  [key: string]: any;
+  lineAnimationDuration?: number;
 }
+
+const defaultOptions: LineChartOptions = {
+  lineAnimationDuration: 1,
+};
 
 const LEFT_POS = 80;
 const TOP_POS = 50;
@@ -120,9 +125,9 @@ export class LineChart {
   }
 
   extendSetting(options: LineChartOptions) {
-    let defaultOptions: LineChartOptions = {};
     let newOptions: LineChartOptions = {};
-    for (var property in defaultOptions) {
+    let property: keyof LineChartOptions;
+    for (property in defaultOptions) {
       if (property in options) {
         newOptions[property] = options[property];
       } else {
@@ -249,7 +254,7 @@ export class LineChart {
     animateEl.setAttribute('attributeName', 'stroke-dashoffset');
     animateEl.setAttribute('from', '0');
     animateEl.setAttribute('to', `${l}`);
-    animateEl.setAttribute('dur', `0.5s`);
+    animateEl.setAttribute('dur', `${this.options.lineAnimationDuration}`);
     animateEl.setAttribute('repeatCount', '1');
     animateEl.setAttribute('fill', 'freeze');
     $path.appendChild(animateEl);
