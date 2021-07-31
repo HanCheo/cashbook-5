@@ -25,6 +25,8 @@
     border: 1px solid $primary;
     background-color: transparent;
     color: $primary;
+    user-select: none;
+
     &:hover {
       color: $off-white;
       background-color: $primary;

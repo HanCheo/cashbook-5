@@ -24,12 +24,12 @@
   &--list {
     display: none;
     position: absolute;
-    max-height: 90vh;
+    max-height: 60vw;
     overflow-y: scroll;
-    border-right: 2px solid $primary;
     margin: 0;
-    padding: 1.5rem;
-    transform: translate(60%, -50%);
+    left: 0;
+    transform: translateX(0%) translateY(-50%);
+    padding-left: 1rem;
 
     animation-name: card-fade-in-effect;
     animation-duration: 0.5s;
@@ -48,6 +48,7 @@
 
       & > * {
         pointer-events: none;
+        user-select: none;
       }
 
       &:hover {
@@ -55,17 +56,11 @@
       }
 
       &:hover ~ & {
-        transform: translateY(40px);
-        @media (max-width: $tablet-max-width) {
-          transform: translateY(20px);
-        }
+        transform: translateY(20px);
       }
 
       &:not(:first-child) {
-        margin-top: -40px;
-        @media (max-width: $tablet-max-width) {
-          margin-top: -20px;
-        }
+        margin-top: -20px;
       }
     }
   }
@@ -74,11 +69,11 @@
 @keyframes card-fade-in-effect {
   from {
     opacity: 0;
-    transform: translate(90%, -50%);
+    transform: translateX(50%) translateY(-50%);
   }
 
   to {
     opacity: 1;
-    transform: translate(60%, -50%);
+    transform: translateX(0%) translateY(-50%);
   }
 }

@@ -46,7 +46,7 @@ export default class CategorySelector extends Component<IState, IProps> {
     const $toggleElement = qs('.category-selector--toggle', this.$target) as HTMLElement;
 
     // Add eventListener for toggle button click event
-    $toggleElement.addEventListener('mousedown', e => this.handleToggleClickEvent());
+    $toggleElement.addEventListener('click', e => this.handleToggleClickEvent());
 
     // Add eventListener for focuse out click event
     window.addEventListener('click', e => this.handleFocusOutClickEvent(e));
