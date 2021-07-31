@@ -1,5 +1,5 @@
 import { transformer, ScaleFn } from './scale';
-import { svgGroup, svgLine, svgText, svgCircle, svgPath } from './svgElement';
+import { svgGroup, svgLine, svgText, svgCircle, svgPath, Point } from './svgElement';
 
 export interface LineChartData {
   name: string;
@@ -22,7 +22,7 @@ export interface LineChartOptions {
 }
 
 const defaultOptions: LineChartOptions = {
-  lineAnimationDuration: 1,
+  lineAnimationDuration: 1, // 1s
 };
 
 const LEFT_POS = 80;
@@ -225,7 +225,7 @@ export class LineChart {
       throw new Error('Scale Function is undefined.');
     }
 
-    const points = [];
+    const points: Point[] = [];
     const surfaces = svgGroup();
     surfaces.setAttribute('stroke', '#00554d');
     surfaces.setAttribute('stroke-width', '2');
@@ -243,7 +243,6 @@ export class LineChart {
     const $path = svgPath(points.reverse());
 
     // Line의 총 길이 구하기
-
     const l = this.calculateLineLength(points);
     $path.setAttribute('stroke-dasharray', ` 0  ${l} ${l} 0`);
     $path.setAttribute('stroke-dashoffset', `${l}`);

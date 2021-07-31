@@ -25,7 +25,9 @@ export const svgCircle = (x: number, y: number, r: number) => {
   return $circle;
 };
 
-export const svgPath = (points: number[][]) => {
+export type Point = [number, number];
+
+export const svgPath = (points: Point[]) => {
   const $path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
   // M113,360 L113,192 L259,171 L405,179 L551,200 L697,204 L697,360 Z
