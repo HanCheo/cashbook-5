@@ -28,6 +28,8 @@ const LEFT_POS = 80;
 const TOP_POS = 10;
 const BOTTOM_POS = 420;
 const RIGHT_POS = 750;
+const X_LABEL_PADDING = 20;
+const Y_LABEL_PADDING = 10;
 const VIEWBOX_X_OFFSET = 0;
 const VIEWBOX_Y_OFFSET = 0;
 const VIEWBOX_WIDTH = 800;
@@ -42,6 +44,10 @@ export class LineChart {
   public yGridGap: number = 0;
   public xGridPadding: number = 0;
   public yGridPadding: number = 0;
+
+  public xLabelPadding: number = X_LABEL_PADDING;
+  public yLabelPadding: number = Y_LABEL_PADDING;
+
   public countOfXGrid: number = 0;
   public countOfYGrid: number = 0;
   public maxValueOfXAxis?: number = undefined;
@@ -135,7 +141,7 @@ export class LineChart {
     this.renderAxisGrid();
     this.renderSurfaces();
     this.renderPoints();
-
+    this.renderLabels();
     // TODO: rendering labels
   }
 
@@ -243,7 +249,25 @@ export class LineChart {
     this.renderYLabel();
   }
 
-  renderXLabel() {}
+  renderXLabel() {
+    const xLabelGroup = svgGroup();
+
+    if (!(this.scaleX && this.scaleY)) {
+      throw new Error('Scale Function is undefined.');
+    }
+
+    if (this.data && this.data.length > 0) {
+      for (const d of this.data) {
+        const x = this.scaleX(d.milliseconds);
+        // TODO: Add option callback function formating label;
+        const label = d.datetime.getMonth() + '/' + d.datetime.getDay();
+        const text = svgText(x, this.bottom + this.xLabelPadding, label);
+        text.setAttribute('text-anchor', 'middle');
+        xLabelGroup.appendChild(text);
+      }
+    }
+    this.element.appendChild(xLabelGroup);
+  }
 
   renderYLabel() {}
 
