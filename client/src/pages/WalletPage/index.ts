@@ -34,6 +34,9 @@ export default class WalletPage extends Component<IState, IProps> {
   }
 
   setup() {
+    this.$state.paymentTypes = [];
+    this.$state.isEditMode = false;
+
     getPaymentTypesAsync().then(({ success, data }) => {
       if (success) {
         this.$state.paymentTypes = data;
@@ -42,8 +45,6 @@ export default class WalletPage extends Component<IState, IProps> {
         throw new Error('Payment Types Fetching Fail.');
       }
     });
-
-    this.$state.isEditMode = false;
   }
 
   renderCardItems() {
