@@ -20,10 +20,10 @@ export interface PiChartData {
 
 export default class PieChart {
   public settings: PiChartOption = {};
-  public element: HTMLElement;
+  public element: SVGElement;
   public data: PiChartData[];
 
-  constructor(element: HTMLElement, data: PiChartData[] = [], settings: PiChartOption = {}) {
+  constructor(element: SVGElement, data: PiChartData[], settings: PiChartOption = {}) {
     if (!(element instanceof Node)) {
       throw "Can't initialize PieChart because " + element + ' is not a Node.';
     }
@@ -149,5 +149,9 @@ export default class PieChart {
     const x = Math.cos(2 * Math.PI * percent);
     const y = Math.sin(2 * Math.PI * percent);
     return [x, y];
+  }
+
+  static init(element: SVGElement, data: PiChartData[] = [], options: PiChartOption = {}) {
+    new PieChart(element, data);
   }
 }
