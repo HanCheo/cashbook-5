@@ -25,11 +25,11 @@ export interface LineChartOptions {
 }
 
 const LEFT_POS = 80;
-const TOP_POS = 10;
+const TOP_POS = 50;
 const BOTTOM_POS = 420;
 const RIGHT_POS = 750;
-const X_LABEL_PADDING = 20;
-const Y_LABEL_PADDING = 10;
+const X_LABEL_PADDING = 40;
+const Y_LABEL_PADDING = 20;
 const VIEWBOX_X_OFFSET = 0;
 const VIEWBOX_Y_OFFSET = 0;
 const VIEWBOX_WIDTH = 800;
@@ -239,7 +239,25 @@ export class LineChart {
       }
     }
 
-    const $path = svgPath(points);
+    const $path = svgPath(points.reverse());
+
+    // Line의 총 길이 구하기
+
+    const l = this.calculateLineLength(points);
+    $path.setAttribute('stroke-dasharray', ` 0  ${l} ${l} 0`);
+    $path.setAttribute('stroke-dashoffset', `${l}`);
+
+    const animateEl = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+
+    animateEl.setAttribute('attributeType', 'XML');
+    animateEl.setAttribute('attributeName', 'stroke-dashoffset');
+    animateEl.setAttribute('from', '0');
+    animateEl.setAttribute('to', `${l}`);
+    animateEl.setAttribute('dur', `0.5s`);
+    animateEl.setAttribute('repeatCount', '1');
+    animateEl.setAttribute('fill', 'freeze');
+    $path.appendChild(animateEl);
+
     surfaces.appendChild($path);
     this.element.appendChild(surfaces);
   }
@@ -260,7 +278,7 @@ export class LineChart {
       for (const d of this.data) {
         const x = this.scaleX(d.milliseconds);
         // TODO: Add option callback function formating label;
-        const label = d.datetime.getMonth() + '/' + d.datetime.getDay();
+        const label = d.datetime.getMonth() + '/' + d.datetime.getDate();
         const text = svgText(x, this.bottom + this.xLabelPadding, label);
         text.setAttribute('text-anchor', 'middle');
         xLabelGroup.appendChild(text);
@@ -269,7 +287,37 @@ export class LineChart {
     this.element.appendChild(xLabelGroup);
   }
 
-  renderYLabel() {}
+  renderYLabel() {
+    const yLabelGroup = svgGroup();
+
+    if (!(this.scaleX && this.scaleY)) {
+      throw new Error('Scale Function is undefined.');
+    }
+
+    if (this.data && this.data.length > 0) {
+      for (const d of this.data) {
+        const y = this.scaleY(d.value);
+        // TODO: Add option callback function formating label;
+        const text = svgText(this.left - this.yLabelPadding, y, d.value.toString());
+        text.setAttribute('text-anchor', 'end');
+        yLabelGroup.appendChild(text);
+      }
+    }
+    this.element.appendChild(yLabelGroup);
+  }
+
+  calculateLineLength(points: number[][]) {
+    let sum = 0;
+    for (let i = 1; i < points.length; i++) {
+      const x = points[i][0];
+      const y = points[i][0];
+      const previousX = points[i - 1][0];
+      const previousY = points[i - 1][0];
+
+      sum += Math.sqrt(Math.abs(x * previousX) + Math.abs(y * previousY));
+    }
+    return sum;
+  }
 
   static init(element: SVGElement, data: LineChartData[] = [], options: LineChartOptions = {}) {
     new LineChart(element, data, options);

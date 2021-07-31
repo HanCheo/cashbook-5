@@ -1,5 +1,3 @@
-import { durationDay } from './duration';
-
 function normalize(a: number, b: number) {
   return b - a
     ? function (x: number) {

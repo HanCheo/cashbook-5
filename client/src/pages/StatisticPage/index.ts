@@ -27,23 +27,23 @@ const mockDataByDate: LineChartData[] = [
   },
   {
     name: 'C',
-    datetime: new Date('2021-07-24'),
+    datetime: new Date('2021-07-23'),
 
     value: 50,
   },
   {
     name: 'D',
-    datetime: new Date('2021-07-25'),
+    datetime: new Date('2021-07-24'),
     value: 40,
   },
   {
     name: 'D',
-    datetime: new Date('2021-07-27'),
+    datetime: new Date('2021-07-25'),
     value: 50,
   },
   {
     name: 'D',
-    datetime: new Date('2021-07-28'),
+    datetime: new Date('2021-07-26'),
     value: 5,
   },
 ];
@@ -97,21 +97,3 @@ export default class StatisticPage extends Component<IState, IProps> {
     }
   }
 }
-
-// <ul class="category-container--list">
-//   ${
-//     data &&
-//     data
-//       .map(
-//         (d: any) => /*html */ `
-//     <li class="category-container--list--item">
-//         <div class="category" >
-//           <span class="ledger-category" data-category-type="2"> ${d.name}</span>
-//         </div>
-//         <div class="percent">${d.value}%</div>
-//         <div class="cost">${d.value}</div>
-//     </li>`
-//       )
-//       .join('')
-//   }
-// </ul>
