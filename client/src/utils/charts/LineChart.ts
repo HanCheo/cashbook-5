@@ -150,14 +150,16 @@ export class LineChart {
     xAsixGrid.setAttribute('stroke-dasharray', '1 2');
     xAsixGrid.setAttribute('stroke-width', '1');
 
-    for (let i = 0; i < this.countOfXGrid; i++) {
-      const line = svgLine(
-        this.left + i * this.xGridGap + this.xGridPadding,
-        this.bottom,
-        this.left + i * this.xGridGap + this.xGridPadding,
-        this.top
-      );
-      xAsixGrid.appendChild(line);
+    if (!(this.scaleX && this.scaleY)) {
+      throw new Error('Scale Function is undefined.');
+    }
+
+    if (this.data && this.data.length > 0) {
+      for (const d of this.data) {
+        const x = this.scaleX(d.milliseconds);
+        const line = svgLine(x, this.bottom, x, this.top);
+        xAsixGrid.appendChild(line);
+      }
     }
     this.element.appendChild(xAsixGrid);
   }
@@ -168,15 +170,18 @@ export class LineChart {
     yAsixGrid.setAttribute('stroke-dasharray', '1 2');
     yAsixGrid.setAttribute('stroke-width', '1');
 
-    for (let i = 0; i < this.countOfYGrid; i++) {
-      const line = svgLine(
-        this.left,
-        this.bottom + this.yGridGap * i - this.yGridPadding,
-        this.right,
-        this.bottom + this.yGridGap * i - this.yGridPadding
-      );
-      yAsixGrid.appendChild(line);
+    if (!(this.scaleX && this.scaleY)) {
+      throw new Error('Scale Function is undefined.');
     }
+
+    if (this.data && this.data.length > 0) {
+      for (const d of this.data) {
+        const y = this.scaleY(d.value);
+        const line = svgLine(this.left, y, this.right, y);
+        yAsixGrid.appendChild(line);
+      }
+    }
+
     this.element.appendChild(yAsixGrid);
   }
 
@@ -232,6 +237,15 @@ export class LineChart {
     surfaces.appendChild($path);
     this.element.appendChild(surfaces);
   }
+
+  renderLabels() {
+    this.renderXLabel();
+    this.renderYLabel();
+  }
+
+  renderXLabel() {}
+
+  renderYLabel() {}
 
   static init(element: SVGElement, data: LineChartData[] = [], options: LineChartOptions = {}) {
     new LineChart(element, data, options);
