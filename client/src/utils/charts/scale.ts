@@ -29,7 +29,13 @@ function bimap(domain: any[], range: any[]) {
 
 let unit = [0, 1];
 
-export function transformer() {
+export interface ScaleFn {
+  (x: number): number;
+  domain: (d0: number, d1: number) => ScaleFn;
+  range: (r0: number, r1: number) => ScaleFn;
+}
+
+export function transformer(): ScaleFn {
   let domain = unit;
   let range = unit;
 

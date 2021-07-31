@@ -1,9 +1,5 @@
-import { transformer } from './scale';
+import { transformer, ScaleFn } from './scale';
 import { svgGroup, svgLine, svgText, svgCircle, svgPath } from './svgElement';
-
-interface ScaleFn {
-  (v: number): number;
-}
 
 export interface LineChartData {
   name: string;
