@@ -1,19 +1,31 @@
 import { transformer, ScaleFn } from './scale';
 import { svgGroup, svgLine, svgText, svgCircle, svgPath, Point } from './svgElement';
 
+export interface LineGroupChartData {
+  [category: string]: {
+    data: LineChartData[];
+    color: string;
+  };
+}
+
 export interface LineChartData {
   name: string;
   value: number;
   datetime: Date;
-  color?: string;
 }
 
-interface ProcessedData {
+interface ProcessedLineGroupChartData {
+  [category: string]: {
+    data: ProcessedLineChartData[];
+    color: string;
+  };
+}
+
+interface ProcessedLineChartData {
   name: string;
   value: number;
   datetime: Date;
   milliseconds: number;
-  color?: string;
 }
 
 export interface LineChartOptions {
@@ -22,7 +34,7 @@ export interface LineChartOptions {
 }
 
 const defaultOptions: LineChartOptions = {
-  lineAnimationDuration: 1, // 1s
+  lineAnimationDuration: 0.4, // 0.4s
 };
 
 const LEFT_POS = 80;
@@ -41,16 +53,10 @@ export class LineChart {
   public top: number;
   public right: number;
   public bottom: number;
-  public xGridGap: number = 0;
-  public yGridGap: number = 0;
-  public xGridPadding: number = 0;
-  public yGridPadding: number = 0;
 
   public xLabelPadding: number = X_LABEL_PADDING;
   public yLabelPadding: number = Y_LABEL_PADDING;
 
-  public countOfXGrid: number = 0;
-  public countOfYGrid: number = 0;
   public maxValueOfXAxis?: number = undefined;
   public minValueOfXAxis?: number = undefined;
   public maxValueOfYAxis?: number = undefined;
@@ -59,9 +65,9 @@ export class LineChart {
   public scaleY?: ScaleFn = undefined;
   public element: SVGElement;
   public options: LineChartOptions;
-  public data?: ProcessedData[];
+  public groupData?: ProcessedLineGroupChartData;
 
-  constructor(element: SVGElement, data: LineChartData[], options = {}) {
+  constructor(element: SVGElement, groupData: LineGroupChartData, options = {}) {
     if (!(element instanceof Node)) {
       throw "Can't initialize PieChart because " + element + ' is not a Node.';
     }
@@ -73,54 +79,59 @@ export class LineChart {
 
     this.element = element;
     this.options = this.extendSetting(options);
-    this.data = this.processData(data);
+    this.groupData = this.processData(groupData);
 
     this.updatePosition();
     this.renderGraph();
   }
 
-  processData(data: LineChartData[]): ProcessedData[] {
-    const newData: ProcessedData[] = data.map((d: LineChartData) => {
-      return {
-        name: d.name,
-        value: d.value,
-        datetime: d.datetime,
-        milliseconds: d.datetime.getTime(),
-        color: d.color ? d.color : '#ffffff',
-      };
-    });
+  processData(groupData: LineGroupChartData): ProcessedLineGroupChartData {
+    const newGroupData: ProcessedLineGroupChartData = {};
 
-    return newData;
+    for (const category in groupData) {
+      const { data } = groupData[category];
+      const newData: ProcessedLineChartData[] = data.map((d: LineChartData) => {
+        return {
+          name: d.name,
+          value: d.value,
+          datetime: d.datetime,
+          milliseconds: d.datetime.getTime(),
+        };
+      });
+      newGroupData[category] = {
+        ...groupData[category],
+        data: newData,
+      };
+    }
+
+    return newGroupData;
   }
 
   updatePosition() {
-    this.xGridPadding = 0;
-    this.yGridPadding = 0;
+    if (!this.groupData) {
+      throw new Error('Group Data missing');
+    }
 
-    if (!this.data || this.data.length == 0) {
-      this.countOfYGrid = 1;
-      this.countOfXGrid = 1;
+    const items: ProcessedLineChartData[] = [];
+    Object.values(this.groupData).forEach(entry => {
+      items.push(...entry.data);
+    });
+
+    if (!items || items.length == 0) {
       this.scaleX = transformer();
       this.scaleY = transformer();
     } else {
-      const milliseconds = this.data.map(d => d.milliseconds);
-      const values = this.data.map(d => d.value);
+      const milliseconds = items.map(d => d.milliseconds);
+      const values = items.map(d => d.value);
 
       this.maxValueOfXAxis = Math.max(...milliseconds);
       this.minValueOfXAxis = Math.min(...milliseconds);
       this.maxValueOfYAxis = Math.max(...values);
       this.minValueOfYAxis = Math.min(...values);
 
-      this.countOfYGrid = this.data.length + 1;
-      this.countOfXGrid = this.data.length + 1;
-
       this.scaleX = transformer().domain(this.minValueOfXAxis, this.maxValueOfXAxis).range(this.left, this.right);
 
       this.scaleY = transformer().domain(this.minValueOfYAxis, this.maxValueOfYAxis).range(this.bottom, this.top);
-
-      this.xGridGap = (this.scaleX(this.maxValueOfXAxis) - this.scaleX(this.minValueOfXAxis)) / this.data.length;
-
-      this.yGridGap = (this.scaleY(this.maxValueOfYAxis) - this.scaleY(this.minValueOfYAxis)) / this.data.length;
     }
   }
 
@@ -139,19 +150,23 @@ export class LineChart {
 
   renderGraph() {
     this.element.setAttribute('viewBox', `${VIEWBOX_X_OFFSET} ${VIEWBOX_Y_OFFSET} ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`);
-    this.renderAxisGrid();
-    this.renderSurfaces();
-    this.renderPoints();
-    this.renderLabels();
-    // TODO: rendering labels
+
+    if (this.groupData) {
+      Object.entries(this.groupData).map(([key, entry]) => {
+        this.renderAxisGrid(entry.data);
+        this.renderLines(entry.data, entry.color);
+        this.renderPoints(entry.data, key);
+        this.renderLabels(entry.data);
+      });
+    }
   }
 
-  renderAxisGrid() {
-    this.renderXAxisGrid();
-    this.renderYAxisGrid();
+  renderAxisGrid(items: ProcessedLineChartData[]) {
+    this.renderXAxisGrid(items);
+    this.renderYAxisGrid(items);
   }
 
-  renderXAxisGrid() {
+  renderXAxisGrid(items: ProcessedLineChartData[]) {
     const xAsixGrid = svgGroup();
     xAsixGrid.setAttribute('stroke', 'black');
     xAsixGrid.setAttribute('stroke-dasharray', '1 2');
@@ -161,8 +176,8 @@ export class LineChart {
       throw new Error('Scale Function is undefined.');
     }
 
-    if (this.data && this.data.length > 0) {
-      for (const d of this.data) {
+    if (items && items.length > 0) {
+      for (const d of items) {
         const x = this.scaleX(d.milliseconds);
         const line = svgLine(x, this.bottom, x, this.top);
         xAsixGrid.appendChild(line);
@@ -171,7 +186,7 @@ export class LineChart {
     this.element.appendChild(xAsixGrid);
   }
 
-  renderYAxisGrid() {
+  renderYAxisGrid(items: ProcessedLineChartData[]) {
     const yAsixGrid = svgGroup();
     yAsixGrid.setAttribute('stroke', 'black');
     yAsixGrid.setAttribute('stroke-dasharray', '1 2');
@@ -181,8 +196,8 @@ export class LineChart {
       throw new Error('Scale Function is undefined.');
     }
 
-    if (this.data && this.data.length > 0) {
-      for (const d of this.data) {
+    if (items && items.length > 0) {
+      for (const d of items) {
         const y = this.scaleY(d.value);
         const line = svgLine(this.left, y, this.right, y);
         yAsixGrid.appendChild(line);
@@ -192,17 +207,18 @@ export class LineChart {
     this.element.appendChild(yAsixGrid);
   }
 
-  renderPoints() {
+  renderPoints(items: ProcessedLineChartData[], category: string) {
     if (!(this.scaleX && this.scaleY)) {
       throw new Error('Scale Function is undefined.');
     }
+
     const pointGroup = svgGroup();
-    if (this.data && this.data.length > 0) {
-      for (const data of this.data) {
-        const x = this.scaleX(data.milliseconds);
-        const y = this.scaleY(data.value);
+    if (items && items.length > 0) {
+      for (const item of items) {
+        const x = this.scaleX(item.milliseconds);
+        const y = this.scaleY(item.value);
         const point = svgCircle(x, y, 6);
-        point.setAttribute('data-value', data.name);
+        point.setAttribute('data-value', item.name);
         point.setAttribute('opacity', '0.2');
         point.addEventListener('mouseover', () => {
           point.style.opacity = '1';
@@ -220,22 +236,23 @@ export class LineChart {
     this.element.appendChild(pointGroup);
   }
 
-  renderSurfaces() {
+  renderLines(items: ProcessedLineChartData[], color = '#000000') {
     if (!(this.scaleX && this.scaleY)) {
       throw new Error('Scale Function is undefined.');
     }
 
     const points: Point[] = [];
     const surfaces = svgGroup();
-    surfaces.setAttribute('stroke', '#00554d');
+
+    surfaces.setAttribute('stroke', color);
     surfaces.setAttribute('stroke-width', '2');
     surfaces.setAttribute('fill', 'none');
     surfaces.setAttribute('stroke-opacity', '0.5');
 
-    if (this.data && this.data.length > 0) {
-      for (const data of this.data) {
-        const x = this.scaleX(data.milliseconds);
-        const y = this.scaleY(data.value);
+    if (items && items.length > 0) {
+      for (const item of items) {
+        const x = this.scaleX(item.milliseconds);
+        const y = this.scaleY(item.value);
         points.push([x, y]);
       }
     }
@@ -243,7 +260,9 @@ export class LineChart {
     const $path = svgPath(points.reverse());
 
     // Line의 총 길이 구하기
+
     const l = this.calculateLineLength(points);
+    console.log(items, l);
     $path.setAttribute('stroke-dasharray', ` 0  ${l} ${l} 0`);
     $path.setAttribute('stroke-dashoffset', `${l}`);
 
@@ -262,20 +281,20 @@ export class LineChart {
     this.element.appendChild(surfaces);
   }
 
-  renderLabels() {
-    this.renderXLabel();
-    this.renderYLabel();
+  renderLabels(items: ProcessedLineChartData[]) {
+    this.renderXLabel(items);
+    this.renderYLabel(items);
   }
 
-  renderXLabel() {
+  renderXLabel(items: ProcessedLineChartData[]) {
     const xLabelGroup = svgGroup();
 
     if (!(this.scaleX && this.scaleY)) {
       throw new Error('Scale Function is undefined.');
     }
 
-    if (this.data && this.data.length > 0) {
-      for (const d of this.data) {
+    if (items && items.length > 0) {
+      for (const d of items) {
         const x = this.scaleX(d.milliseconds);
         // TODO: Add option callback function formating label;
         const label = d.datetime.getMonth() + '/' + d.datetime.getDate();
@@ -287,15 +306,15 @@ export class LineChart {
     this.element.appendChild(xLabelGroup);
   }
 
-  renderYLabel() {
+  renderYLabel(items: ProcessedLineChartData[]) {
     const yLabelGroup = svgGroup();
 
     if (!(this.scaleX && this.scaleY)) {
       throw new Error('Scale Function is undefined.');
     }
 
-    if (this.data && this.data.length > 0) {
-      for (const d of this.data) {
+    if (items && items.length > 0) {
+      for (const d of items) {
         const y = this.scaleY(d.value);
         // TODO: Add option callback function formating label;
         const text = svgText(this.left - this.yLabelPadding, y, d.value.toString());
@@ -306,7 +325,7 @@ export class LineChart {
     this.element.appendChild(yLabelGroup);
   }
 
-  calculateLineLength(points: number[][]) {
+  calculateLineLength(points: Point[]) {
     let sum = 0;
     for (let i = 1; i < points.length; i++) {
       const x = points[i][0];
@@ -319,7 +338,7 @@ export class LineChart {
     return sum;
   }
 
-  static init(element: SVGElement, data: LineChartData[] = [], options: LineChartOptions = {}) {
-    new LineChart(element, data, options);
+  static init(element: SVGElement, groupData: LineGroupChartData = {}, options: LineChartOptions = {}) {
+    new LineChart(element, groupData, options);
   }
 }
