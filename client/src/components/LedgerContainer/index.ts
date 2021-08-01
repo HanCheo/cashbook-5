@@ -14,11 +14,13 @@ interface IState {
   checked?: string[];
 }
 
-interface IProps {}
+interface IProps {
+  ledgerData: ILedgerList[];
+}
 
 export default class LedgerContainer extends Component<IState, IProps> {
   setup() {
-    this.$state.ledgerData = LedgerDataModel.getData();
+    this.$state.ledgerData = this.$props.ledgerData;
     this.$state.totalCount = 0;
     this.$state.totalIncomes = 0;
     this.$state.totalSpand = 0;

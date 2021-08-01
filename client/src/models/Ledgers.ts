@@ -1,3 +1,4 @@
+import { getLedgerData } from '../api/ledgerAPI';
 import { ILedger, ILedgerList } from '../interfaces/Ledger';
 import Observer from './Observer';
 
@@ -90,9 +91,14 @@ export class LedgerDataModel extends Observer {
         return list;
       });
   }
-  setDate(data: ILedgerList[]) {
+  setData(data: ILedgerList[]) {
     this.ledgerData = data;
     this.notify();
+  }
+  async update(date: Date) {
+    //TODO LEDGERS DATA UPDATE
+    const newLedgerData = await (await getLedgerData(date)).data;
+    this.ledgerData = newLedgerData;
   }
 }
 
