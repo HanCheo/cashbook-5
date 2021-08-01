@@ -49,7 +49,7 @@ export const getStatisticLedgers = async (): Promise<Result<StatisticLedgerByCat
               { datetime: new Date('2021-08-29'), value: 70000 },
               { datetime: new Date('2021-08-30'), value: 80000 },
             ],
-            total: 100000,
+            total: 500000,
             color: '#00ff00',
           },
         },
