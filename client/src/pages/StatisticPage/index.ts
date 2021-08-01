@@ -1,5 +1,6 @@
+import { getStatisticLedgers, StatisticLedgerByCategory } from '@/src/api/statisticAPI';
 import Component from '@/src/core/Component';
-import { LineChart, LineGroupChartData, LineChartData } from '@/src/utils/charts/LineChart';
+import LineChart, { LineChartData, LineGroupChartData } from '@/src/utils/charts/LineChart';
 import PieChart, { PieChartData } from '@/src/utils/charts/PieChart';
 
 import './index.scss';
@@ -82,8 +83,8 @@ const mockDataByDate: LineGroupChartData = {
 };
 
 interface IState {
-  dataByCategory?: PieChartData[];
-  dataByDate?: LineGroupChartData;
+  pieChartData?: PieChartData[];
+  lineChartData?: LineGroupChartData;
 }
 interface IProps {}
 
@@ -105,26 +106,64 @@ export default class StatisticPage extends Component<IState, IProps> {
   }
 
   setup() {
-    this.$state = { dataByCategory: [], dataByDate: {} };
-    setTimeout(() => {
-      this.setState({
-        dataByCategory: mockDataByCategory,
-        dataByDate: mockDataByDate,
-      });
-    }, 300);
+    this.$state = { pieChartData: [], lineChartData: {} };
+
+    getStatisticLedgers().then(result => {
+      if (result.success) {
+        const statisticData = result.data;
+
+        this.setState({
+          pieChartData: this.mapToPieChartData(statisticData),
+          lineChartData: this.mapToLineChartData(statisticData),
+        });
+      }
+    });
   }
 
   mounted() {
     const $pieChart = document.querySelector('#pie-chart') as SVGElement;
-    const { dataByCategory, dataByDate } = this.$state;
-
-    PieChart.init($pieChart, dataByCategory, {
+    const { pieChartData, lineChartData } = this.$state;
+    PieChart.init($pieChart, pieChartData, {
       onClick: (d: string) => {
+        // TODO: change line chart
         console.log('click: ' + d);
       },
     });
 
     const $lineChart = document.querySelector('#line-chart') as SVGElement;
-    LineChart.init($lineChart, dataByDate);
+    LineChart.init($lineChart, lineChartData);
+  }
+
+  mapToPieChartData(data: StatisticLedgerByCategory): PieChartData[] {
+    const pieChartData: PieChartData[] = [];
+    for (const [key, value] of Object.entries(data)) {
+      const { total, color } = value;
+      pieChartData.push({
+        name: key,
+        value: total,
+        color: color,
+      });
+    }
+    return pieChartData;
+  }
+
+  mapToLineChartData(data: StatisticLedgerByCategory): LineGroupChartData {
+    const lineGroupChartData: LineGroupChartData = {};
+
+    for (const [key, value] of Object.entries(data)) {
+      const { color, entries } = value;
+      lineGroupChartData[key] = {
+        data: entries.map<LineChartData>(entry => {
+          return {
+            name: '',
+            datetime: entry.datetime,
+            value: entry.value,
+          };
+        }),
+        color,
+      };
+    }
+
+    return lineGroupChartData;
   }
 }

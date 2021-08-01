@@ -1,5 +1,3 @@
-import { prototype } from 'webpack-dev-server';
-
 const defaultOptions: PieChartOption = {
   radius: 100,
   hoverScaleRate: 1.3,

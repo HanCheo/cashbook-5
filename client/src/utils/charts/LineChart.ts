@@ -56,7 +56,7 @@ const VIEWBOX_Y_OFFSET = 0;
 const VIEWBOX_WIDTH = 800;
 const VIEWBOX_HEIGHT = 500;
 
-export class LineChart {
+export default class LineChart {
   public left: number;
   public top: number;
   public right: number;
@@ -269,7 +269,6 @@ export class LineChart {
 
     // Line의 총 길이 구하기
     const l = this.calculateLineLength(points);
-    console.log(items, l);
     $path.setAttribute('stroke-dasharray', ` 0  ${l} ${l} 0`);
     $path.setAttribute('stroke-dashoffset', `${l}`);
 
