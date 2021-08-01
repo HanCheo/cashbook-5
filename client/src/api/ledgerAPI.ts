@@ -5,7 +5,7 @@ interface Result<D> {
   data: D;
 }
 
-export interface PaymentType {
+export interface LedgerType {
   numDate: string;
   date: string;
   day: string;
@@ -14,7 +14,7 @@ export interface PaymentType {
   ledgers: ILedger[];
 }
 
-export const getLedgerData = async (date: Date): Promise<Result<PaymentType[]>> => {
+export const getLedgerData = async (date: Date): Promise<Result<LedgerType[]>> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({
