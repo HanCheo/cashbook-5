@@ -33,12 +33,16 @@ export interface LineChartOptions {
   lineAnimationDuration?: number;
   xLabelFontSize?: string;
   yLabelFontSize?: string;
+  lineOpacity?: number;
+  lineWidth?: number;
 }
 
 const defaultOptions: LineChartOptions = {
   lineAnimationDuration: 0.4, // 0.4s
-  xLabelFontSize: '1.5em',
-  yLabelFontSize: '1.5em',
+  xLabelFontSize: '1em',
+  yLabelFontSize: '1em',
+  lineOpacity: 0.5,
+  lineWidth: 3,
 };
 
 const LEFT_POS = 80;
@@ -246,12 +250,12 @@ export class LineChart {
     }
 
     const points: Point[] = [];
-    const surfaces = svgGroup();
+    const lines = svgGroup();
 
-    surfaces.setAttribute('stroke', color);
-    surfaces.setAttribute('stroke-width', '2');
-    surfaces.setAttribute('fill', 'none');
-    surfaces.setAttribute('stroke-opacity', '0.5');
+    lines.setAttribute('stroke', color);
+    lines.setAttribute('stroke-width', this.options.lineWidth?.toString() || '3');
+    lines.setAttribute('stroke-opacity', this.options.lineOpacity?.toString() || '0.5');
+    lines.setAttribute('fill', 'none');
 
     if (items && items.length > 0) {
       for (const item of items) {
@@ -280,8 +284,8 @@ export class LineChart {
     animateEl.setAttribute('fill', 'freeze');
     $path.appendChild(animateEl);
 
-    surfaces.appendChild($path);
-    this.element.appendChild(surfaces);
+    lines.appendChild($path);
+    this.element.appendChild(lines);
   }
 
   renderLabels(items: ProcessedLineChartData[]) {

@@ -59,6 +59,26 @@ const mockDataByDate: LineGroupChartData = {
     ],
     color: '#00ff00',
   },
+  현금: {
+    data: [
+      {
+        name: 'A',
+        datetime: new Date('2021-07-21'),
+        value: 10,
+      },
+      {
+        name: 'B',
+        datetime: new Date('2021-07-22'),
+        value: 24,
+      },
+      {
+        name: 'B',
+        datetime: new Date('2021-07-24'),
+        value: 30,
+      },
+    ],
+    color: '#000000',
+  },
 };
 
 interface IState {
