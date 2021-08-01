@@ -12,12 +12,15 @@ interface IState {
   ledgerData: ILedgerList[];
 }
 
-interface IProps {}
+interface IProps {
+  date: Date;
+  ledgerData: ILedgerList[];
+}
 
 export default class calendar extends Component<IState, IProps> {
   setup() {
-    this.$state.ledgerData = LedgerDataModel.getData();
-    this.$state.date = new Date();
+    this.$state.ledgerData = this.$props.ledgerData;
+    this.$state.date = this.$props.date;
   }
 
   template() {
@@ -26,6 +29,14 @@ export default class calendar extends Component<IState, IProps> {
               <ul class="body"></ul>
             </div>
             <div class="day-ledger-info"></div>`;
+  }
+
+  mounted() {
+    this.renderCalendar();
+    this.renderLedgersInCalendar();
+
+    const calendarBody = qs('.calendar-container .body', this.$target) as HTMLElement;
+    calendarBody.addEventListener('click', this.showDayLedger.bind(this));
   }
 
   renderCalendar() {
@@ -82,20 +93,11 @@ export default class calendar extends Component<IState, IProps> {
         key += viewMonth < 10 ? '0' + viewMonth : viewMonth;
         key += day < 10 ? '0' + day : day;
 
-        return html`
-        <li class="date" ${condition ? `data-key="${key}"` : ''}>
+        return html` <li class="date" ${condition ? `data-key="${key}"` : ''}>
           <div ${condition ? '' : 'class="other"'}>${day}</div>
         </li>`;
       })
       .join('');
-  }
-
-  mounted() {
-    this.renderCalendar();
-    this.renderLedgersInCalendar();
-
-    const calendarBody = qs('.calendar-container .body', this.$target) as HTMLElement;
-    calendarBody.addEventListener('click', this.showDayLedger.bind(this));
   }
 
   renderLedgersInCalendar() {
@@ -106,7 +108,7 @@ export default class calendar extends Component<IState, IProps> {
 
       const day = qs(`li[data-key="${numDate}"]`, this.$target) as HTMLElement;
 
-      day.insertAdjacentHTML(
+      day?.insertAdjacentHTML(
         'beforeend',
         `<div class="day-amount">
         <div class="income">${addComma(income)}</div>
