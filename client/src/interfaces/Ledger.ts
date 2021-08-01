@@ -14,3 +14,7 @@ export interface ILedgerList {
   spand: number; //총지출
   ledgers: ILedger[];
 }
+
+export interface IStatisticLedgerByDate {}
+
+export interface IStatisticLedgerByCategory {}
