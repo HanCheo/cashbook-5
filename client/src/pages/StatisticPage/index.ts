@@ -1,5 +1,5 @@
 import Component from '@/src/core/Component';
-import { LineChart, LineChartData } from '@/src/utils/charts/LineChart';
+import { LineChart, LineGroupChartData, LineChartData } from '@/src/utils/charts/LineChart';
 import PieChart, { PieChartData } from '@/src/utils/charts/PieChart';
 
 import './index.scss';
@@ -13,44 +13,77 @@ const mockDataByCategory: PieChartData[] = [
   { name: '적금', value: 30, color: '#00ab6b' },
 ];
 
-const mockDataByDate: LineChartData[] = [
-  {
-    name: 'A',
-    datetime: new Date('2021-07-21'),
-    value: 10,
+const mockDataByDate: LineGroupChartData = {
+  적금: {
+    data: [
+      {
+        name: 'A',
+        datetime: new Date('2021-07-21'),
+        value: 10,
+      },
+      {
+        name: 'B',
+        datetime: new Date('2021-07-22'),
+        value: 30,
+      },
+      {
+        name: 'B',
+        datetime: new Date('2021-07-24'),
+        value: 50,
+      },
+    ],
+    color: '#ff0000',
   },
-  {
-    name: 'B',
-    datetime: new Date('2021-07-22'),
-
-    value: 30,
+  예금: {
+    data: [
+      {
+        name: 'C',
+        datetime: new Date('2021-07-21'),
+        value: 50,
+      },
+      {
+        name: 'D',
+        datetime: new Date('2021-07-22'),
+        value: 40,
+      },
+      {
+        name: 'D',
+        datetime: new Date('2021-07-23'),
+        value: 50,
+      },
+      {
+        name: 'D',
+        datetime: new Date('2021-07-24'),
+        value: 5,
+      },
+    ],
+    color: '#00ff00',
   },
-  {
-    name: 'C',
-    datetime: new Date('2021-07-23'),
-
-    value: 50,
+  현금: {
+    data: [
+      {
+        name: 'A',
+        datetime: new Date('2021-07-21'),
+        value: 10,
+      },
+      {
+        name: 'B',
+        datetime: new Date('2021-07-22'),
+        value: 24,
+      },
+      {
+        name: 'B',
+        datetime: new Date('2021-07-24'),
+        value: 30,
+      },
+    ],
+    color: '#000000',
   },
-  {
-    name: 'D',
-    datetime: new Date('2021-07-24'),
-    value: 40,
-  },
-  {
-    name: 'D',
-    datetime: new Date('2021-07-25'),
-    value: 50,
-  },
-  {
-    name: 'D',
-    datetime: new Date('2021-07-26'),
-    value: 5,
-  },
-];
+};
 
 interface IState {
   dataByCategory?: PieChartData[];
-  dataByDate?: LineChartData[];
+  dataByDate?: LineGroupChartData;
 }
 interface IProps {}
 
@@ -72,7 +105,7 @@ export default class StatisticPage extends Component<IState, IProps> {
   }
 
   setup() {
-    this.$state = { dataByCategory: [], dataByDate: [] };
+    this.$state = { dataByCategory: [], dataByDate: {} };
     setTimeout(() => {
       this.setState({
         dataByCategory: mockDataByCategory,
@@ -91,9 +124,7 @@ export default class StatisticPage extends Component<IState, IProps> {
       },
     });
 
-    if (this.$state.dataByDate && this.$state.dataByDate.length > 0) {
-      const $lineChart = document.querySelector('#line-chart') as SVGElement;
-      LineChart.init($lineChart, dataByDate);
-    }
+    const $lineChart = document.querySelector('#line-chart') as SVGElement;
+    LineChart.init($lineChart, dataByDate);
   }
 }

@@ -40,7 +40,7 @@ export default class PieChart {
     this.settings = this.extendSetting(settings);
     this.data = this.processData(data);
     this.viewboxSetting();
-    this.update();
+    this.renderGraph();
   }
 
   extendSetting(options: PieChartOption) {
@@ -73,7 +73,7 @@ export default class PieChart {
     });
   }
 
-  update() {
+  renderGraph() {
     const r = <number>this.settings.radius;
     let cumulativePercent = 0;
     this.data.forEach(entry => {
