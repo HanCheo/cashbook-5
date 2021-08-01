@@ -1,5 +1,3 @@
-// import { promises as fs } from 'fs';
-// import { load } from 'js-yaml';
 import { Dialect, Sequelize } from 'sequelize';
 import env from '../config';
 
