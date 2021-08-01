@@ -31,10 +31,14 @@ interface ProcessedLineChartData {
 export interface LineChartOptions {
   [key: string]: any;
   lineAnimationDuration?: number;
+  xLabelFontSize?: string;
+  yLabelFontSize?: string;
 }
 
 const defaultOptions: LineChartOptions = {
   lineAnimationDuration: 0.4, // 0.4s
+  xLabelFontSize: '1.5em',
+  yLabelFontSize: '1.5em',
 };
 
 const LEFT_POS = 80;
@@ -260,7 +264,6 @@ export class LineChart {
     const $path = svgPath(points.reverse());
 
     // Line의 총 길이 구하기
-
     const l = this.calculateLineLength(points);
     console.log(items, l);
     $path.setAttribute('stroke-dasharray', ` 0  ${l} ${l} 0`);
@@ -300,6 +303,8 @@ export class LineChart {
         const label = d.datetime.getMonth() + '/' + d.datetime.getDate();
         const text = svgText(x, this.bottom + this.xLabelPadding, label);
         text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('font-size', this.options.xLabelFontSize || '');
+
         xLabelGroup.appendChild(text);
       }
     }
@@ -319,6 +324,7 @@ export class LineChart {
         // TODO: Add option callback function formating label;
         const text = svgText(this.left - this.yLabelPadding, y, d.value.toString());
         text.setAttribute('text-anchor', 'end');
+        text.setAttribute('font-size', this.options.yLabelFontSize || '');
         yLabelGroup.appendChild(text);
       }
     }
