@@ -1,5 +1,3 @@
-import { prototype } from 'webpack-dev-server';
-
 const defaultOptions: PieChartOption = {
   radius: 100,
   hoverScaleRate: 1.3,
@@ -76,15 +74,28 @@ export default class PieChart {
   renderGraph() {
     const r = <number>this.settings.radius;
     let cumulativePercent = 0;
+
     this.data.forEach(entry => {
       if (entry.percent === undefined) {
         throw 'Pie Chart Percent Calculate is fail.';
       }
-      const [startX, startY] = this.getCoordinatesForPercent(cumulativePercent);
 
+      let startPercent = cumulativePercent;
+      let endPercent = cumulativePercent + entry.percent;
       cumulativePercent += entry.percent;
 
-      const [endX, endY] = this.getCoordinatesForPercent(cumulativePercent);
+      const [startX, startY] = this.getCoordinatesForPercent(startPercent);
+      const [endX, endY] = this.getCoordinatesForPercent(endPercent);
+      const [middleX, middleY] = this.getCoordinatesForPercent((startPercent + endPercent) / 2);
+
+      const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      textEl.setAttribute('x', (middleX * r).toString());
+      textEl.setAttribute('y', (middleY * r).toString());
+      textEl.setAttribute('text-anchor', 'middle');
+      textEl.setAttribute('font-size', '1.2em');
+
+      textEl.textContent = entry.name;
+      textEl.style.pointerEvents = 'none';
 
       const largeArcFlag = entry.percent > 0.5 ? 1 : 0;
 
@@ -98,19 +109,22 @@ export default class PieChart {
       pathEl.setAttribute('d', pathData);
       pathEl.setAttribute('fill', 'none');
       if (entry.color) pathEl.setAttribute('stroke', entry.color);
-      pathEl.setAttribute('stroke-width', (r * 0.8).toString());
-      pathEl.setAttribute('opacity', '0.7');
+      pathEl.setAttribute('stroke-width', r.toString());
+      pathEl.setAttribute('opacity', '0.2');
 
       pathEl.addEventListener('mouseover', () => {
-        pathEl.style.opacity = '1';
+        pathEl.style.opacity = '0.7';
         pathEl.style.transform = `scale(${this.settings.hoverScaleRate})`;
         pathEl.style.transition = `transform ${this.settings.hoverEffectSpeed}s 0s ease`;
+        textEl.style.transform = `scale(${this.settings.hoverScaleRate})`;
+        textEl.style.transition = `transform ${this.settings.hoverEffectSpeed}s 0s ease`;
       });
 
       pathEl.addEventListener('mouseout', () => {
         setTimeout(() => {
-          pathEl.style.opacity = `0.7`;
+          pathEl.style.opacity = `0.5`;
           pathEl.style.transform = '';
+          textEl.style.transform = '';
         }, 100);
       });
 
@@ -139,8 +153,8 @@ export default class PieChart {
       animateEl.setAttribute('repeatCount', '1');
       animateEl.setAttribute('fill', 'freeze');
       pathEl.appendChild(animateEl);
-
       this.element.appendChild(pathEl);
+      this.element.appendChild(textEl);
     });
   }
 
