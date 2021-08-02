@@ -128,6 +128,7 @@ body {
   background-image: linear-gradient(180deg, $background, $background, $body);
   color: $text-color;
   min-height: 100vh;
+  transition: all .3s ease-in-out;
   // body 스코롤바 제거
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
