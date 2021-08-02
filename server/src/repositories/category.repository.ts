@@ -16,10 +16,8 @@ class CategoryRepository {
         }
     }
 
-    // TODO add Ledgers by category.
-
+    // TODO add Ledgers by category API
 }
-
 
 const categoryRepository = new CategoryRepository();
 export default categoryRepository;

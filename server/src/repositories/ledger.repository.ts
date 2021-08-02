@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import Ledger, { LedgersAttributes } from '../models/ledger.model';
+import Ledger from '../models/ledger.model';
 
 class LedgerRepository {
   /**
@@ -53,4 +53,5 @@ class LedgerRepository {
   }
 }
 
-export default new LedgerRepository();
+const ledgerRepository = new LedgerRepository();
+export default ledgerRepository;
