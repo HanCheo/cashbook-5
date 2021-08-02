@@ -1,38 +1,37 @@
-import Ledger from './ledger.model';
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db/sequlze';
 
-export interface UsersAttributes {
+export interface CategorysAttributes {
   id?: number;
-  gitUsername: string;
-  avatarURL: string;
+  name: string;
+  color: string;
 }
 
-export class User extends Model<UsersAttributes> {}
+export class Category extends Model<CategorysAttributes> {}
 
-export const UserSchema = {
+export const CategorySchema = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
     autoIncrement: true,
   },
-  gitUsername: {
+  name: {
     type: DataTypes.STRING(50),
     defaultValue: '',
   },
-  avatarURL: {
+  color: {
     type: DataTypes.STRING(255),
     defaultValue: '',
   },
 };
 
-export const UserSchemaSettings = {
+export const CategorySchemaSettings = {
   sequelize,
-  modelName: 'user',
-  tableName: 'users',
+  modelName: 'category',
+  tableName: 'categories',
   freezeTableName: true,
   timestamps: true,
 };
 
-export default User;
+export default Category;
