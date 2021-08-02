@@ -1,22 +1,30 @@
 import jwt from 'jsonwebtoken';
+import UserRepository from '../repositories/user.repository';
 import env from '../config';
 
 class JwtService {
   generate<T extends object>(user: T) {
-    console.log(user);
     return jwt.sign(user, env.JWT_SECRET, {
-      expiresIn: '1d',
+      expiresIn: '1h',
     });
   }
 
   verify(token: string) {
-    return jwt.verify(token, env.JWT_SECRET);
+    try {
+      return jwt.verify(token, env.JWT_SECRET);
+    } catch (error) {
+      return null;
+    }
   }
+
+  async userByRefreshToken(refreshToken: string) {
+    return await UserRepository.getUserByRefresh(refreshToken);
+  }
+
   refresh() {
     // refresh token 발급
     return jwt.sign({}, env.JWT_SECRET, {
-      // refresh token은 payload 없이 발급
-      expiresIn: '7d',
+      expiresIn: '14d',
     });
   }
 }
