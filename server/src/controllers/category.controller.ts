@@ -16,7 +16,7 @@ class CategoryController {
         const idAsNumber = Number(id);
         if (isNaN(idAsNumber)) {
             res.status(BAD_REQUEST).send({
-                error: "parameter id is invalid."
+                error: "category id parameter is invalid."
             });
             res.end();
             return;

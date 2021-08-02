@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
+import { BAD_REQUEST, SERVER_ERROR } from '../utils/HttpStatus';
 import { LedgerRequestDTO, LedgerResponseDTO } from '../dto/LedgerDTO';
 import LedgerService from '../services/ledger.service';
-import CategoryService from '../services/category.service';
-import { BAD_REQUEST, SERVER_ERROR } from '../utils/HttpStatus';
 import categoryService from '../services/category.service';
 
 class LedgerController {
