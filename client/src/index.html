@@ -7,14 +7,14 @@
     <title>우아한 가계부</title>
   </head>
   <body>
-    <button id="gitOauth">깃허브로그인</button>
+    <button id="gitOauth">테마토글</button>
 
     <div id="header"></div>
     <div id="app"></div>
 
     <script type="text/javascript">
       document.getElementById('gitOauth').addEventListener('click', async () => {
-        location.href = 'https://github.com/login/oauth/authorize?client_id=a7dc79e69898ab6de34d';
+        document.body.classList.toggle('dark-mode');
       });
 
       document.addEventListener('DOMContentLoaded', () => {

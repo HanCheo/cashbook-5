@@ -1,4 +1,5 @@
 import sequelize from '../db/sequlze';
+import InitModels from '../models';
 
 // Node JS Console 색상 적용하는 방법
 // Reset = "\x1b[0m"
@@ -28,14 +29,12 @@ import sequelize from '../db/sequlze';
 // BgWhite = "\x1b[47m"
 
 export default async () => {
-  await sequelize
-    .authenticate()
-    .then(async () => {
-      console.log('\x1b[30m\x1b[45m%s\x1b[0m', 'Sequelize Connected');
-      await sequelize.sync();
-      console.log('\x1b[30m\x1b[45m%s\x1b[0m', 'All models were synchronized successfully.');
-    })
-    .catch(e => {
-      console.error('\x1b[41m%s\x1b[0m', `Connect fail : ${e}`);
-    });
+  await sequelize.authenticate().catch(e => {
+    console.error('\x1b[41m%s\x1b[0m', `Connect fail : ${e}`);
+  });
+  console.log('\x1b[30m\x1b[45m%s\x1b[0m', 'Sequelize Connected');
+
+  InitModels();
+  await sequelize.sync({ force: true });
+  console.log('\x1b[30m\x1b[45m%s\x1b[0m', 'All models were synchronized successfully.');
 };
