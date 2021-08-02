@@ -4,9 +4,11 @@ import sequelize from '../db/sequlze';
 
 export interface LedgersAttributes {
   id?: number;
+  userId?: number;
+  categoryId?: number;
   date: Date;
   content: string;
-  amount: string;
+  amount: number;
 }
 
 class Ledger extends Model<LedgersAttributes> {}
