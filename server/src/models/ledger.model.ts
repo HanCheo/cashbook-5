@@ -8,7 +8,7 @@ export interface LedgersAttributes {
   id?: number;
   userId: number;
   categoryId: number;
-  paymentTypeId?: number;
+  paymentTypeId: number;
   date: Date;
   content: string;
   amount: number;
@@ -28,7 +28,8 @@ export default class Ledger extends Model<LedgersAttributes> implements LedgersA
   paymentType?: PaymentType;
   public static associations: {
     category: Association<Ledger, Category>,
-    user: Association<Ledger, User>
+    user: Association<Ledger, User>,
+    paymentType: Association<Ledger, PaymentType>
   }
 }
 

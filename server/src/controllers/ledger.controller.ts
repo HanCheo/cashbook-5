@@ -23,17 +23,29 @@ class LedgerController {
     const userIdAsNumber = Number(req.user.id);
 
     const {
+      paymentTypeId,
       categoryId,
       date,
       content,
       amount,
     } = req.body;
 
+    const paymentTypeIdAsNumber = Number(paymentTypeId);
+    if (isNaN(paymentTypeIdAsNumber)) {
+      res.status(BAD_REQUEST).send({
+        error: "paymentType id is empty or invalid"
+      }).end();
+      return;
+    }
+
+    // TODO: payment Type 가 db에 있는 건지 체크 (Payment API 추가해야함.)
+    // TODO: payment Type 이 현재 유저의 결제 타입인지 체크
+
     const categoryIdAsNumber = Number(categoryId);
 
     if (isNaN(categoryIdAsNumber)) {
       res.status(BAD_REQUEST).send({
-        error: "category id is invalid"
+        error: "category id is empty or invalid"
       }).end();
       return;
     }
@@ -56,6 +68,7 @@ class LedgerController {
     }
 
     const ledgerDto: LedgerRequestDTO = {
+      paymentTypeId: paymentTypeIdAsNumber,
       categoryId: categoryIdAsNumber,
       date: new Date(date),
       content,

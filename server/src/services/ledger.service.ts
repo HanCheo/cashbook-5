@@ -1,5 +1,6 @@
 import { CategoryDTO } from '../dto/CategoryDTO';
 import { LedgerRequestDTO, LedgerResponseDTO } from '../dto/LedgerDTO';
+import { PaymentTypeDTO } from '../dto/PaymentTypeDTO';
 import LedgerRepository from '../repositories/ledger.repository';
 
 class LedgerService {
@@ -12,7 +13,7 @@ class LedgerService {
 
     const ledgerDTOs: LedgerResponseDTO[] = ledgers.map(ledger => {
       const {
-        id, userId, categoryId, category, amount, date, content
+        id, userId, paymentTypeId, paymentType, categoryId, category, amount, date, content
       } = ledger;
 
       if (!category) {
@@ -25,9 +26,22 @@ class LedgerService {
         color: category.color,
       }
 
+      if (!paymentType) {
+        throw new Error("paymentType이 존재하지않는 Ledger 데이터가 존재합니다.");
+      }
+
+      const paymentTypeDTO: PaymentTypeDTO = {
+        id: paymentType.id!,
+        name: paymentType.name,
+        bgColor: paymentType.bgColor,
+        fontColor: paymentType.bgColor,
+      }
+
       return {
         id: id!,
         userId: userId!,
+        paymentTypeId: paymentTypeId!,
+        paymentType: paymentTypeDTO,
         categoryId: categoryId!,
         category: categoryDTO,
         date: date!,
@@ -42,12 +56,13 @@ class LedgerService {
   async createLedger(ledgerDto: LedgerRequestDTO, userId: number): Promise<number | null> {
     const {
       categoryId,
+      paymentTypeId,
       date,
       content,
       amount
     } = ledgerDto;
 
-    const newLedgerId = await LedgerRepository.createLedger(userId, categoryId, content, amount, date);
+    const newLedgerId = await LedgerRepository.createLedger(userId, categoryId, paymentTypeId, content, amount, date);
     if (newLedgerId) {
       return newLedgerId;
     } else {
