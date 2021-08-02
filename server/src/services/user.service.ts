@@ -13,7 +13,6 @@ class UserService {
       _user = await User.create({
         name: user.name,
         avatarURL: user.avatarURL,
-        accessToken: user.accessToken,
       });
     }
     return _user.get({ plain: true });

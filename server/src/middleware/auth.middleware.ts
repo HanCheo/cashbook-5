@@ -14,7 +14,6 @@ const authJWT = (req: Request, res: Response, next: NextFunction) => {
       id: user.id,
       name: user.name,
       avatarURL: user.avatarURL,
-      accessToken: user.accessToken,
     };
   } else {
     throw new Error('Token is expires');

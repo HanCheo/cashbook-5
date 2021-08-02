@@ -5,7 +5,6 @@ export interface UsersAttributes {
   id?: number;
   name: string;
   avatarURL: string;
-  accessToken: string;
 }
 
 export class User extends Model<UsersAttributes> {}
@@ -17,11 +16,6 @@ User.init(
       primaryKey: true,
       allowNull: false,
       autoIncrement: true,
-    },
-    accessToken: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      unique: true,
     },
     name: {
       type: DataTypes.STRING(50),
