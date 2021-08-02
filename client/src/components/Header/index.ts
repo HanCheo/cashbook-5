@@ -1,11 +1,13 @@
 import Component from '@/src/core/Component';
 import CalendarModel from '@/src/models/Calendar';
+import LoginModal from '@/src/components/LoginModal';
 import './index.scss';
 import SvgIcon from '@/src/assets/svg';
 import MonthPicker from '../MonthPicker';
 import { router } from '@/src/core/router';
 import { html, sibling } from '@/src/utils/codeHelper';
 import { qs } from '@/src/utils/selecthelper';
+import { checkUser } from '@/src/api/loginAPI';
 
 interface IProp {}
 
@@ -47,7 +49,7 @@ export default class Header extends Component<IState, IProp> {
     `;
   }
 
-  mounted() {
+  async mounted() {
     const dataWrap = document.querySelector('.date-wrap') as HTMLElement;
     const iconsWrap = this.$target.querySelector('.header-wrap-right') as HTMLElement;
     dataWrap.addEventListener('click', () => this.showMonthPiceker(dataWrap));
@@ -64,9 +66,8 @@ export default class Header extends Component<IState, IProp> {
         router.push(`${page}`);
       }
     });
-
+    //month-picker
     const headerCenter = qs('.header-wrap .center', this.$target) as HTMLElement;
-
     headerCenter.addEventListener('click', e => {
       const target = e.target as HTMLElement;
 
@@ -79,13 +80,21 @@ export default class Header extends Component<IState, IProp> {
           break;
       }
     });
+    //LoginModal
+    await checkUser().catch(e => {
+      this.showLoginModal();
+    });
+  }
+
+  showLoginModal() {
+    //LoginModal
+    new LoginModal(document.body);
   }
 
   showMonthPiceker = (target: HTMLElement) => {
     let Month: string | string[] | undefined = target.querySelector('.month')?.innerHTML.split('');
     Month?.splice(-1);
     Month = Month?.join('');
-    const Year = target.querySelector('.year')?.innerHTML;
     new MonthPicker(target);
   };
 }
