@@ -1,8 +1,5 @@
 import { Op } from 'sequelize';
-import Ledger from '../models/ledger.model';
-import Category from '../models/category.model';
-import { LedgerDTO } from '../dto/LedgerDTO';
-import User from '../models/user.model';
+import Ledger, { LedgersAttributes } from '../models/ledger.model';
 
 class LedgerRepository {
   /**
@@ -27,16 +24,21 @@ class LedgerRepository {
     return Ledgers;
   }
 
-  async createLedger(userId: number, categoryId:number):Promise<Ledger>{
-    const newLedger = await Ledger.create({
+  async createLedger(userId: number, categoryId: number, content: string, amount: number, date: Date): Promise<number | null> {
+    const newLedger = await Ledger.create<Ledger>({
       userId,
       categoryId,
-      date : new Date(),
-      content: "TEST",
-      amount : 1000
+      date,
+      content,
+      amount
+    }, {
+      raw: true
     });
-
-    return newLedger;
+    if (newLedger) {
+      return newLedger.id!;
+    } else {
+      return null;
+    }
   }
 }
 

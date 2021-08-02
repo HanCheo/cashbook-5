@@ -11,4 +11,13 @@ const ledgerRouter = Router();
  */
 ledgerRouter.get('/', authJWT, wrapAsync(LedgerController.getLedgersByDate));
 
+
+/**
+ * POST /api/ledger
+ * 새로운 가계부 데이터 추가 
+ * 
+ */
+ledgerRouter.post("/", authJWT, wrapAsync(LedgerController.createLedger));
+
+
 export default ledgerRouter;
