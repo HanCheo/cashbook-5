@@ -8,7 +8,10 @@ class UserController {
 
     const ledgers = await LedgerService.getLedgersByMonth(date, userId);
 
-    res.send(ledgers);
+    res.send({
+      success: true,
+      data: ledgers,
+    });
   }
 }
 
