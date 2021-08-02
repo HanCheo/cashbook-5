@@ -5,6 +5,19 @@ import wrapAsync from '../utils/wrap-async';
 
 const ledgerRouter = Router();
 
-ledgerRouter.post('/data', authJWT, wrapAsync(LedgerController.getLedgers));
+/**
+ * GET /api/ledger
+ * 여러 YYYY/MM 데이터를 통해 필터링된 Ledger들을 반환해주는 API
+ */
+ledgerRouter.get('/', authJWT, wrapAsync(LedgerController.getLedgersByDate));
+
+
+/**
+ * POST /api/ledger
+ * 새로운 가계부 데이터 추가 
+ * 
+ */
+ledgerRouter.post("/", authJWT, wrapAsync(LedgerController.createLedger));
+
 
 export default ledgerRouter;

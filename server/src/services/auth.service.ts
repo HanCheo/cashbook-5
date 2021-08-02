@@ -1,4 +1,4 @@
-import GitHubAPI from '../oAuth/git.oauth';
+import GitHubAPI from '../OAuth/git.oauth';
 
 class AuthService {
   async getGitAccessToken(code: string) {

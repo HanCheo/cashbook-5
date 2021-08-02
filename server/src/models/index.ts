@@ -11,9 +11,26 @@ export default () => {
 };
 
 const InitReleations = () => {
-  User.hasMany(Ledger, { foreignKey: 'userId', onUpdate: 'cascade', onDelete: 'cascade' });
-  Ledger.belongsTo(User, { foreignKey: 'userId', onUpdate: 'cascade', onDelete: 'cascade' });
 
-  Category.hasMany(Ledger, { foreignKey: 'categoryId', onUpdate: 'cascade', onDelete: 'cascade' });
-  Ledger.belongsTo(Category, { foreignKey: 'categoryId', onUpdate: 'cascade', onDelete: 'cascade' });
+  User.hasMany(Ledger, {
+    sourceKey:"id",
+    foreignKey:"userId",
+    as: "ledgers"
+  });
+
+  Ledger.belongsTo(User, {
+    targetKey:"id",
+    as:"user"
+  });
+
+  Category.hasMany(Ledger, {
+    sourceKey: "id",
+    foreignKey: "categoryId",
+    as:"ledgers"
+  });
+
+  Ledger.belongsTo(Category, {
+    targetKey:"id",
+    as: "category"
+  });
 };
