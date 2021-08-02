@@ -42,8 +42,6 @@ class LedgerRepository {
       date,
       content,
       amount
-    }, {
-      raw: true
     });
     if (newLedger) {
       return newLedger.id!;

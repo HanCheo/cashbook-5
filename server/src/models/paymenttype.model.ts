@@ -7,7 +7,7 @@ export interface PaymentTypeAttributes {
     name: string;
     bgColor: string;
     fontColor: string;
-    isDeleted: boolean;
+    isDeleted?: boolean;
 }
 
 export interface PaymentTypeCreationAttributes extends Optional<PaymentTypeAttributes, "id"> { }
@@ -50,7 +50,7 @@ export const PaymentTypeSchema = {
     },
     isDeleted: {
         type: DataTypes.BOOLEAN,
-        default: false
+        defaultValue: false
     }
 };
 

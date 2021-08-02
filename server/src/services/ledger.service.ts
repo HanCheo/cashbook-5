@@ -1,6 +1,6 @@
 import { CategoryDTO } from '../dto/CategoryDTO';
 import { LedgerRequestDTO, LedgerResponseDTO } from '../dto/LedgerDTO';
-import { PaymentTypeDTO } from '../dto/PaymentTypeDTO';
+import { PaymentTypeResponseDTO } from '../dto/PaymentTypeDTO';
 import LedgerRepository from '../repositories/ledger.repository';
 
 class LedgerService {
@@ -30,7 +30,7 @@ class LedgerService {
         throw new Error("paymentType이 존재하지않는 Ledger 데이터가 존재합니다.");
       }
 
-      const paymentTypeDTO: PaymentTypeDTO = {
+      const paymentTypeDTO: PaymentTypeResponseDTO = {
         id: paymentType.id!,
         name: paymentType.name,
         bgColor: paymentType.bgColor,
