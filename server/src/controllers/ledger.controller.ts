@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { LedgerRequestDTO, LedgerResponseDTO } from '../dto/LedgerDTO';
 import LedgerService from '../services/ledger.service';
 
-class UserController {
+class LedgerController {
   async getLedgersByDate(req: Request, res: Response) {
     const queryDate = req.query.date as string;
     const date = new Date(queryDate);
@@ -51,4 +51,4 @@ class UserController {
   }
 }
 
-export default new UserController();
+export default new LedgerController();
