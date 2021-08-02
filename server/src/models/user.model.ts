@@ -6,6 +6,7 @@ export interface UsersAttributes {
   id?: number;
   gitUsername: string;
   avatarURL: string;
+  refreshToken?: string;
 }
 
 export class User extends Model<UsersAttributes> {}
@@ -22,6 +23,10 @@ export const UserSchema = {
     defaultValue: '',
   },
   avatarURL: {
+    type: DataTypes.STRING(255),
+    defaultValue: '',
+  },
+  refreshToken: {
     type: DataTypes.STRING(255),
     defaultValue: '',
   },

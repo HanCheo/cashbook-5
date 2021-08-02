@@ -10,9 +10,11 @@ class AuthController {
 
     const token = await AuthService.getGitAccessToken(code as string);
     const gitUser = await UserService.getGitUserInfo(token);
-    const user = await UserService.createUser(gitUser);
-    const jwtAccessToken = await JwtService.generate(user);
+    const jwtRefreshToken = JwtService.refresh();
+    const { id, gitUsername, avatarURL } = await UserService.createUser(gitUser, jwtRefreshToken);
+    const jwtAccessToken = JwtService.generate({ id, gitUsername, avatarURL });
 
+    res.append('Set-Cookie', `refreshToken=${jwtRefreshToken}; Path=/; HttpOnly;`);
     res.append('Set-Cookie', `accessToken=${jwtAccessToken}; Path=/; HttpOnly;`);
     res.redirect(env.DEV_CLIENT_URL);
   }
