@@ -20,7 +20,6 @@ class LedgerRepository {
         userId: userId,
         date: { [Op.between]: [startDate, enddate] },
       },
-      raw: true,
     });
 
     return Ledgers;
