@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
+import { BAD_REQUEST, SERVER_ERROR } from '../utils/HttpStatus';
 import { LedgerRequestDTO, LedgerResponseDTO } from '../dto/LedgerDTO';
 import LedgerService from '../services/ledger.service';
+import categoryService from '../services/category.service';
 
-class UserController {
+class LedgerController {
   async getLedgersByDate(req: Request, res: Response) {
     const queryDate = req.query.date as string;
     const date = new Date(queryDate);
@@ -17,7 +19,8 @@ class UserController {
   }
 
   async createLedger(req: Request, res: Response) {
-    const userId = Number(req.user.id);
+    // Assert User Id is valid.
+    const userIdAsNumber = Number(req.user.id);
 
     const {
       categoryId,
@@ -26,14 +29,40 @@ class UserController {
       amount,
     } = req.body;
 
+    const categoryIdAsNumber = Number(categoryId);
+
+    if (isNaN(categoryIdAsNumber)) {
+      res.status(BAD_REQUEST).send({
+        error: "category id is invalid"
+      }).end();
+      return;
+    }
+
+    const category = await categoryService.getCategory(categoryIdAsNumber);
+    if (!category) {
+      res.status(BAD_REQUEST).send({
+        error: `there is no corresponding category(id:${categoryIdAsNumber}).`
+      }).end();
+      return;
+    }
+
+    const amountAsNumber = Number(amount);
+
+    if (isNaN(amountAsNumber)) {
+      res.status(BAD_REQUEST).send({
+        error: "amount value is invalid"
+      }).end();
+      return;
+    }
+
     const ledgerDto: LedgerRequestDTO = {
-      categoryId: Number(categoryId),
+      categoryId: categoryIdAsNumber,
       date: new Date(date),
       content,
-      amount: Number(amount),
+      amount: amountAsNumber,
     };
 
-    const newLedgerId = await LedgerService.createLedger(ledgerDto, userId);
+    const newLedgerId = await LedgerService.createLedger(ledgerDto, userIdAsNumber);
 
     if (newLedgerId) {
       res.send({
@@ -42,13 +71,13 @@ class UserController {
       });
       res.end();
     } else {
-      // TODO: if create ledger fail, return explicit error message
-      res.send({
+      res.status(SERVER_ERROR).send({
         succuss: false,
+        error: "Ledger Creation is fail."
       });
       res.end();
     }
   }
 }
 
-export default new UserController();
+export default new LedgerController();
