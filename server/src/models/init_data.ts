@@ -13,7 +13,7 @@ const initialCategories = [
     { id: 10, color: "#e2b765", name: "기타" },
 ]
 
-export const initMockDataAsync = async () => {
+export const initDataAsync = async () => {
     for (const data of (initialCategories)) {
         const category = await Category.findOne({ where: { id: data.id } });
 

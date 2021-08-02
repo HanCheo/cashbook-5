@@ -1,27 +1,31 @@
 import { Association, DataTypes, Model } from 'sequelize';
 import sequelize from '../db/sequlze';
 import Category from './category.model';
+import PaymentType from './paymentType.model';
 import User from './user.model';
 
 export interface LedgersAttributes {
   id?: number;
-  userId?: number;
-  categoryId?: number;
+  userId: number;
+  categoryId: number;
+  paymentTypeId?: number;
   date: Date;
   content: string;
   amount: number;
 }
 
-export default class Ledger extends Model<LedgersAttributes> implements LedgersAttributes{
-  id?: number | undefined;
-  userId?: number | undefined;
-  categoryId?: number | undefined;
+export default class Ledger extends Model<LedgersAttributes> implements LedgersAttributes {
+  id?: number;
+  userId!: number;
+  categoryId!: number;
+  paymentTypeId!: number;
   date!: Date;
   content!: string;
   amount!: number;
 
   user?: User;
   category?: Category;
+  paymentType?: PaymentType;
   public static associations: {
     category: Association<Ledger, Category>,
     user: Association<Ledger, User>
@@ -34,6 +38,18 @@ export const LedgerSchema = {
     primaryKey: true,
     allowNull: false,
     autoIncrement: true,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  categoryId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  paymentTypeId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   date: {
     type: DataTypes.DATE,

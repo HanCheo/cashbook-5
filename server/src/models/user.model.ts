@@ -1,6 +1,7 @@
 import Ledger from './ledger.model';
 import { Association, DataTypes, Model } from 'sequelize';
 import sequelize from '../db/sequlze';
+import PaymentType from './paymentType.model';
 
 export interface UsersAttributes {
   id?: number;
@@ -15,8 +16,11 @@ export default class User extends Model<UsersAttributes> implements UsersAttribu
   public avatarURL!: string;
 
   public ledgers?: Ledger[];
+  public paymentTypes?: PaymentType[];
+
   public static associations: {
-    ledgers: Association<User, Ledger>
+    ledgers: Association<User, Ledger>,
+    paymentTypes: Association<User, PaymentType>
   }
 }
 

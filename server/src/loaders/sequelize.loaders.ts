@@ -1,6 +1,6 @@
 import sequelize from '../db/sequlze';
 import InitModels from '../models';
-import { initMockDataAsync } from "../models/initMockData";
+import { initDataAsync } from "../models/init_data";
 // Node JS Console 색상 적용하는 방법
 // Reset = "\x1b[0m"
 // Bright = "\x1b[1m"
@@ -37,7 +37,7 @@ export default async () => {
   InitModels();
 
   await sequelize.sync({ alter: true });
-  await initMockDataAsync();
+  await initDataAsync();
 
   console.log('\x1b[30m\x1b[45m%s\x1b[0m', 'All models were synchronized successfully.');
 };
