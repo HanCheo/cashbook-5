@@ -10,10 +10,11 @@ const authJWT = (req: Request, res: Response, next: NextFunction) => {
 
   const user = JwtService.verify(token);
   if (typeof user !== 'string') {
+    const { id, gitUsername, avatarURL } = user;
     req.user = {
-      id: user.id,
-      name: user.name,
-      avatarURL: user.avatarURL,
+      id,
+      gitUsername,
+      avatarURL,
     };
   } else {
     throw new Error('Token is expires');
