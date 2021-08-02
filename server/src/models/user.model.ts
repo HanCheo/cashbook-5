@@ -1,5 +1,5 @@
 import Ledger from './ledger.model';
-import { DataTypes, Model } from 'sequelize';
+import { Association, DataTypes, Model } from 'sequelize';
 import sequelize from '../db/sequlze';
 
 export interface UsersAttributes {
@@ -9,7 +9,16 @@ export interface UsersAttributes {
   refreshToken?: string;
 }
 
-export class User extends Model<UsersAttributes> {}
+export default class User extends Model<UsersAttributes> implements UsersAttributes {
+  public id?: number | undefined;
+  public gitUsername!: string;
+  public avatarURL!: string;
+
+  public ledgers?: Ledger[];
+  public static associations: {
+    ledgers: Association<User, Ledger>
+  }
+}
 
 export const UserSchema = {
   id: {
@@ -40,4 +49,3 @@ export const UserSchemaSettings = {
   timestamps: true,
 };
 
-export default User;

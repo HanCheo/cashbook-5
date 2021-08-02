@@ -1,13 +1,12 @@
 import sequelize from '../db/sequlze';
 import User, { UsersAttributes } from '../models/user.model';
 
+const USER_CREATE_FAIL_MESSAGE = "유저 Row 생성 실패";
+
 class UserRepository {
   async getUser(gitUsername: string): Promise<UsersAttributes | null> {
-    const _user = await User.findOne({ where: { gitUsername } });
-
-    if (!_user) return null;
-
-    return _user.get({ plain: true });
+    const originUser = await User.findOne({ where: { gitUsername } });
+    return originUser ? originUser.get({ plain: true }) : originUser;
   }
 
   async getUserByRefresh(refreshToken: string): Promise<UsersAttributes | null> {
@@ -16,9 +15,11 @@ class UserRepository {
       where: { refreshToken },
     });
 
-    if (!_user) return null;
-
-    return _user.get({ plain: true });
+    if (!_user) {
+      return null;
+    } else {
+      return _user.get({ plain: true });
+    }
   }
 
   async updateUserRefresh(userId: number, refreshToken: string) {

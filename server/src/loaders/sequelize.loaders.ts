@@ -35,6 +35,6 @@ export default async () => {
   console.log('\x1b[30m\x1b[45m%s\x1b[0m', 'Sequelize Connected');
 
   InitModels();
-  await sequelize.sync({ force: true });
+  await sequelize.sync({alter : true});
   console.log('\x1b[30m\x1b[45m%s\x1b[0m', 'All models were synchronized successfully.');
 };

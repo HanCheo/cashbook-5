@@ -1,6 +1,7 @@
-import { User } from './user.model';
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { Association, DataTypes, Model } from 'sequelize';
 import sequelize from '../db/sequlze';
+import Category from './category.model';
+import User from './user.model';
 
 export interface LedgersAttributes {
   id?: number;
@@ -11,7 +12,21 @@ export interface LedgersAttributes {
   amount: number;
 }
 
-class Ledger extends Model<LedgersAttributes> {}
+export default class Ledger extends Model<LedgersAttributes> implements LedgersAttributes{
+  id?: number | undefined;
+  userId?: number | undefined;
+  categoryId?: number | undefined;
+  date!: Date;
+  content!: string;
+  amount!: number;
+
+  user?: User;
+  category?: Category;
+  public static associations: {
+    category: Association<Ledger, Category>,
+    user: Association<Ledger, User>
+  }
+}
 
 export const LedgerSchema = {
   id: {
@@ -41,4 +56,3 @@ export const LedgerSchemaSetting = {
   timestamps: true,
 };
 
-export default Ledger;

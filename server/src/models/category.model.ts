@@ -1,5 +1,6 @@
-import { DataTypes, Model } from 'sequelize';
+import { Association, DataTypes, Model } from 'sequelize';
 import sequelize from '../db/sequlze';
+import Ledger from './ledger.model';
 
 export interface CategorysAttributes {
   id?: number;
@@ -7,7 +8,16 @@ export interface CategorysAttributes {
   color: string;
 }
 
-export class Category extends Model<CategorysAttributes> {}
+export class Category extends Model<CategorysAttributes> implements CategorysAttributes{
+  public id?: number | undefined;
+  public name!: string;
+  public color!: string;
+  
+  public ledgers?: Ledger[];
+  public static associations: {
+    ledgers: Association<Category, Ledger>
+  }
+}
 
 export const CategorySchema = {
   id: {
