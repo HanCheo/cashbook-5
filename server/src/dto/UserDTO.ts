@@ -1,5 +1,5 @@
-export type UserDTO = {
-    id?: number;
+export type UserResponseDTO = {
+    id: number;
     gitUsername: string;
     avatarURL: string;
 }

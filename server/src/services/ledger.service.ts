@@ -1,8 +1,5 @@
 import { CategoryDTO } from '../dto/CategoryDTO';
 import { LedgerRequestDTO, LedgerResponseDTO } from '../dto/LedgerDTO';
-import { UserDTO } from '../dto/UserDTO';
-import Category from '../models/category.model';
-import Ledger from '../models/ledger.model';
 import LedgerRepository from '../repositories/ledger.repository';
 
 class LedgerService {
