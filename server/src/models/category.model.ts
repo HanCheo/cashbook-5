@@ -8,11 +8,11 @@ export interface CategorysAttributes {
   color: string;
 }
 
-export class Category extends Model<CategorysAttributes> implements CategorysAttributes{
+export class Category extends Model<CategorysAttributes> implements CategorysAttributes {
   public id?: number | undefined;
   public name!: string;
   public color!: string;
-  
+
   public ledgers?: Ledger[];
   public static associations: {
     ledgers: Association<Category, Ledger>
@@ -24,7 +24,6 @@ export const CategorySchema = {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
-    autoIncrement: true,
   },
   name: {
     type: DataTypes.STRING(50),
@@ -45,3 +44,5 @@ export const CategorySchemaSettings = {
 };
 
 export default Category;
+
+

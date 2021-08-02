@@ -8,29 +8,30 @@ export default () => {
   Category.init(CategorySchema, CategorySchemaSettings);
 
   InitReleations();
+
 };
 
 const InitReleations = () => {
 
   User.hasMany(Ledger, {
-    sourceKey:"id",
-    foreignKey:"userId",
+    sourceKey: "id",
+    foreignKey: "userId",
     as: "ledgers"
   });
 
   Ledger.belongsTo(User, {
-    targetKey:"id",
-    as:"user"
+    targetKey: "id",
+    as: "user"
   });
 
   Category.hasMany(Ledger, {
     sourceKey: "id",
     foreignKey: "categoryId",
-    as:"ledgers"
+    as: "ledgers"
   });
 
   Ledger.belongsTo(Category, {
-    targetKey:"id",
+    targetKey: "id",
     as: "category"
   });
 };
