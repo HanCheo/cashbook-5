@@ -5,9 +5,9 @@ import './index.scss';
 import { qs } from '@/src/utils/selectHelper';
 import { getGitLoginUrl } from '@/src/api/loginAPI';
 
-interface IState {}
+interface IState { }
 
-interface IProps {}
+interface IProps { }
 
 export default class LoginModal extends Component<IState, IProps> {
   template() {

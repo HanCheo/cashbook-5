@@ -57,3 +57,24 @@ export const postFetch = async<T>(url: string, options?: IApiFetch): Promise<T> 
   return await response.json();
 
 }
+
+export const deleteFetch = async<T>(url: string, options?: IApiFetch): Promise<T> => {
+  let querystring = '';
+  if (options?.query) {
+    querystring = setQuery(options.query);
+  }
+
+  const fetchUrl = serverURL + url + querystring;
+  const response = await fetch(fetchUrl, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: options?.headers,
+  });
+
+  if (response.status >= 400) {
+    const res = JSON.stringify(await response.json());
+    throw new Error(`${response.status}: ${res}`);
+  }
+
+  return await response.json();
+}

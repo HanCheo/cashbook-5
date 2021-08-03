@@ -15,4 +15,8 @@ export interface LedgerType {
 }
 
 export const getLedgerData = (date: string): Promise<Result<ILedgerList[]>> =>
-  getFetch('/ledger/day', { query: { date: date }, headers: { contentType: 'application/json' } });
+  getFetch('/ledger/day', {
+    query: { date }, headers: {
+      "Content-Type": 'application/json',
+    }
+  });
