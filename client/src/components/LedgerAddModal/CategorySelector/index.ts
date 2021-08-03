@@ -11,7 +11,7 @@ interface IState {
 }
 
 interface IProps {
-  onClickCategory: (value: string) => void;
+  onClickCategory: (id: number, name: string) => void;
 }
 
 export default class CategorySelector extends Component<IState, IProps> {
@@ -35,8 +35,8 @@ export default class CategorySelector extends Component<IState, IProps> {
           ${categories
         ?.map(
           (category: Category) => /* html */ `
-                    <li class="category-selector--list--item ledger-category"
-                    data-category="${category.name}" data-category-type="${category.id}">${category.name}</li>
+                    <li class="category-selector--list--item ledger-category" style="background-color:${category.color}"
+                    data-id="${category.id}">${category.name}</li>
                 `
         )
         .join('')}
@@ -70,11 +70,15 @@ export default class CategorySelector extends Component<IState, IProps> {
     const itemElements = qsAll('.category-selector--list--item', this.$target);
     for (const itemElement of Array.from(itemElements)) {
       if (target === itemElement) {
-        const { category } = target.dataset;
-        if (category) {
-          onClickCategory(category);
-          this.toggleCategoryList(false);
+        const { id } = target.dataset;
+        const idAsNumber = Number(id);
+        if (!isNaN(idAsNumber)) {
+          const category = this.$state.categories.find(category => category.id === idAsNumber);
+          if (category) {
+            onClickCategory(idAsNumber, category.name);
+          }
         }
+        this.toggleCategoryList(false);
       }
     }
   }

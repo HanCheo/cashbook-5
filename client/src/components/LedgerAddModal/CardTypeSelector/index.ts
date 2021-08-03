@@ -12,7 +12,7 @@ interface IState {
 }
 
 interface IProps {
-  onClickCard: (value: string) => void;
+  onClickCard: (id: number, value: string) => void;
 }
 
 export default class CardTypeSelector extends Component<IState, IProps> {
@@ -44,7 +44,7 @@ export default class CardTypeSelector extends Component<IState, IProps> {
         .map(
           paymentType => html`
                 <li
-                  data-card="${paymentType.name}"
+                  data-id="${paymentType.id}"
                   class="card-type-selector--list--item"
                   style="background-color:${paymentType.bgColor};color:${paymentType.fontColor}"
                 >
@@ -82,11 +82,15 @@ export default class CardTypeSelector extends Component<IState, IProps> {
     const itemElements = qsAll('.card-type-selector--list--item', this.$target);
     for (const itemElement of Array.from(itemElements)) {
       if (target === itemElement) {
-        const { card } = target.dataset;
-        if (card) {
-          onClickCard(card);
-          this.toggleCardTypeList(false);
+        const { id } = target.dataset;
+        const idAsNumber = Number(id);
+        if (!isNaN(idAsNumber)) {
+          const paymentType = this.$state.paymentTypes.find(paymentType => paymentType.id === idAsNumber);
+          if (paymentType) {
+            onClickCard(idAsNumber, paymentType.name);
+          }
         }
+        this.toggleCardTypeList(false);
       }
     }
   }

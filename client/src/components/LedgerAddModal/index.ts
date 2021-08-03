@@ -5,22 +5,6 @@ import { html } from '@/src/utils/codeHelper';
 import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
 import Snackbar from '../SnackBar';
-import { PaymentType } from '@/src/interfaces/PaymentType';
-
-const mockCategories = [
-  { id: 1, name: '취미' },
-  { id: 2, name: '월급' },
-  { id: 3, name: '적금' },
-  { id: 4, name: '예금' },
-  { id: 5, name: '비상금' },
-  { id: 6, name: '보험비' },
-  { id: 6, name: '보험비' },
-  { id: 6, name: '보험비' },
-  { id: 6, name: '보험비' },
-  { id: 6, name: '보험비' },
-  { id: 6, name: '보험비' },
-  { id: 6, name: '보험비' },
-];
 
 interface Error {
   [key: string]: string;
@@ -32,8 +16,9 @@ interface IState {
   $contentInput: HTMLInputElement;
   $cardTypeInput: HTMLInputElement;
   $dateInput: HTMLInputElement;
-  paymentTypes: PaymentType[];
 
+  paymentTypeId: number;
+  categoryId: number;
 }
 
 interface IProps { }
@@ -78,10 +63,6 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     `;
   }
 
-  setup() {
-    this.$state.paymentTypes = [];
-
-  }
 
   mounted() {
     this.$state.$amountInput = qs('#amount-input', this.$target) as HTMLInputElement;
@@ -92,13 +73,13 @@ export default class LedgerAddModal extends Component<IState, IProps> {
 
     const $categorySelectorElement = qs('#category-selector-container', this.$target) as HTMLElement;
     new CategorySelector($categorySelectorElement, {
-      onClickCategory: (category: string) => this.handleSelectCategory(category)
+      onClickCategory: (id, name: string) => this.handleSelectCategory(id, name)
     });
 
     const $cardTypeSelectorElement = qs('#card-type-selector-container', this.$target) as HTMLElement;
     new CardTypeSelector($cardTypeSelectorElement, {
-      onClickCard: (card: string) => {
-        this.handleSelectCardType(card);
+      onClickCard: (id: number, name: string) => {
+        this.handleSelectPaymentType(id, name);
       },
     });
 
@@ -127,12 +108,14 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     });
   }
 
-  handleSelectCardType(card: string) {
-    this.$state.$cardTypeInput.value = card;
+  handleSelectPaymentType(id: number, name: string) {
+    this.$state.$cardTypeInput.value = name;
+    this.$state.paymentTypeId = id;
   }
 
-  handleSelectCategory(category: string) {
-    this.$state.$categoryInput.value = category;
+  handleSelectCategory(id: number, name: string) {
+    this.$state.$categoryInput.value = name;
+    this.$state.categoryId = id;
   }
 
   submit() {
