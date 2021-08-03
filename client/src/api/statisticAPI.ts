@@ -1,3 +1,5 @@
+import { getFetch } from "./fetch";
+
 interface Result<D> {
   success: boolean;
   data: D;
@@ -5,7 +7,7 @@ interface Result<D> {
 
 interface DateValueEntry {
   datetime: Date;
-  value: number;
+  amount: number;
 }
 
 export interface StatisticLedgerByCategory {
@@ -16,48 +18,8 @@ export interface StatisticLedgerByCategory {
   };
 }
 
-export const getStatisticLedgers = async (): Promise<Result<StatisticLedgerByCategory>> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve({
-        success: true,
-        data: {
-          용돈: {
-            entries: [
-              { datetime: new Date('2021-08-27'), value: 10000 },
-              { datetime: new Date('2021-08-28'), value: 30000 },
-              { datetime: new Date('2021-08-29'), value: 50000 },
-              { datetime: new Date('2021-08-30'), value: 10000 },
-              { datetime: new Date('2021-09-01'), value: 30000 },
-              { datetime: new Date('2021-09-02'), value: 40000 },
-              { datetime: new Date('2021-09-03'), value: 23000 },
-              { datetime: new Date('2021-09-04'), value: 20000 },
-            ],
-            total: 100000,
-            color: '#000000',
-          },
-          적금: {
-            entries: [
-              { datetime: new Date('2021-08-27'), value: 10000 },
-              { datetime: new Date('2021-08-28'), value: 20000 },
-              { datetime: new Date('2021-08-29'), value: 50000 },
-              { datetime: new Date('2021-08-30'), value: 80000 },
-            ],
-            total: 100000,
-            color: '#ff0000',
-          },
-          예금: {
-            entries: [
-              { datetime: new Date('2021-08-27'), value: 10000 },
-              { datetime: new Date('2021-08-28'), value: 30000 },
-              { datetime: new Date('2021-08-29'), value: 70000 },
-              { datetime: new Date('2021-08-30'), value: 80000 },
-            ],
-            total: 500000,
-            color: '#00ff00',
-          },
-        },
-      });
-    }, 500);
-  });
+export const getStatisticLedgers = async (date: Date): Promise<Result<StatisticLedgerByCategory>> => {
+  const yearMonthQuery = `${date.getFullYear()}-${date.getMonth() + 1}` // YYYY-MM
+  const result = await getFetch<Result<StatisticLedgerByCategory>>(`/ledger/statistic?date=${yearMonthQuery}`);
+  return result;
 };

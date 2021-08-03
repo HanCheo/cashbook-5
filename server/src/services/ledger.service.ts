@@ -110,16 +110,29 @@ class LedgerService {
 
     const statisticLedgers: StatisticLedgersResponseDTO = {};
 
-    for (const [category, data] of groupByCategory) {
-      if (data) {
-        const total = data.reduce((acc, curr) => acc + curr.amount, 0);
-        const color = data[0].category.color;
-        const entries: StatisticEntry[] = data.map(ledger => {
-          return {
-            datetime: new Date(ledger.date),
-            amount: ledger.amount
+    for (const [category, ledgers] of groupByCategory) {
+      if (ledgers) {
+
+        const dayAndTotalAmountMap = new Map<string, number>();
+        const total = ledgers.reduce((acc, curr) => acc + curr.amount, 0);
+        const color = ledgers[0].category.color;
+        ledgers.forEach(ledger => {
+          const totalOfDay = dayAndTotalAmountMap.get(ledger.date);
+          if (!totalOfDay) {
+            dayAndTotalAmountMap.set(ledger.date, ledger.amount);
+          } else {
+            dayAndTotalAmountMap.set(ledger.date, totalOfDay + ledger.amount);
           }
         })
+
+        const entries: StatisticEntry[] = [];
+        for (const [date, totalAmountOfDay] of dayAndTotalAmountMap) {
+          entries.push({
+            datetime: new Date(date),
+            amount: totalAmountOfDay
+          });
+        }
+
         statisticLedgers[category] = {
           total,
           color,

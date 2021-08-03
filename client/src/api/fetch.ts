@@ -32,5 +32,5 @@ export const getFetch = async <T>(url: string, options?: IApiFetch): Promise<T> 
     throw new Error(`${response.status}: ${res}`);
   }
 
-  return response.json();
+  return await response.json();
 };

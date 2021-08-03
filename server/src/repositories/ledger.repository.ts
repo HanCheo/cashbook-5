@@ -16,6 +16,9 @@ class LedgerRepository {
         Ledger.associations.user,
         Ledger.associations.paymentType
       ],
+      order: [
+        ['date', 'ASC']
+      ],
       where: {
         userId: userId,
         date: { [Op.between]: [startDate, endDate] },

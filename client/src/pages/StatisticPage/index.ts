@@ -1,13 +1,12 @@
 import { getStatisticLedgers, StatisticLedgerByCategory } from '@/src/api/statisticAPI';
 import Component from '@/src/core/Component';
 import { qs } from "@/src/utils/selectHelper";
+import { html } from '@/src/utils/codeHelper';
 import LineChart, { LineChartData, LineGroupChartData } from '@/src/utils/charts/LineChart';
 import PieChart, { PieChartData } from '@/src/utils/charts/PieChart';
 import CategoryList, { CategoryItem } from './CategoryList';
-import './index.scss';
-import { html } from '@/src/utils/codeHelper';
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 import { removeAllChildNode } from '@/src/utils/domHelper';
+import './index.scss';
 
 interface IState {
   statisticData?: StatisticLedgerByCategory;
@@ -36,7 +35,7 @@ export default class StatisticPage extends Component<IState, IProps> {
   setup() {
     this.$state = { statisticData: {} };
 
-    getStatisticLedgers().then(result => {
+    getStatisticLedgers(new Date()).then(result => {
       if (result.success) {
         const statisticData = result.data;
 
@@ -68,7 +67,6 @@ export default class StatisticPage extends Component<IState, IProps> {
       const items = mapToCategoryItemData(statisticData);
       new CategoryList($categoryList, { items });
     }
-
   }
 
   renderPieChart() {
@@ -136,11 +134,11 @@ function mapToCategoryItemData(data: StatisticLedgerByCategory): CategoryItem[] 
 
   for (const [key, value] of Object.entries(data)) {
     const { total, color } = value;
-    const percentage = totalOfAllCategory ? ((total / totalOfAllCategory) * 100).toFixed(1) : 0;
+    const percentage = totalOfAllCategory ? Number(((total / totalOfAllCategory) * 100).toFixed(1)) : 0;
     categoryItems.push({
       name: key,
       color: color,
-      percentage: Number(percentage),
+      percentage,
       value: total
     });
   }
@@ -169,8 +167,8 @@ function mapToLineChartData(data: StatisticLedgerByCategory): LineGroupChartData
       data: entries.map<LineChartData>(entry => {
         return {
           name: '',
-          datetime: entry.datetime,
-          value: entry.value,
+          datetime: new Date(entry.datetime),
+          value: entry.amount,
         };
       }),
       color,
