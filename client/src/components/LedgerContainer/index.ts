@@ -24,7 +24,6 @@ export default class LedgerContainer extends Component<IState, IProps> {
     this.$state.totalIncomes = 0;
     this.$state.totalSpand = 0;
     this.$state.checked = ['spand', 'income'];
-
     this.$state.ledgerData?.forEach((ledgerList: ILedgerList) => {
       ledgerList.ledgers.forEach((ledger: ILedger) => {
         ledger.amount < 0
@@ -41,15 +40,15 @@ export default class LedgerContainer extends Component<IState, IProps> {
     return html`
       <div class="ledger-container">
         <div class="ledger-container--header">
-          <div class="total-count">전체 건수 : ${addComma(totalCount as number)}</div>
+          <div class="total-count">전체 건수 : ${totalCount}</div>
           <div class="fillter">
             <div class="checkbox-wrapper">
               <input type="checkbox" id="income" name="filterCheckbox" />
-              <label for="income">수입 ${addComma(totalIncomes as number)}</label>
+              <label for="income">수입 ${addComma(totalIncomes!)}</label>
             </div>
             <div class="checkbox-wrapper">
               <input type="checkbox" id="spand" name="filterCheckbox" />
-              <label for="spand">지출 ${addComma(totalSpand as number)}</label>
+              <label for="spand">지출 ${addComma(totalSpand!)}</label>
             </div>
           </div>
         </div>
@@ -57,10 +56,12 @@ export default class LedgerContainer extends Component<IState, IProps> {
       </div>
     `;
   }
+
   mounted() {
     const wrapper = this.$target.querySelector('.ledger-list-wrapper') as HTMLElement;
     const checkBoxs = [...this.$target.querySelectorAll('input[name="filterCheckbox"]')] as HTMLInputElement[];
     const { ledgerData, checked } = this.$state;
+
     //checkBok
     checked?.forEach((id: string) => {
       (this.$target.querySelector(`input#${id}`) as HTMLInputElement).checked = true;
@@ -79,32 +80,27 @@ export default class LedgerContainer extends Component<IState, IProps> {
       }
     });
 
-    if (!ledgerData?.length) {
-      new Snackbar(document.body, { text: '앗 ! 데이터가 없어요 !' });
-    }
-
     ledgerData?.forEach((ledgerList: ILedgerList) => {
       new LedgerList(wrapper, { ledgerList: ledgerList });
     });
   }
 
-  async getFilterData(checkBoxs: HTMLInputElement[]) {
-    const _LedgerDataModel = await LedgerDataModel;
+  getFilterData(checkBoxs: HTMLInputElement[]) {
     let filter = '';
     checkBoxs.forEach(e => (e.checked ? (filter += e.getAttribute('id')) : ''));
 
     switch (filter) {
       case 'spand':
-        this.setState({ ledgerData: _LedgerDataModel.getSpandData(), checked: ['spand'] });
+        this.setState({ ledgerData: LedgerDataModel.getSpandData(), checked: ['spand'] });
         break;
       case 'income':
-        this.setState({ ledgerData: _LedgerDataModel.getIncomeData(), checked: ['income'] });
+        this.setState({ ledgerData: LedgerDataModel.getIncomeData(), checked: ['income'] });
         break;
       case '':
         this.setState({ ledgerData: [], checked: [] });
         break;
       default:
-        this.setState({ ledgerData: _LedgerDataModel.getData(), checked: ['spand', 'income'] });
+        this.setState({ ledgerData: LedgerDataModel.getData(), checked: ['spand', 'income'] });
     }
   }
 }

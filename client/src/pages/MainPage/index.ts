@@ -7,6 +7,8 @@ import './index.scss';
 import LedgerDataModel from '@/src/models/Ledgers';
 import CalendarModel from '@/src/models/Calendar';
 import { ILedgerList } from '@/src/interfaces/Ledger';
+import { html } from '@/src/utils/codeHelper';
+import Snackbar from '@/src/components/SnackBar';
 
 interface IState {}
 
@@ -19,12 +21,12 @@ export default class MainPage extends Component<IProps, IState> {
     this.$state.ledgerData = LedgerDataModel.getData();
   }
   template() {
-    return /* html */ `
-        <div id='body'></div>
-        <div id="ledger-add-button"></div>
-        <div id="ledger-add-modal"></div>
-        <div id="card-add-modal"></div>
-      `;
+    return html`
+      <div id="body"></div>
+      <div id="ledger-add-button"></div>
+      <div id="ledger-add-modal"></div>
+      <div id="card-add-modal"></div>
+    `;
   }
 
   mounted() {
@@ -45,7 +47,15 @@ export default class MainPage extends Component<IProps, IState> {
     const body = this.$target.querySelector('#body') as HTMLElement;
     const calendarDate = CalendarModel.getDate();
     await LedgerDataModel.update(calendarDate.getFullYear() + '-' + (calendarDate.getMonth() + 1));
-    new LedgerContainer(body, { ledgerData: LedgerDataModel.getData() });
+    
+    const ledgerData = LedgerDataModel.getData();
+ 
+    if (!ledgerData?.length) {
+      new Snackbar(document.body, { text: '앗 ! 데이터가 없어요 !' });
+      return;
+    }
+
+    new LedgerContainer(body, { ledgerData });
   }
   setUnmount() {
     CalendarModel.unsubscribe('main');
