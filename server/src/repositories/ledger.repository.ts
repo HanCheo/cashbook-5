@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import Ledger, { LedgersAttributes } from '../models/ledger.model';
+import Ledger from '../models/ledger.model';
 
 class LedgerRepository {
   /**
@@ -13,7 +13,8 @@ class LedgerRepository {
     const Ledgers = await Ledger.findAll({
       include: [
         Ledger.associations.category,
-        Ledger.associations.user
+        Ledger.associations.user,
+        Ledger.associations.paymentType
       ],
       where: {
         userId: userId,
@@ -33,15 +34,14 @@ class LedgerRepository {
    * @param date Ledger의 생성 일자
    * @returns 생성된 Ledger 데이터의 id
    */
-  async createLedger(userId: number, categoryId: number, content: string, amount: number, date: Date): Promise<number | null> {
+  async createLedger(userId: number, categoryId: number, paymentTypeId: number, content: string, amount: number, date: Date): Promise<number | null> {
     const newLedger = await Ledger.create<Ledger>({
       userId,
+      paymentTypeId,
       categoryId,
       date,
       content,
       amount
-    }, {
-      raw: true
     });
     if (newLedger) {
       return newLedger.id!;
@@ -51,4 +51,5 @@ class LedgerRepository {
   }
 }
 
-export default new LedgerRepository();
+const ledgerRepository = new LedgerRepository();
+export default ledgerRepository;

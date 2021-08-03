@@ -1,8 +1,8 @@
-import { CategoryDTO } from "../dto/CategoryDTO";
+import { CategoryResponseDTO } from "../dto/CategoryDTO";
 import categoryRepository from "../repositories/category.repository";
 
 class CategoryService {
-    async getCategories(): Promise<CategoryDTO[]> {
+    async getCategories(): Promise<CategoryResponseDTO[]> {
         const categories = await categoryRepository.getCategories();
         return categories.map(category => {
             return {
@@ -13,7 +13,7 @@ class CategoryService {
         });
     }
 
-    async getCategory(id: number): Promise<CategoryDTO | null> {
+    async getCategory(id: number): Promise<CategoryResponseDTO | null> {
         const category = await categoryRepository.getCategory(id);
         if (category) {
             return {

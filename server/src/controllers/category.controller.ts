@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { BAD_REQUEST, SUCCESS } from '../utils/HttpStatus';
 import categoryService from '../services/category.service';
 
+const ERROR_PARAMETER_INVALID = "입력 값이 잘못되었습니다.";
+
 class CategoryController {
     async getCategories(req: Request, res: Response) {
         const categories = await categoryService.getCategories();
@@ -16,7 +18,7 @@ class CategoryController {
         const idAsNumber = Number(id);
         if (isNaN(idAsNumber)) {
             res.status(BAD_REQUEST).send({
-                error: "category id parameter is invalid."
+                error: ERROR_PARAMETER_INVALID + "(category id parameter is invalid.)"
             });
             res.end();
             return;

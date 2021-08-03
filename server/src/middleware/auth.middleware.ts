@@ -3,13 +3,18 @@ import { UsersAttributes } from '../models/user.model';
 import UserRepository from '../repositories/user.repository';
 import JwtService from '../services/jwt.service';
 
+
+const ERROR_USER_IS_NOT_EXIST = '현재 토큰을 가진 유저가 없습니다.';
+const ERROR_ALL_TOKEN_IS_EXPIRED = "모든 토큰의 유효기간이 지났습니다.";
+const ERROR_HEADER_COOKIE_IS_NOT_EXIST = "해더에 쿠기가 존재하지않습니다.";
+
 const ErrorJWT = (res: Response, message: string) => {
   res.status(401).send({ success: false, message }).end();
 };
 
 const authJWT = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.headers.cookie) {
-    ErrorJWT(res, `Header dosen't have Cookie`);
+    ErrorJWT(res, ERROR_HEADER_COOKIE_IS_NOT_EXIST);
     return;
   }
 
@@ -26,13 +31,13 @@ const authJWT = async (req: Request, res: Response, next: NextFunction) => {
     //accToken만 유효기간이 지남
     if (!refresh) {
       //acc, ref 모두 유효기간이 지남
-      ErrorJWT(res, 'All token expired');
+      ErrorJWT(res, ERROR_ALL_TOKEN_IS_EXPIRED);
       return;
     } else {
       // refresh 기반으로 유저 조회
       const _user = await JwtService.userByRefreshToken(refreshToken);
       if (_user === null) {
-        ErrorJWT(res, 'User is not in DB');
+        ErrorJWT(res, ERROR_USER_IS_NOT_EXIST);
         return;
       }
       user = _user;

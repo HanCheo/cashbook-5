@@ -9,17 +9,11 @@ class CategoryRepository {
 
     async getCategory(id: number): Promise<Category | null> {
         const category = Category.findOne({ where: { id } });
-        if (category) {
-            return category
-        } else {
-            return null;
-        }
+        return category;
     }
 
-    // TODO add Ledgers by category.
-
+    // TODO add Ledgers by category API
 }
-
 
 const categoryRepository = new CategoryRepository();
 export default categoryRepository;
