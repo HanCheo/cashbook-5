@@ -25,7 +25,7 @@ class LedgerController {
     const date = new Date(queryDate);
     const userId = req.user.id!;
     const ledgers: LedgerResponseDTO[] = await LedgerService.getLedgersByMonth(date, userId);
-    const groupLedgers = await LedgerService.getLedgersGroupDate(ledgers);
+    const groupLedgers = await LedgerService.getLedgersGroupByDate(ledgers);
 
     res.send({
       success: true,

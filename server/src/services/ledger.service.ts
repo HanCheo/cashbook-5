@@ -52,7 +52,7 @@ class LedgerService {
     return ledgerDTOs;
   }
 
-  async getLedgersGroupDate(ledgers: LedgerResponseDTO[]): Promise<LedgersDayGroupResponseDTO[]> {
+  async getLedgersGroupByDate(ledgers: LedgerResponseDTO[]): Promise<LedgersDayGroupResponseDTO[]> {
     const groupByDate = new Map();
 
     ledgers.forEach(ledger => {
