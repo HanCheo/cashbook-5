@@ -1,13 +1,12 @@
 export default class Observer {
   _observers: Map<string, any>;
-  
+
   constructor() {
     this._observers = new Map();
   }
 
   subscribe(key: string, observer: Function) {
     this._observers.set(key, observer);
-    console.log(this._observers);
   }
 
   unsubscribe(key: string) {

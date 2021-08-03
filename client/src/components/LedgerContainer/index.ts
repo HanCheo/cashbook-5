@@ -4,7 +4,6 @@ import { addComma, html } from '@/src/utils/codeHelper';
 import LedgerList from '../LedgerList';
 import { ILedgerList, ILedger } from '@/src/interfaces/Ledger';
 import './index.scss';
-import Snackbar from '../SnackBar';
 
 interface IState {
   ledgerData: ILedgerList[] | undefined;

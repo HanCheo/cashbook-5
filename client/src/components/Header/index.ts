@@ -84,11 +84,12 @@ export default class Header extends Component<IState, IProp> {
     });
   }
   async setEvent() {
-    await checkUser().catch(e => {
+    try {
+      await checkUser();
+      CalendarModel.setDate(new Date());
+    } catch (error) {
       this.showLoginModal();
-      return;
-    });
-    CalendarModel.setDate(new Date());
+    }
   }
 
   showLoginModal() {
