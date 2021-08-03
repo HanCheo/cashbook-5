@@ -72,7 +72,7 @@ class LedgerService {
   }
 
 
-  getLedgersGroupByDate(ledgers: LedgerResponseDTO[]): LedgersDayGroupResponseDTO[] {
+  convertToDayGroupLedgers(ledgers: LedgerResponseDTO[]): LedgersDayGroupResponseDTO[] {
     const groupByDate = new Map();
 
     ledgers.forEach(ledger => {
