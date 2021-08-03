@@ -11,7 +11,7 @@ import { removeAllChildNode } from '@/src/utils/domHelper';
 
 interface IState {
   statisticData?: StatisticLedgerByCategory;
-  categoryItems?: CategoryItem[];
+
 }
 interface IProps { }
 
@@ -42,24 +42,33 @@ export default class StatisticPage extends Component<IState, IProps> {
 
         this.setState({
           statisticData: statisticData,
-          categoryItems: mapToCategoryItemData(statisticData)
         });
       }
     });
   }
 
   mounted() {
-    const { categoryItems } = this.$state;
-    const $categoryList = qs("#statistic-category-container") as HTMLElement;
-    new CategoryList($categoryList, { items: categoryItems });
-
     const $lineChartResetBtn = qs("#reset-line-chart-btn") as HTMLElement;
     $lineChartResetBtn.addEventListener("click", () => {
       this.renderLineChartAllCategory();
     });
 
+    this.renderCategoryList();
     this.renderPieChart();
     this.renderLineChartAllCategory();
+  }
+
+  renderCategoryList() {
+    const { statisticData } = this.$state;
+    const $categoryList = qs("#statistic-category-container") as HTMLElement;
+
+    if (!statisticData) {
+      new CategoryList($categoryList, { items: [] });
+    } else {
+      const items = mapToCategoryItemData(statisticData);
+      new CategoryList($categoryList, { items });
+    }
+
   }
 
   renderPieChart() {
