@@ -16,7 +16,6 @@ class LedgerService {
       const {
         id, userId, paymentTypeId, paymentType, categoryId, category, amount, date, content
       } = ledger;
-
       if (!category) {
         throw new Error('category가 존재하지않는 ledger 데이터가 존재합니다.');
       }
@@ -85,8 +84,8 @@ class LedgerService {
       const map = {
         date: ledger.date,
         numDate: ledger.date.split('-').slice(1).join(''),
-        income: +ledger.amount > 0 ? income + +ledger.amount : income,
-        spand: +ledger.amount < 0 ? spand + +ledger.amount : spand,
+        income: +ledger.amount > 0 ? income + ledger.amount : income,
+        spand: +ledger.amount < 0 ? spand + ledger.amount : spand,
         ledgers: [...ledgers, ledger],
       };
 
