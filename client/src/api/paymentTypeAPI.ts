@@ -1,3 +1,5 @@
+import { deleteFetch, getFetch, postFetch } from "./fetch";
+
 interface Result<D> {
   success: boolean;
   data: D;
@@ -14,44 +16,25 @@ export interface PaymentType {
   image: string;
 }
 
-export const getPaymentTypesAsync = async (): Promise<Result<PaymentType[]>> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve({
-        success: true,
-        data: [
-          {
-            id: 1,
-            accountId: 1,
-            name: 'Test Card',
-            bgColor: '#00ffff',
-            fontColor: '#ffffff',
-            createAt: new Date(),
-            updateAt: new Date(),
-            image: '',
-          },
-          {
-            id: 2,
-            accountId: 1,
-            name: 'Test Card',
-            bgColor: '#ff00ff',
-            fontColor: '#ffffff',
-            createAt: new Date(),
-            updateAt: new Date(),
-            image: '',
-          },
-          {
-            id: 3,
-            accountId: 1,
-            name: 'Test Card',
-            bgColor: '#ff0000',
-            fontColor: '#ffffff',
-            createAt: new Date(),
-            updateAt: new Date(),
-            image: '',
-          },
-        ],
-      });
-    }, 500);
-  });
+
+export const getOwnPaymentTypesAsync = async (): Promise<Result<PaymentType[]>> => {
+  return await getFetch("/paymentType");
 };
+
+export const deleteOwnPaymentTypeAsync = async (id: number): Promise<Result<any>> => {
+  return await deleteFetch(`/paymentType/${id}`, { headers: { contentType: 'application/json' } });
+}
+
+export const createPaymentTypeAsync = async (name: string, bgColor: string, fontColor: string): Promise<Result<number>> => {
+
+  return await postFetch(`/paymentType`, {
+    headers: {
+      "Content-Type": 'application/json',
+    },
+    body: JSON.stringify({
+      name,
+      bgColor,
+      fontColor
+    })
+  });
+}

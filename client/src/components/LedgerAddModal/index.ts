@@ -5,6 +5,7 @@ import { html } from '@/src/utils/codeHelper';
 import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
 import Snackbar from '../SnackBar';
+import { PaymentType } from '@/src/api/paymentTypeAPI';
 
 const mockCategories = [
   { id: 1, name: '취미' },
@@ -31,6 +32,8 @@ interface IState {
   $contentInput: HTMLInputElement;
   $cardTypeInput: HTMLInputElement;
   $dateInput: HTMLInputElement;
+  paymentTypes: PaymentType[];
+
 }
 
 interface IProps { }
@@ -75,6 +78,11 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     `;
   }
 
+  setup() {
+    this.$state.paymentTypes = [];
+
+  }
+
   mounted() {
     this.$state.$amountInput = qs('#amount-input', this.$target) as HTMLInputElement;
     this.$state.$categoryInput = qs('#category-input', this.$target) as HTMLInputElement;
@@ -90,19 +98,6 @@ export default class LedgerAddModal extends Component<IState, IProps> {
 
     const $cardTypeSelectorElement = qs('#card-type-selector-container', this.$target) as HTMLElement;
     new CardTypeSelector($cardTypeSelectorElement, {
-      cardTypes: [
-        { id: 'test', name: 'test card', color: 'blue' },
-        { id: 'test', name: 'test card', color: 'red' },
-        { id: 'test', name: 'test card', color: 'tomato' },
-        { id: 'test', name: 'test card', color: 'green' },
-        { id: 'test', name: 'test card', color: '#000000' },
-        { id: 'test', name: 'test card', color: '#000000' },
-        { id: 'test', name: 'test card', color: '#000000' },
-        { id: 'test', name: 'test card', color: '#000000' },
-        { id: 'test', name: 'test card', color: '#000000' },
-        { id: 'test', name: 'test card', color: '#000000' },
-        { id: 'test', name: 'test card', color: '#000000' },
-      ],
       onClickCard: (card: string) => {
         this.handleSelectCardType(card);
       },

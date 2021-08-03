@@ -62,6 +62,8 @@
     box-shadow: -1rem 0 0.2rem rgba(0, 0, 0, 0.5);
     background-color: white;
     transition: 0.2s;
+    animation-name:  fade-in-effect;
+    animation-duration: 0.5s;
     &--name {
       color: black;
     }
@@ -109,6 +111,17 @@
     &.editmode > &--delete-btn {
       display: flex;
     }
+  }
+}
+
+@keyframes fade-in-effect {
+  from {
+    opacity: 0.5;
+    transform: translate(50%, 0%);
+  } 
+  to{
+    transform: translate(0%, 0%);
+    opacity: 1;
   }
 }
 

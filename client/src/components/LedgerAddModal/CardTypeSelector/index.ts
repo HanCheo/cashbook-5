@@ -2,41 +2,48 @@ import './index.scss';
 
 import { qs, qsAll } from '@/src/utils/selectHelper';
 import Component from '@/src/core/Component';
-import { CardType } from '@/src/interfaces/CardType';
 import { html } from '@/src/utils/codeHelper';
+import { getOwnPaymentTypesAsync, PaymentType } from '@/src/api/paymentTypeAPI';
 
 interface IState {
   isShowCardTypes: boolean;
+  paymentTypes: PaymentType[];
 }
 
 interface IProps {
-  cardTypes: CardType[];
   onClickCard: (value: string) => void;
 }
 
 export default class CardTypeSelector extends Component<IState, IProps> {
   setup() {
     this.$state = {
+      paymentTypes: [],
       isShowCardTypes: false,
     };
+    getOwnPaymentTypesAsync().then(({ success, data }) => {
+      this.setState({
+        ...this.$state,
+        paymentTypes: data,
+      })
+    })
   }
+
   template() {
-    const { cardTypes } = this.$props;
+    const { paymentTypes } = this.$state;
     return html`
       <div class="card-type-selector">
         <div class="card-type-selector--toggle">선택</div>
         <ul class="card-type-selector--list">
-          ${cardTypes &&
-      cardTypes
+          ${paymentTypes &&
+      paymentTypes
         .map(
-          cardType => html`
+          paymentType => html`
                 <li
-                  data-card="${cardType.name}"
+                  data-card="${paymentType.name}"
                   class="card-type-selector--list--item"
-                  style="background-color:${cardType.color}"
+                  style="background-color:${paymentType.bgColor};color:${paymentType.fontColor}"
                 >
-                  <div>${cardType.name}</div>
-                  <div>${cardType.color}</div>
+                  <div>${paymentType.name}</div>
                 </li>
               `
         )

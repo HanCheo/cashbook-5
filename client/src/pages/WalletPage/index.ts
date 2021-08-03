@@ -2,8 +2,9 @@ import './index.scss';
 import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
 import { qs, qsAll } from '@/src/utils/selectHelper';
-import { getPaymentTypesAsync, PaymentType } from '@/src/api/paymentTypeAPI';
+import { deleteOwnPaymentTypeAsync, getOwnPaymentTypesAsync, PaymentType } from '@/src/api/paymentTypeAPI';
 import PaymentTypeAddModal from '@/src/components/PaymentTypeAddModal';
+import paymentTypeListModel from '@/src/models/PaymentTypeList';
 
 interface IState {
   paymentTypes: PaymentType[];
@@ -15,6 +16,8 @@ interface IProps { }
 
 const EDIT_MODE_ON_STRING = '수정 하기';
 const EDIT_MODE_OFF_STRING = '수정 중';
+
+const PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY = "wallet";
 
 export default class WalletPage extends Component<IState, IProps> {
   template() {
@@ -30,6 +33,7 @@ export default class WalletPage extends Component<IState, IProps> {
         <ul class="card-list"></ul>
       </div>
       <div id="payment-type-modal"></div>
+      <div id="payment-delete-alert-modal"></div>
     `;
   }
 
@@ -37,7 +41,7 @@ export default class WalletPage extends Component<IState, IProps> {
     this.$state.paymentTypes = [];
     this.$state.isEditMode = false;
 
-    getPaymentTypesAsync().then(({ success, data }) => {
+    getOwnPaymentTypesAsync().then(({ success, data }) => {
       if (success) {
         this.$state.paymentTypes = data;
         this.renderCardItems();
@@ -47,20 +51,7 @@ export default class WalletPage extends Component<IState, IProps> {
     });
   }
 
-  renderCardItems() {
-    const $cardListElement = qs('.card-list', this.$target) as HTMLElement;
-    const { paymentTypes } = this.$state;
 
-    $cardListElement.innerHTML = paymentTypes
-      .map(
-        paymentType =>
-          html`<li class="card-list--item" style="background-color:${paymentType.bgColor}">
-            <div class="card-list--item--name" style="color:${paymentType.fontColor}">${paymentType.name}</div>
-            <span class="card-list--item--delete-btn">X</span>
-          </li>`
-      )
-      .join('');
-  }
 
   mounted() {
     this.$state.$editButton = qs('#edit-mode-toggle-btn', this.$target) as HTMLElement;
@@ -77,6 +68,21 @@ export default class WalletPage extends Component<IState, IProps> {
     this.bindingEvents();
   }
 
+  renderCardItems() {
+    const $cardListElement = qs('.card-list', this.$target) as HTMLElement;
+    const { paymentTypes } = this.$state;
+
+    $cardListElement.innerHTML = paymentTypes
+      .map(
+        paymentType =>
+          html`<li class="card-list--item" style="background-color:${paymentType.bgColor}">
+            <div class="card-list--item--name" style="color:${paymentType.fontColor}">${paymentType.name}</div>
+            <span class="card-list--item--delete-btn" data-id="${paymentType.id}">X</span>
+          </li>`
+      )
+      .join('');
+  }
+
   bindingEvents() {
     if (this.$state.$editButton) {
       this.$state.$editButton.addEventListener('click', e => {
@@ -85,6 +91,29 @@ export default class WalletPage extends Component<IState, IProps> {
     } else {
       throw new Error('Edit Button Binding Fail');
     }
+
+    // deletgate item delete event
+    const $cardList = qs(".card-list", this.$target) as HTMLElement;
+    $cardList.addEventListener("click", (e: MouseEvent) => {
+      const cardDeleteBtns = qsAll(".card-list--item--delete-btn", $cardList);
+      const target = e.target as HTMLElement;
+      for (const btn of cardDeleteBtns) {
+        if (target === btn) {
+          const paymentTypeId = Number(target.dataset.id);
+          this.handleCardDeleteBtnClickEvent(paymentTypeId);
+        }
+      }
+    })
+  }
+
+  async handleCardDeleteBtnClickEvent(id: number) {
+    const { success: deleteSuccess } = await deleteOwnPaymentTypeAsync(id);
+    if (deleteSuccess) {
+      const { success: retrieveSuccess, data } = await getOwnPaymentTypesAsync();
+      if (retrieveSuccess) {
+        paymentTypeListModel.setPaymentTypes(data);
+      }
+    }
   }
 
   toggleEditMode() {
@@ -92,7 +121,12 @@ export default class WalletPage extends Component<IState, IProps> {
 
     const mode = isEditMode ? !isEditMode : true;
     this.$state.isEditMode = mode;
-    if (mode) {
+    this.updateEditButton(this.$state.isEditMode);
+  }
+
+  updateEditButton(isEditMode = false) {
+    const { $editButton } = this.$state;
+    if (isEditMode) {
       if ($editButton) {
         $editButton.innerText = EDIT_MODE_OFF_STRING;
         $editButton.classList.add('editmode');
@@ -119,5 +153,22 @@ export default class WalletPage extends Component<IState, IProps> {
     for (const $cardElement of cardElements) {
       $cardElement.classList.remove('editmode');
     }
+  }
+
+  paymentTypeListModelSubscribeFunction() {
+    const newPaymentTypes = paymentTypeListModel.getPaymentTypes();
+    this.$state.paymentTypes = newPaymentTypes;
+    this.renderCardItems();
+    this.updateEditButton(this.$state.isEditMode);
+
+  }
+
+  setUnmount() {
+    paymentTypeListModel.unsubscribe(PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY);
+  }
+
+  setEvent() {
+    paymentTypeListModel.subscribe(PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY, this.paymentTypeListModelSubscribeFunction.bind(this));
+    this.resetEvent();
   }
 }

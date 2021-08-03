@@ -46,6 +46,7 @@
       flex-shrink: 0;
       color: $label;
       font-size: 1.5em;
+
     }
     &--input {
       background-color: transparent;
@@ -147,4 +148,8 @@
       }
     }
   }
+}
+
+.error-message {
+  color: red;
 }
