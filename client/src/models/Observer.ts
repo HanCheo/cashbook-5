@@ -1,11 +1,17 @@
 export default class Observer {
-  _observers: Set<any>;
+  _observers: Map<string, any>;
+  
   constructor() {
-    this._observers = new Set();
+    this._observers = new Map();
   }
 
-  subscribe(observer: Function) {
-    this._observers.add(observer);
+  subscribe(key: string, observer: Function) {
+    this._observers.set(key, observer);
+    console.log(this._observers);
+  }
+
+  unsubscribe(key: string) {
+    this._observers.delete(key);
   }
 
   notify() {
