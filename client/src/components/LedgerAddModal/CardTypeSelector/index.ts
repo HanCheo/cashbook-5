@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { qs, qsAll } from '@/src/utils/selecthelper';
+import { qs, qsAll } from '@/src/utils/selectHelper';
 import Component from '@/src/core/Component';
 import { CardType } from '@/src/interfaces/CardType';
 import { html } from '@/src/utils/codeHelper';
@@ -27,9 +27,9 @@ export default class CardTypeSelector extends Component<IState, IProps> {
         <div class="card-type-selector--toggle">선택</div>
         <ul class="card-type-selector--list">
           ${cardTypes &&
-          cardTypes
-            .map(
-              cardType => html`
+      cardTypes
+        .map(
+          cardType => html`
                 <li
                   data-card="${cardType.name}"
                   class="card-type-selector--list--item"
@@ -39,8 +39,8 @@ export default class CardTypeSelector extends Component<IState, IProps> {
                   <div>${cardType.color}</div>
                 </li>
               `
-            )
-            .join('')}
+        )
+        .join('')}
         </ul>
       </div>
     `;

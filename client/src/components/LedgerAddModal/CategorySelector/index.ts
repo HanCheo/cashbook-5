@@ -2,7 +2,7 @@ import './index.scss';
 import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
 import { ICategoryItem } from '@/src/interfaces/Category';
-import { qs, qsAll } from '@/src/utils/selecthelper';
+import { qs, qsAll } from '@/src/utils/selectHelper';
 
 interface IState {
   isShowCategories: boolean;
@@ -26,13 +26,13 @@ export default class CategorySelector extends Component<IState, IProps> {
         <div class="category-selector--toggle">선택</div>
         <ul class="category-selector--list">
           ${categories
-            ?.map(
-              (category: ICategoryItem) => /* html */ `
+        ?.map(
+          (category: ICategoryItem) => /* html */ `
                     <li class="category-selector--list--item ledger-category"
                     data-category="${category.name}" data-category-type="${category.id}">${category.name}</li>
                 `
-            )
-            .join('')}
+        )
+        .join('')}
         </ul>
       </div>
     `;

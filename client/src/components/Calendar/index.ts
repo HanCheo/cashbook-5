@@ -3,7 +3,7 @@ import { ILedgerList } from '@/src/interfaces/Ledger';
 import LedgerDataModel from '@/src/models/Ledgers';
 import { YOIL_ENG_SHORT } from '@/src/utils/calendar';
 import { addComma, html } from '@/src/utils/codeHelper';
-import { qs } from '@/src/utils/selecthelper';
+import { qs } from '@/src/utils/selectHelper';
 import LedgerList from '../LedgerList';
 import './index.scss';
 

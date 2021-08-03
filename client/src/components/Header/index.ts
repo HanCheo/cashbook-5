@@ -6,10 +6,10 @@ import SvgIcon from '@/src/assets/svg';
 import MonthPicker from '../MonthPicker';
 import { router } from '@/src/core/router';
 import { html, sibling } from '@/src/utils/codeHelper';
-import { qs } from '@/src/utils/selecthelper';
+import { qs } from '@/src/utils/selectHelper';
 import { checkUser } from '@/src/api/loginAPI';
 
-interface IProp {}
+interface IProp { }
 
 interface IState {
   date: Date;

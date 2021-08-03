@@ -2,7 +2,7 @@ import './index.scss';
 
 import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
-import { qs, qsAll } from '@/src/utils/selecthelper';
+import { qs, qsAll } from '@/src/utils/selectHelper';
 
 const backgroundColors = [
   '#6ed5eb',
@@ -25,7 +25,7 @@ interface IState {
   name: string;
 }
 
-interface IProps {}
+interface IProps { }
 
 export default class PaymentTypeAddModal extends Component<IState, IProps> {
   setup() {
@@ -52,28 +52,28 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
           <div class="payment-type-modal--bg-section--label">배경색</div>
           <ul id="bg-color-picker" class="color-picker">
             ${backgroundColors
-              .map(
-                color => html`
+        .map(
+          color => html`
                   <li class="color-picker--item" data-color="${color}">
                     <div class="box" style="background-color:${color}"></div>
                   </li>
                 `
-              )
-              .join('')}
+        )
+        .join('')}
           </ul>
         </div>
         <div class="payment-type-modal--font-section">
           <div class="payment-type-modal--font-section--label">글자색</div>
           <ul id="font-color-picker" class="color-picker">
             ${fontColors
-              .map(
-                color => html`
+        .map(
+          color => html`
                   <li class="color-picker--item" data-color="${color}">
                     <div class="box" style="background-color:${color}"></div>
                   </li>
                 `
-              )
-              .join('')}
+        )
+        .join('')}
           </ul>
         </div>
         <div class="payment-type-modal--preview-section">
