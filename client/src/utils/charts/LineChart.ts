@@ -1,5 +1,5 @@
 import { transformer, ScaleFn } from './scale';
-import { svgGroup, svgLine, svgText, svgCircle, svgPath, Point } from './svgElement';
+import { svgGroup, svgLine, svgText, svgCircle, svgLinePath, Point, svgCurveLinePath } from './svgElement';
 
 export interface LineGroupChartData {
   [category: string]: {
@@ -265,15 +265,15 @@ export default class LineChart {
       }
     }
 
-    const $path = svgPath(points.reverse());
+    // const $path = svgLinePath(points.reverse());
+    const $path = svgCurveLinePath(points.reverse());
 
     // Line의 총 길이 구하기
-    const l = this.calculateLineLength(points);
+    const l = $path.getTotalLength();
     $path.setAttribute('stroke-dasharray', ` 0  ${l} ${l} 0`);
     $path.setAttribute('stroke-dashoffset', `${l}`);
 
     const animateEl = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-
     animateEl.setAttribute('attributeType', 'XML');
     animateEl.setAttribute('attributeName', 'stroke-dashoffset');
     animateEl.setAttribute('from', '0');
@@ -332,19 +332,6 @@ export default class LineChart {
       }
     }
     this.element.appendChild(yLabelGroup);
-  }
-
-  calculateLineLength(points: Point[]) {
-    let sum = 0;
-    for (let i = 1; i < points.length; i++) {
-      const x = points[i][0];
-      const y = points[i][0];
-      const previousX = points[i - 1][0];
-      const previousY = points[i - 1][0];
-
-      sum += Math.sqrt(Math.abs(x * previousX) + Math.abs(y * previousY));
-    }
-    return sum;
   }
 
   static init(element: SVGElement, groupData: LineGroupChartData = {}, options: LineChartOptions = {}) {
