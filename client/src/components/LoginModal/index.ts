@@ -2,6 +2,8 @@ import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
 import svg from '@/src/assets/svg';
 import './index.scss';
+import { qs } from '@/src/utils/selectHelper';
+import { getGitLoginUrl } from '@/src/api/loginAPI';
 
 interface IState {}
 
@@ -18,13 +20,21 @@ export default class LoginModal extends Component<IState, IProps> {
             <div class="avatar">${svg.userAvatar}</div>
           </div>
           <div class="title">Login</div>
-          <div class="oauth">
+          <div class="oauth" id="gitOAuthPath">
             ${svg.octocat}
-            <a href="https://github.com/login/oauth/authorize?client_id=a7dc79e69898ab6de34d">깃허브 로그인</a>
+            <a>깃허브 로그인</a>
           </div>
         </div>
       </div>
     `;
+  }
+
+  mounted() {
+    const gitOAuthPathTarget = qs('#gitOAuthPath', this.$target) as HTMLElement;
+    gitOAuthPathTarget.addEventListener('click', async () => {
+      const { url } = await getGitLoginUrl();
+      location.href = url;
+    });
   }
 
   render() {

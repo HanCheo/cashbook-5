@@ -9,3 +9,6 @@ export const checkUser = async () => {
 
   return data;
 };
+
+export const getGitLoginUrl = (): Promise<{ [key: string]: string }> =>
+  getFetch('/auth/giturl', { headers: { contentType: 'application/json' } });
