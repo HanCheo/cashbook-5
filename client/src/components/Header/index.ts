@@ -17,9 +17,9 @@ interface IState {
 }
 
 export default class Header extends Component<IState, IProp> {
-  async setup() {
+  setup() {
     this.$state.date = CalendarModel.getDate();
-    CalendarModel.subscribe('header', async () => {
+    CalendarModel.subscribe('header', () => {
       this.setState({
         date: CalendarModel.getDate(),
       });
@@ -83,7 +83,6 @@ export default class Header extends Component<IState, IProp> {
     });
   }
   async setEvent() {
-    //LoginModal
     await checkUser().catch(e => {
       this.showLoginModal();
       return;

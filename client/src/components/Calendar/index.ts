@@ -17,7 +17,7 @@ interface IProps {
   ledgerData: ILedgerList[] | undefined;
 }
 
-export default class calendar extends Component<IState, IProps> {
+export default class Calendar extends Component<IState, IProps> {
   setup() {
     this.$state.ledgerData = this.$props.ledgerData;
     this.$state.date = this.$props.date;
