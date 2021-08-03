@@ -19,7 +19,7 @@ class PaymentTypeController {
             bgColor,
             fontColor,
         } = req.body;
-
+        console.log(name);
         if (!name || name === "") {
             res.status(BAD_REQUEST).send({
                 error: ERROR_PARAMETER_INVALID + "(name is empty or invalid.)"

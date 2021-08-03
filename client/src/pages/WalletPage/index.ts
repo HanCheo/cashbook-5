@@ -2,8 +2,9 @@ import './index.scss';
 import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
 import { qs, qsAll } from '@/src/utils/selectHelper';
-import { getPaymentTypesAsync, PaymentType } from '@/src/api/paymentTypeAPI';
+import { getOwnPaymentTypesAsync, PaymentType } from '@/src/api/paymentTypeAPI';
 import PaymentTypeAddModal from '@/src/components/PaymentTypeAddModal';
+import paymentTypeListModel from '@/src/models/PaymentTypeList';
 
 interface IState {
   paymentTypes: PaymentType[];
@@ -15,6 +16,8 @@ interface IProps { }
 
 const EDIT_MODE_ON_STRING = '수정 하기';
 const EDIT_MODE_OFF_STRING = '수정 중';
+
+const PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY = "wallet";
 
 export default class WalletPage extends Component<IState, IProps> {
   template() {
@@ -37,7 +40,7 @@ export default class WalletPage extends Component<IState, IProps> {
     this.$state.paymentTypes = [];
     this.$state.isEditMode = false;
 
-    getPaymentTypesAsync().then(({ success, data }) => {
+    getOwnPaymentTypesAsync().then(({ success, data }) => {
       if (success) {
         this.$state.paymentTypes = data;
         this.renderCardItems();
@@ -119,5 +122,20 @@ export default class WalletPage extends Component<IState, IProps> {
     for (const $cardElement of cardElements) {
       $cardElement.classList.remove('editmode');
     }
+  }
+
+  async paymentTypeListModelSubscribeFunction() {
+    const newPaymentTypes = paymentTypeListModel.getPaymentTypes();
+    this.$state.paymentTypes = newPaymentTypes;
+    this.renderCardItems();
+  }
+
+  setUnmount() {
+    paymentTypeListModel.unsubscribe(PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY);
+  }
+
+  setEvent() {
+    paymentTypeListModel.subscribe(PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY, this.paymentTypeListModelSubscribeFunction.bind(this));
+    this.resetEvent();
   }
 }
