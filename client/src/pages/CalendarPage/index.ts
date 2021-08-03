@@ -6,7 +6,7 @@ import LedgerDataModel from '@/src/models/Ledgers';
 import './index.scss';
 
 interface IState {
-  ledgerData: ILedgerList[];
+  ledgerData: ILedgerList[] | undefined;
   date: Date;
 }
 interface IProps {}
@@ -16,6 +16,7 @@ export default class CalendarPages extends Component<IState, IProps> {
     this.$state.ledgerData = LedgerDataModel.getData();
     this.$state.date = CalendarModel.getDate();
   }
+
   template() {
     return `<div class="calendar-wrapper"></div>`;
   }
@@ -26,11 +27,19 @@ export default class CalendarPages extends Component<IState, IProps> {
     new Calendar(target, { ledgerData, date });
   }
 
-  setEvent() {
+  setUnmount() {
+    CalendarModel.unsubscribe('calendar');
+  }
+
+  async CalendarModelSubscribeFunction() {
     const target = this.$target.querySelector('.calendar-wrapper') as HTMLElement;
-    CalendarModel.subscribe(async () => {
-      await LedgerDataModel.update(CalendarModel.getDate());
-      new Calendar(target, { ledgerData: LedgerDataModel.getData(), date: CalendarModel.getDate() });
-    });
+    const date = CalendarModel.getDate();
+    await LedgerDataModel.update(date.getFullYear() + '-' + (date.getMonth() + 1));
+    new Calendar(target, { ledgerData: LedgerDataModel.getData(), date: CalendarModel.getDate() });
+  }
+
+  setEvent() {
+    CalendarModel.subscribe('calendar', this.CalendarModelSubscribeFunction.bind(this));
+    this.resetEvent();
   }
 }
