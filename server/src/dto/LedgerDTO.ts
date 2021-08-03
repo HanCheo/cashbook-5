@@ -1,4 +1,4 @@
-import { CategoryDTO } from "./CategoryDTO";
+import { CategoryResponseDTO } from "./CategoryDTO";
 import { PaymentTypeResponseDTO } from "./PaymentTypeDTO";
 
 export type LedgerRequestDTO = {
@@ -14,7 +14,7 @@ export type LedgerResponseDTO = {
     userId: number;
     categoryId: number;
     paymentTypeId: number;
-    category: CategoryDTO;
+    category: CategoryResponseDTO;
     paymentType: PaymentTypeResponseDTO;
     date: Date;
     content: string;

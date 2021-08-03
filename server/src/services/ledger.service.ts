@@ -1,4 +1,4 @@
-import { CategoryDTO } from '../dto/CategoryDTO';
+import { CategoryResponseDTO } from '../dto/CategoryDTO';
 import { LedgerRequestDTO, LedgerResponseDTO } from '../dto/LedgerDTO';
 import { PaymentTypeResponseDTO } from '../dto/PaymentTypeDTO';
 import LedgerRepository from '../repositories/ledger.repository';
@@ -20,7 +20,7 @@ class LedgerService {
         throw new Error("category가 존재하지않는 ledger 데이터가 존재합니다.")
       }
 
-      const categoryDTO: CategoryDTO = {
+      const categoryDTO: CategoryResponseDTO = {
         id: category.id!,
         name: category.name,
         color: category.color,
