@@ -10,7 +10,7 @@ import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 import { removeAllChildNode } from '@/src/utils/domHelper';
 
 interface IState {
-  rawData?: StatisticLedgerByCategory;
+  statisticData?: StatisticLedgerByCategory;
   categoryItems?: CategoryItem[];
 }
 interface IProps { }
@@ -24,6 +24,9 @@ export default class StatisticPage extends Component<IState, IProps> {
                 <div id="statistic-category-container"></div>
               </div>
               <div class="sub-chart-container">
+                <div class="sub-chart-container--header">
+                  <div id="reset-line-chart-btn" class="reset-btn">전체 데이터 보기</div>
+                </div>
                 <div id="line-chart"></div>
               </div>
             </div>
@@ -31,14 +34,14 @@ export default class StatisticPage extends Component<IState, IProps> {
   }
 
   setup() {
-    this.$state = { rawData: {} };
+    this.$state = { statisticData: {} };
 
     getStatisticLedgers().then(result => {
       if (result.success) {
         const statisticData = result.data;
 
         this.setState({
-          rawData: statisticData,
+          statisticData: statisticData,
           categoryItems: mapToCategoryItemData(statisticData)
         });
       }
@@ -47,21 +50,25 @@ export default class StatisticPage extends Component<IState, IProps> {
 
   mounted() {
     const { categoryItems } = this.$state;
-
     const $categoryList = qs("#statistic-category-container") as HTMLElement;
     new CategoryList($categoryList, { items: categoryItems });
+
+    const $lineChartResetBtn = qs("#reset-line-chart-btn") as HTMLElement;
+    $lineChartResetBtn.addEventListener("click", () => {
+      this.renderLineChartAllCategory();
+    });
 
     this.renderPieChart();
     this.renderLineChartAllCategory();
   }
 
   renderPieChart() {
-    const { rawData } = this.$state;
-    if (!rawData) {
-
+    const { statisticData } = this.$state;
+    const $pieChartContainer = document.querySelector('#pie-chart') as HTMLElement;
+    if (!statisticData) {
+      $pieChartContainer.innerHTML = html`<p>데이터가 없습니다.</p>`;
     } else {
-      const pieChartData = mapToPieChartData(rawData);
-      const $pieChartContainer = document.querySelector('#pie-chart') as HTMLElement;
+      const pieChartData = mapToPieChartData(statisticData);
       removeAllChildNode($pieChartContainer);
 
       const $pieChartSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg") as SVGElement;
@@ -75,29 +82,29 @@ export default class StatisticPage extends Component<IState, IProps> {
   }
 
   renderLineChartAllCategory() {
-    const { rawData } = this.$state;
+    const { statisticData } = this.$state;
     const $lineChartContainer = document.querySelector('#line-chart') as HTMLElement;
     removeAllChildNode($lineChartContainer);
 
-    if (!rawData) {
+    if (!statisticData) {
       $lineChartContainer.innerHTML = html`<p>데이터가 없습니다.</p>`;
     } else {
-      const lineChartData = mapToLineChartData(rawData)
+      const lineChartData = mapToLineChartData(statisticData)
       this.renderLineChart(lineChartData);
     }
   }
 
   renderLineChartByCategory(category: string) {
-    const { rawData } = this.$state;
+    const { statisticData } = this.$state;
     const $lineChartContainer = document.querySelector('#line-chart') as HTMLElement;
     removeAllChildNode($lineChartContainer);
 
-    if (!rawData) {
+    if (!statisticData) {
       $lineChartContainer.innerHTML = html`<p>데이터가 없습니다.</p>`;
     } else {
       let categortAsKey: keyof StatisticLedgerByCategory = category;
       const filtered: StatisticLedgerByCategory = {
-        [category]: rawData[categortAsKey]
+        [category]: statisticData[categortAsKey]
       }
       const lineChartData = mapToLineChartData(filtered);
       this.renderLineChart(lineChartData);

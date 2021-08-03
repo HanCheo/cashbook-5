@@ -42,6 +42,29 @@
 .sub-chart-container {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+
+  &--header {
+    display: flex;
+    align-self: flex-end;
+    .reset-btn {
+      display: flex;
+      align-content: center;
+      flex-grow: 0;
+      border-radius: 8px;
+      background-color: $primary;
+      color: $off-white;
+      font-size: 0.85em;
+      padding: 0.4em;
+      border: 1px solid $primary;
+      &:hover {
+        color: $primary;
+        background-color: transparent;
+      }
+    }
+  }
+
+  
 
   #line-chart {
     width: 600px;
