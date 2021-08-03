@@ -10,7 +10,7 @@ interface IState {
   date: Date;
 }
 interface IProps {}
-
+const CALENDAR_OBSERVER_LISTENER_KEY = 'calendar';
 export default class CalendarPages extends Component<IState, IProps> {
   setup() {
     this.$state.ledgerData = LedgerDataModel.getData();
@@ -28,7 +28,7 @@ export default class CalendarPages extends Component<IState, IProps> {
   }
 
   setUnmount() {
-    CalendarModel.unsubscribe('calendar');
+    CalendarModel.unsubscribe(CALENDAR_OBSERVER_LISTENER_KEY);
   }
 
   async CalendarModelSubscribeFunction() {
@@ -39,7 +39,7 @@ export default class CalendarPages extends Component<IState, IProps> {
   }
 
   setEvent() {
-    CalendarModel.subscribe('calendar', this.CalendarModelSubscribeFunction.bind(this));
+    CalendarModel.subscribe(CALENDAR_OBSERVER_LISTENER_KEY, this.CalendarModelSubscribeFunction.bind(this));
     this.resetEvent();
   }
 }

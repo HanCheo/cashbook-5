@@ -10,21 +10,22 @@ import { html, sibling } from '@/src/utils/codeHelper';
 import { qs } from '@/src/utils/selectHelper';
 import { checkUser } from '@/src/api/loginAPI';
 
-interface IProp { }
+interface IProp {}
 
 interface IState {
   date: Date;
 }
-
+const HEADER_OBSERVER_LISTENER_KEY = 'header';
 export default class Header extends Component<IState, IProp> {
   setup() {
     this.$state.date = CalendarModel.getDate();
-    CalendarModel.subscribe('header', () => {
+    CalendarModel.subscribe(HEADER_OBSERVER_LISTENER_KEY, () => {
       this.setState({
         date: CalendarModel.getDate(),
       });
     });
   }
+
   template() {
     const { date } = this.$state;
     return html`
@@ -87,7 +88,7 @@ export default class Header extends Component<IState, IProp> {
       this.showLoginModal();
       return;
     });
-    await CalendarModel.setDate(new Date());
+    CalendarModel.setDate(new Date());
   }
 
   showLoginModal() {

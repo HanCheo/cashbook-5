@@ -15,7 +15,7 @@ interface IState {}
 interface IProps {
   ledgerData: ILedgerList[] | undefined;
 }
-
+const CALENDAR_OBSERVER_LISTENER_KEY = 'main';
 export default class MainPage extends Component<IProps, IState> {
   setup() {
     this.$state.ledgerData = LedgerDataModel.getData();
@@ -47,9 +47,9 @@ export default class MainPage extends Component<IProps, IState> {
     const body = this.$target.querySelector('#body') as HTMLElement;
     const calendarDate = CalendarModel.getDate();
     await LedgerDataModel.update(calendarDate.getFullYear() + '-' + (calendarDate.getMonth() + 1));
-    
+
     const ledgerData = LedgerDataModel.getData();
- 
+
     if (!ledgerData?.length) {
       new Snackbar(document.body, { text: '앗 ! 데이터가 없어요 !' });
       return;
@@ -58,10 +58,10 @@ export default class MainPage extends Component<IProps, IState> {
     new LedgerContainer(body, { ledgerData });
   }
   setUnmount() {
-    CalendarModel.unsubscribe('main');
+    CalendarModel.unsubscribe(CALENDAR_OBSERVER_LISTENER_KEY);
   }
   setEvent() {
-    CalendarModel.subscribe('main', this.CalendarModelSubscribeFunction.bind(this));
+    CalendarModel.subscribe(CALENDAR_OBSERVER_LISTENER_KEY, this.CalendarModelSubscribeFunction.bind(this));
     this.resetEvent();
   }
 }
