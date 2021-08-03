@@ -66,7 +66,7 @@ class LedgerController {
 
     if (isNaN(amountAsNumber)) {
       res.status(BAD_REQUEST).send({
-        error: "amount value is invalid"
+        error: ERROR_PARAMETER_INVALID + "(amount is invalid)"
       }).end();
       return;
     }

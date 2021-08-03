@@ -5,6 +5,7 @@ import { PaymentTypeRequestDTO } from '../dto/PaymentTypeDTO';
 
 
 const ERROR_RETRIEVE_USER_PAYMENTS_FAIL = "사용자의 결제 수단을 가져오는데 실패했습니다.";
+const ERROR_CREATE_USER_PAYMENTS_FAIL = "사용자의 결제 수단을 가져오는데 실패했습니다.";
 const ERROR_DELETE_USER_PAYMENTS_FAIL = "사용자의 결제 수단을 삭제하는데 실패했습니다.";
 const ERROR_PARAMETER_INVALID = "입력 값이 잘못되었습니다.";
 
@@ -21,7 +22,7 @@ class PaymentTypeController {
 
         if (!name || name === "") {
             res.status(BAD_REQUEST).send({
-                error: "name is empty or invalid."
+                error: ERROR_PARAMETER_INVALID + "(name is empty or invalid.)"
             }).end();
             return;
         }
@@ -43,7 +44,7 @@ class PaymentTypeController {
         } else {
             res.status(SERVER_ERROR).send({
                 success: false,
-                error: "PaymentType Creation is fail."
+                error: ERROR_CREATE_USER_PAYMENTS_FAIL
             })
         }
     }
