@@ -19,12 +19,9 @@ export default class Component<S, P> {
     this.$props = { ...$props };
     this.$state = {} as S;
     this.eventlisteners = [];
-    this.init();
-  }
-  async init() {
-    await this.setup();
-    await this.render();
-    await this.setEvent();
+    this.setup();
+    this.render();
+    this.setEvent();
   }
 
   setup() {}
