@@ -19,6 +19,11 @@ class AuthController {
     res.redirect(env.DEV_CLIENT_URL);
     res.end();
   }
+
+  gitOAuthUrl(req: Request, res: Response) {
+    res.send({ url: `https://github.com/login/oauth/authorize?client_id=${env.GIT_CLIENT_ID}` });
+    res.end();
+  }
 }
 
 export default new AuthController();
