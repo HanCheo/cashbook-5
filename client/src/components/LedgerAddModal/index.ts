@@ -5,6 +5,8 @@ import { html } from '@/src/utils/codeHelper';
 import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
 import Snackbar from '../SnackBar';
+import { createLedgerData, getLedgerData } from '@/src/api/ledgerAPI';
+import calendarModel from '@/src/models/Calendar';
 
 interface Error {
   [key: string]: string;
@@ -14,7 +16,7 @@ interface IState {
   $amountInput: HTMLInputElement;
   $categoryInput: HTMLInputElement;
   $contentInput: HTMLInputElement;
-  $cardTypeInput: HTMLInputElement;
+  $paymentTypeInput: HTMLInputElement;
   $dateInput: HTMLInputElement;
 
   paymentTypeId: number;
@@ -52,7 +54,7 @@ export default class LedgerAddModal extends Component<IState, IProps> {
         <span class="spliter"></span>
         <div class="ledger-modal-container--input-box">
           <label for="amount-input">금액</label>
-          <input id="amount-input" type="text" placeholder="입력하세요" />
+          <input id="amount-input" type="number" min="1" step="any" placeholder="입력하세요" />
         </div>
         <span class="spliter"></span>
         <div class="ledger-modal-container--submit-box">
@@ -68,7 +70,7 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     this.$state.$amountInput = qs('#amount-input', this.$target) as HTMLInputElement;
     this.$state.$categoryInput = qs('#category-input', this.$target) as HTMLInputElement;
     this.$state.$contentInput = qs('#content-input', this.$target) as HTMLInputElement;
-    this.$state.$cardTypeInput = qs('#card-type-input', this.$target) as HTMLInputElement;
+    this.$state.$paymentTypeInput = qs('#card-type-input', this.$target) as HTMLInputElement;
     this.$state.$dateInput = qs('#date-input', this.$target) as HTMLInputElement;
 
     const $categorySelectorElement = qs('#category-selector-container', this.$target) as HTMLElement;
@@ -90,10 +92,6 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     const $submitBtnElement = qs('.submit-btn', this.$target) as HTMLElement;
     $submitBtnElement.addEventListener('click', () => {
       const result = this.submit();
-      if (result) {
-        this.clear();
-        this.hide();
-      }
     });
 
     const $cancelBtnElement = this.$target.querySelector('.cancel-btn') as HTMLElement;
@@ -109,13 +107,24 @@ export default class LedgerAddModal extends Component<IState, IProps> {
   }
 
   handleSelectPaymentType(id: number, name: string) {
-    this.$state.$cardTypeInput.value = name;
+    this.$state.$paymentTypeInput.value = name;
     this.$state.paymentTypeId = id;
   }
 
   handleSelectCategory(id: number, name: string) {
     this.$state.$categoryInput.value = name;
     this.$state.categoryId = id;
+  }
+
+  async createLedgerAsync(date: Date, paymentTypeId: number, categoryId: number, amount: number, content: string) {
+    const yearAndMonth = `${date.getFullYear()}-${date.getMonth() + 1}`;
+
+    const { success, data: { id } } = await createLedgerData(yearAndMonth, paymentTypeId, categoryId, amount, content);
+    if (success) {
+      this.clear();
+      this.hide();
+      calendarModel.setDate(calendarModel.getDate()); // for refresh main page;
+    }
   }
 
   submit() {
@@ -128,18 +137,25 @@ export default class LedgerAddModal extends Component<IState, IProps> {
       return false;
     }
 
+    const { $amountInput, $contentInput, $dateInput, categoryId, paymentTypeId } = this.$state;
+
+    const date = new Date($dateInput.value);
+    const amount = Number($amountInput.value);
+    const content = $contentInput.value;
+
+    this.createLedgerAsync(date, paymentTypeId, categoryId, amount, content);
     return true;
   }
 
   validateForm(): Error {
-    const { $amountInput, $categoryInput, $contentInput, $cardTypeInput, $dateInput } = this.$state;
+    const { $amountInput, $categoryInput, $contentInput, $paymentTypeInput, $dateInput, categoryId, paymentTypeId } = this.$state;
     const error: Error = {};
 
     if (!$dateInput.value) {
       error.date = '날짜를 입력해주세요.';
     }
 
-    if (!$categoryInput.value) {
+    if (!$categoryInput.value || !categoryId) {
       error.category = '분류를 선택해주세요.';
     }
 
@@ -147,7 +163,7 @@ export default class LedgerAddModal extends Component<IState, IProps> {
       error.content = '내용을 입력해주세요.';
     }
 
-    if (!$cardTypeInput.value) {
+    if (!$paymentTypeInput.value || !paymentTypeId) {
       error.cardType = '결제 수단을 선택해주세요.';
     }
 
@@ -159,11 +175,11 @@ export default class LedgerAddModal extends Component<IState, IProps> {
   }
 
   clear() {
-    const { $amountInput, $categoryInput, $contentInput, $cardTypeInput, $dateInput } = this.$state;
+    const { $amountInput, $categoryInput, $contentInput, $paymentTypeInput, $dateInput } = this.$state;
     $amountInput.value = '';
     $categoryInput.value = '';
     $contentInput.value = '';
-    $cardTypeInput.value = '';
+    $paymentTypeInput.value = '';
     $dateInput.value = '';
   }
 
