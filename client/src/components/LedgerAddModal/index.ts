@@ -1,6 +1,6 @@
 import './index.scss';
 import Component from '@/src/core/Component';
-import { qs } from '@/src/utils/selecthelper';
+import { qs } from '@/src/utils/selectHelper';
 import { html } from '@/src/utils/codeHelper';
 import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
@@ -33,7 +33,7 @@ interface IState {
   $dateInput: HTMLInputElement;
 }
 
-interface IProps {}
+interface IProps { }
 
 export default class LedgerAddModal extends Component<IState, IProps> {
   template() {

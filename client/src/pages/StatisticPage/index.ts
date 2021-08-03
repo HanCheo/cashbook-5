@@ -1,26 +1,17 @@
 import { getStatisticLedgers, StatisticLedgerByCategory } from '@/src/api/statisticAPI';
 import Component from '@/src/core/Component';
-import { qs } from "@/src/utils/selecthelper";
+import { qs } from "@/src/utils/selectHelper";
 import LineChart, { LineChartData, LineGroupChartData } from '@/src/utils/charts/LineChart';
 import PieChart, { PieChartData } from '@/src/utils/charts/PieChart';
 import CategoryList, { CategoryItem } from './CategoryList';
-
 import './index.scss';
-
-// TODO: Mocking Data
-const mockDataByCategory: PieChartData[] = [
-  { name: '카드', value: 10, color: 'Coral' },
-  { name: '현금', value: 50, color: '#00ab6b' },
-  { name: '적금', value: 30, color: '#00ab6b' },
-  { name: '적금', value: 30, color: '#00ab6b' },
-  { name: '적금', value: 30, color: '#00ab6b' },
-];
-
+import { html } from '@/src/utils/codeHelper';
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
+import { removeAllChildNode } from '@/src/utils/domHelper';
 
 interface IState {
-  pieChartData?: PieChartData[];
-  categoryItems?: CategoryItem[];
-  lineChartData?: LineGroupChartData;
+  statisticData?: StatisticLedgerByCategory;
+
 }
 interface IProps { }
 
@@ -29,99 +20,162 @@ export default class StatisticPage extends Component<IState, IProps> {
     return /* html */`
             <div class='statistic-container'>
               <div class="chart-container">
-                <svg id="pie-chart"></svg>
+                <div id="pie-chart"></div>
                 <div id="statistic-category-container"></div>
               </div>
               <div class="sub-chart-container">
-                <svg id="line-chart"></svg>
+                <div class="sub-chart-container--header">
+                  <div id="reset-line-chart-btn" class="reset-btn">전체 데이터 보기</div>
+                </div>
+                <div id="line-chart"></div>
               </div>
             </div>
           `;
   }
 
   setup() {
-    this.$state = { pieChartData: [], lineChartData: {} };
+    this.$state = { statisticData: {} };
 
     getStatisticLedgers().then(result => {
       if (result.success) {
         const statisticData = result.data;
 
         this.setState({
-          pieChartData: this.mapToPieChartData(statisticData),
-          lineChartData: this.mapToLineChartData(statisticData),
-          categoryItems: this.mapToCategoryItemData(statisticData)
+          statisticData: statisticData,
         });
       }
     });
   }
 
   mounted() {
-    const { pieChartData, lineChartData, categoryItems } = this.$state;
-
-    const $categoryList = qs("#statistic-category-container") as HTMLElement;
-    new CategoryList($categoryList, { items: categoryItems });
-
-    const $pieChart = document.querySelector('#pie-chart') as SVGElement;
-    PieChart.init($pieChart, pieChartData, {
-      onClick: (d: string) => {
-        // TODO: change line chart
-        console.log('click: ' + d);
-      },
+    const $lineChartResetBtn = qs("#reset-line-chart-btn") as HTMLElement;
+    $lineChartResetBtn.addEventListener("click", () => {
+      this.renderLineChartAllCategory();
     });
 
-    const $lineChart = document.querySelector('#line-chart') as SVGElement;
-    LineChart.init($lineChart, lineChartData);
+    this.renderCategoryList();
+    this.renderPieChart();
+    this.renderLineChartAllCategory();
   }
 
-  mapToCategoryItemData(data: StatisticLedgerByCategory): CategoryItem[] {
-    const categoryItems: CategoryItem[] = [];
+  renderCategoryList() {
+    const { statisticData } = this.$state;
+    const $categoryList = qs("#statistic-category-container") as HTMLElement;
 
-    let totalOfAllCategory = 0;
+    if (!statisticData) {
+      new CategoryList($categoryList, { items: [] });
+    } else {
+      const items = mapToCategoryItemData(statisticData);
+      new CategoryList($categoryList, { items });
+    }
 
-    for (const key in data) totalOfAllCategory += data[key].total
+  }
 
-    for (const [key, value] of Object.entries(data)) {
-      const { total, color } = value;
-      const percentage = totalOfAllCategory ? ((total / totalOfAllCategory) * 100).toFixed(1) : 0;
-      categoryItems.push({
-        name: key,
-        color: color,
-        percentage: Number(percentage),
-        value: total
+  renderPieChart() {
+    const { statisticData } = this.$state;
+    const $pieChartContainer = document.querySelector('#pie-chart') as HTMLElement;
+    if (!statisticData) {
+      $pieChartContainer.innerHTML = html`<p>데이터가 없습니다.</p>`;
+    } else {
+      const pieChartData = mapToPieChartData(statisticData);
+      removeAllChildNode($pieChartContainer);
+
+      const $pieChartSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg") as SVGElement;
+      $pieChartContainer.appendChild($pieChartSVG);
+      PieChart.init($pieChartSVG, pieChartData, {
+        onClick: (name: string) => {
+          this.renderLineChartByCategory(name);
+        },
       });
     }
-    return categoryItems;
   }
-  mapToPieChartData(data: StatisticLedgerByCategory): PieChartData[] {
-    const pieChartData: PieChartData[] = [];
-    for (const [key, value] of Object.entries(data)) {
-      const { total, color } = value;
-      pieChartData.push({
-        name: key,
-        value: total,
-        color: color,
-      });
+
+  renderLineChartAllCategory() {
+    const { statisticData } = this.$state;
+    const $lineChartContainer = document.querySelector('#line-chart') as HTMLElement;
+    removeAllChildNode($lineChartContainer);
+
+    if (!statisticData) {
+      $lineChartContainer.innerHTML = html`<p>데이터가 없습니다.</p>`;
+    } else {
+      const lineChartData = mapToLineChartData(statisticData)
+      this.renderLineChart(lineChartData);
     }
-    return pieChartData;
   }
 
-  mapToLineChartData(data: StatisticLedgerByCategory): LineGroupChartData {
-    const lineGroupChartData: LineGroupChartData = {};
+  renderLineChartByCategory(category: string) {
+    const { statisticData } = this.$state;
+    const $lineChartContainer = document.querySelector('#line-chart') as HTMLElement;
+    removeAllChildNode($lineChartContainer);
 
-    for (const [key, value] of Object.entries(data)) {
-      const { color, entries } = value;
-      lineGroupChartData[key] = {
-        data: entries.map<LineChartData>(entry => {
-          return {
-            name: '',
-            datetime: entry.datetime,
-            value: entry.value,
-          };
-        }),
-        color,
-      };
+    if (!statisticData) {
+      $lineChartContainer.innerHTML = html`<p>데이터가 없습니다.</p>`;
+    } else {
+      let categortAsKey: keyof StatisticLedgerByCategory = category;
+      const filtered: StatisticLedgerByCategory = {
+        [category]: statisticData[categortAsKey]
+      }
+      const lineChartData = mapToLineChartData(filtered);
+      this.renderLineChart(lineChartData);
     }
-
-    return lineGroupChartData;
   }
+
+  renderLineChart(lineChartData: LineGroupChartData) {
+    const $lineChartContainer = document.querySelector('#line-chart') as HTMLElement;
+    const $lineChartSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg") as SVGElement;
+    LineChart.init($lineChartSVG, lineChartData);
+    $lineChartContainer.appendChild($lineChartSVG);
+  }
+}
+
+function mapToCategoryItemData(data: StatisticLedgerByCategory): CategoryItem[] {
+  const categoryItems: CategoryItem[] = [];
+  let totalOfAllCategory = 0;
+
+  for (const key in data) totalOfAllCategory += data[key].total
+
+  for (const [key, value] of Object.entries(data)) {
+    const { total, color } = value;
+    const percentage = totalOfAllCategory ? ((total / totalOfAllCategory) * 100).toFixed(1) : 0;
+    categoryItems.push({
+      name: key,
+      color: color,
+      percentage: Number(percentage),
+      value: total
+    });
+  }
+  return categoryItems;
+}
+
+function mapToPieChartData(data: StatisticLedgerByCategory): PieChartData[] {
+  const pieChartData: PieChartData[] = [];
+  for (const [key, value] of Object.entries(data)) {
+    const { total, color } = value;
+    pieChartData.push({
+      name: key,
+      value: total,
+      color: color,
+    });
+  }
+  return pieChartData;
+}
+
+function mapToLineChartData(data: StatisticLedgerByCategory): LineGroupChartData {
+  const lineGroupChartData: LineGroupChartData = {};
+
+  for (const [key, value] of Object.entries(data)) {
+    const { color, entries } = value;
+    lineGroupChartData[key] = {
+      data: entries.map<LineChartData>(entry => {
+        return {
+          name: '',
+          datetime: entry.datetime,
+          value: entry.value,
+        };
+      }),
+      color,
+    };
+  }
+
+  return lineGroupChartData;
 }

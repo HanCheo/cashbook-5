@@ -1,7 +1,7 @@
 import './index.scss';
 import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
-import { qs, qsAll } from '@/src/utils/selecthelper';
+import { qs, qsAll } from '@/src/utils/selectHelper';
 import { getPaymentTypesAsync, PaymentType } from '@/src/api/paymentTypeAPI';
 import PaymentTypeAddModal from '@/src/components/PaymentTypeAddModal';
 
@@ -11,7 +11,7 @@ interface IState {
   $editButton?: HTMLElement;
 }
 
-interface IProps {}
+interface IProps { }
 
 const EDIT_MODE_ON_STRING = '수정 하기';
 const EDIT_MODE_OFF_STRING = '수정 중';
