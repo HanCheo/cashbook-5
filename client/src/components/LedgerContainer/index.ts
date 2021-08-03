@@ -7,7 +7,7 @@ import './index.scss';
 import Snackbar from '../SnackBar';
 
 interface IState {
-  ledgerData: ILedgerList[];
+  ledgerData: ILedgerList[] | undefined;
   totalCount?: number;
   totalIncomes?: number;
   totalSpand?: number;
@@ -15,29 +15,28 @@ interface IState {
 }
 
 interface IProps {
-  ledgerData: ILedgerList[];
+  ledgerData: ILedgerList[] | undefined;
 }
 
 export default class LedgerContainer extends Component<IState, IProps> {
   setup() {
     this.$state.ledgerData = this.$props.ledgerData;
-    this.$state.totalCount = 0;
     this.$state.totalIncomes = 0;
     this.$state.totalSpand = 0;
     this.$state.checked = ['spand', 'income'];
 
-    this.$state.ledgerData.forEach((ledgerList: ILedgerList) => {
-      (this.$state.totalCount as number) += ledgerList.ledgers.length;
+    this.$state.ledgerData?.forEach((ledgerList: ILedgerList) => {
       ledgerList.ledgers.forEach((ledger: ILedger) => {
         ledger.amount < 0
-          ? ((this.$state.totalSpand as number) += ledger.amount)
-          : ((this.$state.totalIncomes as number) += ledger.amount);
+          ? ((this.$state.totalSpand as number) += +ledger.amount)
+          : ((this.$state.totalIncomes as number) += +ledger.amount);
       });
     });
   }
 
   template() {
-    const { totalCount, totalIncomes, totalSpand } = this.$state;
+    const { totalIncomes, totalSpand } = this.$state;
+    const totalCount = this.$state.ledgerData?.reduce((sum, ledger) => (sum += ledger.ledgers.length), 0);
 
     return html`
       <div class="ledger-container">
@@ -80,39 +79,32 @@ export default class LedgerContainer extends Component<IState, IProps> {
       }
     });
 
-    if (!ledgerData.length) {
+    if (!ledgerData?.length) {
       new Snackbar(document.body, { text: '앗 ! 데이터가 없어요 !' });
     }
 
-    ledgerData.forEach((ledgerList: ILedgerList) => {
+    ledgerData?.forEach((ledgerList: ILedgerList) => {
       new LedgerList(wrapper, { ledgerList: ledgerList });
     });
   }
 
-  getFilterData(checkBoxs: HTMLInputElement[]) {
+  async getFilterData(checkBoxs: HTMLInputElement[]) {
+    const _LedgerDataModel = await LedgerDataModel;
     let filter = '';
     checkBoxs.forEach(e => (e.checked ? (filter += e.getAttribute('id')) : ''));
 
     switch (filter) {
       case 'spand':
-        this.setState({ ledgerData: LedgerDataModel.getSpandData(), checked: ['spand'] });
+        this.setState({ ledgerData: _LedgerDataModel.getSpandData(), checked: ['spand'] });
         break;
       case 'income':
-        this.setState({ ledgerData: LedgerDataModel.getIncomeData(), checked: ['income'] });
+        this.setState({ ledgerData: _LedgerDataModel.getIncomeData(), checked: ['income'] });
         break;
       case '':
         this.setState({ ledgerData: [], checked: [] });
         break;
       default:
-        this.setState({ ledgerData: LedgerDataModel.getData(), checked: ['spand', 'income'] });
+        this.setState({ ledgerData: _LedgerDataModel.getData(), checked: ['spand', 'income'] });
     }
-  }
-
-  setEvent() {
-    LedgerDataModel.subscribe(() => {
-      this.setState({
-        ledgerData: LedgerDataModel.getData(),
-      });
-    });
   }
 }
