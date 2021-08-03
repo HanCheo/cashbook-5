@@ -20,6 +20,10 @@ export type LedgerResponseDTO = {
   content: string;
   amount: number;
 };
+
+export type LedgerListResponseDTO = LedgerResponseDTO[];
+
+
 export interface LedgersDayGroupResponseDTO {
   date: string;
   numdate: string;
@@ -28,4 +32,15 @@ export interface LedgersDayGroupResponseDTO {
   spand: number;
 }
 
-export type LedgerListResponseDTO = LedgerResponseDTO[];
+export interface StatisticEntry {
+  amount: number;
+  datetime: Date;
+}
+
+export interface StatisticLedgersResponseDTO {
+  [category: string]: {
+    entries: StatisticEntry[];
+    total: number;
+    color: string;
+  }
+}

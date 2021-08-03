@@ -1,9 +1,11 @@
 import { CategoryResponseDTO } from '../dto/CategoryDTO';
-import { LedgerRequestDTO, LedgerResponseDTO, LedgersDayGroupResponseDTO } from '../dto/LedgerDTO';
+import { LedgerRequestDTO, LedgerResponseDTO, LedgersDayGroupResponseDTO, StatisticEntry, StatisticLedgersResponseDTO } from '../dto/LedgerDTO';
 import { PaymentTypeResponseDTO } from '../dto/PaymentTypeDTO';
 import LedgerRepository from '../repositories/ledger.repository';
+import categoryService from './category.service';
 
 class LedgerService {
+
   async getLedgersByMonth(date: Date, userId: number): Promise<LedgerResponseDTO[]> {
     const startDate = date;
     const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -52,7 +54,25 @@ class LedgerService {
     return ledgerDTOs;
   }
 
-  async getLedgersGroupByDate(ledgers: LedgerResponseDTO[]): Promise<LedgersDayGroupResponseDTO[]> {
+  async createLedger(ledgerDto: LedgerRequestDTO, userId: number): Promise<number | null> {
+    const {
+      categoryId,
+      paymentTypeId,
+      date,
+      content,
+      amount
+    } = ledgerDto;
+
+    const newLedgerId = await LedgerRepository.createLedger(userId, categoryId, paymentTypeId, content, amount, date);
+    if (newLedgerId) {
+      return newLedgerId;
+    } else {
+      return null;
+    }
+  }
+
+
+  getLedgersGroupByDate(ledgers: LedgerResponseDTO[]): LedgersDayGroupResponseDTO[] {
     const groupByDate = new Map();
 
     ledgers.forEach(ledger => {
@@ -76,21 +96,40 @@ class LedgerService {
     return [...groupByDate.values()];
   }
 
-  async createLedger(ledgerDto: LedgerRequestDTO, userId: number): Promise<number | null> {
-    const {
-      categoryId,
-      paymentTypeId,
-      date,
-      content,
-      amount
-    } = ledgerDto;
+  convertToStatisticLedgers(ledgers: LedgerResponseDTO[]): StatisticLedgersResponseDTO {
+    const groupByCategory = new Map<string, LedgerResponseDTO[]>();
 
-    const newLedgerId = await LedgerRepository.createLedger(userId, categoryId, paymentTypeId, content, amount, date);
-    if (newLedgerId) {
-      return newLedgerId;
-    } else {
-      return null;
+    ledgers.forEach(ledger => {
+      const categoryName = ledger.category.name;
+      const originLedgers = groupByCategory.get(categoryName);
+      if (originLedgers === undefined) {
+        groupByCategory.set(categoryName, [ledger]);
+      } else {
+        groupByCategory.set(categoryName, [...originLedgers, ledger]);
+      }
+    });
+
+    const statisticLedgers: StatisticLedgersResponseDTO = {};
+
+    for (const [category, data] of groupByCategory) {
+      if (data) {
+        const total = data.reduce((acc, curr) => acc + curr.amount, 0);
+        const color = data[0].category.color;
+        const entries: StatisticEntry[] = data.map(ledger => {
+          return {
+            datetime: new Date(ledger.date),
+            amount: ledger.amount
+          }
+        })
+        statisticLedgers[category] = {
+          total,
+          color,
+          entries
+        }
+      }
     }
+
+    return statisticLedgers;
   }
 }
 
