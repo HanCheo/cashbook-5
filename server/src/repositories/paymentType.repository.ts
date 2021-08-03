@@ -1,6 +1,7 @@
 import PaymentType from "../models/paymentType.model";
 
 class PaymentTypeRepository {
+
     async createPaymentType(name: string, bgColor: string, fontColor: string, userId: number): Promise<number | null> {
         const paymentType = await PaymentType.create({
             name,

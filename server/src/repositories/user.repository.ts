@@ -1,8 +1,6 @@
 import sequelize from '../db/sequlze';
 import User, { UsersAttributes } from '../models/user.model';
 
-const USER_CREATE_FAIL_MESSAGE = "유저 Row 생성 실패";
-
 class UserRepository {
   // TODO: change UserAttributes => User.
   async getUser(gitUsername: string): Promise<UsersAttributes | null> {
@@ -51,13 +49,29 @@ class UserRepository {
         avatarURL,
         refreshToken,
       });
+
+      // TODO: Append detail error message
       if (!_user) throw new Error('사용자 생성실패');
 
+      // TODO: change to only return User class
       return _user.get({ plain: true });
     } catch (err) {
       t.rollback();
       throw new Error('Error: ' + err);
     }
+  }
+
+  async getUserWithPaymentTypes(userIdAsNumber: number): Promise<User | null> {
+    const userWidthPaymentTypes = User.findOne({
+      include: [
+        User.associations.paymentTypes
+      ],
+      where: {
+        id: userIdAsNumber
+      }
+    });
+
+    return userWidthPaymentTypes;
   }
 }
 

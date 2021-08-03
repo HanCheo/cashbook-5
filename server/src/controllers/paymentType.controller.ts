@@ -3,6 +3,9 @@ import { BAD_REQUEST, SERVER_ERROR, SUCCESS } from '../utils/HttpStatus';
 import paymentTypeService from "../services/paymentType.service";
 import { PaymentTypeRequestDTO } from '../dto/PaymentTypeDTO';
 
+
+const ERROR_RETRIEVE_USER_PAYMENTS_FAIL = "사용자의 결제 수단을 가져오는데 실패했습니다.";
+
 class PaymentTypeController {
     async createPaymentType(req: Request, res: Response) {
         // Assert User Id is valid.
@@ -43,8 +46,20 @@ class PaymentTypeController {
         }
     }
 
-    getOwnPaymentTypes(req: Request, res: Response) {
-        throw new Error('Method not implemented.');
+    async getOwnPaymentTypes(req: Request, res: Response) {
+        const userIdAsNumber = Number(req.user.id);
+        try {
+            const paymentTypes = await paymentTypeService.getOwnPaymentTypes(userIdAsNumber);
+            res.status(SUCCESS).send({
+                success: true,
+                data: paymentTypes
+            });
+        } catch (error) {
+            console.log("Error: " + error); // TODO: change to logger
+            res.status(SERVER_ERROR).send({
+                error: ERROR_RETRIEVE_USER_PAYMENTS_FAIL
+            })
+        }
     }
 
     deletePaymentType(req: Request, res: Response) {
