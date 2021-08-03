@@ -3,7 +3,8 @@ import './index.scss';
 import { qs, qsAll } from '@/src/utils/selectHelper';
 import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
-import { getOwnPaymentTypesAsync, PaymentType } from '@/src/api/paymentTypeAPI';
+import { getOwnPaymentTypesAsync } from '@/src/api/paymentTypeAPI';
+import { PaymentType } from '@/src/interfaces/PaymentType';
 
 interface IState {
   isShowCardTypes: boolean;
@@ -21,10 +22,14 @@ export default class CardTypeSelector extends Component<IState, IProps> {
       isShowCardTypes: false,
     };
     getOwnPaymentTypesAsync().then(({ success, data }) => {
-      this.setState({
-        ...this.$state,
-        paymentTypes: data,
-      })
+      if (success) {
+        this.setState({
+          ...this.$state,
+          paymentTypes: data,
+        })
+      } else {
+        console.error("결제수단을 가져오는데 실패했습니다.");
+      }
     })
   }
 

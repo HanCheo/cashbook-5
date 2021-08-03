@@ -1,33 +1,40 @@
 import './index.scss';
 import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
-import { ICategoryItem } from '@/src/interfaces/Category';
+import { Category } from '@/src/interfaces/Category';
 import { qs, qsAll } from '@/src/utils/selectHelper';
+import { getCategoriesAsync } from '@/src/api/categoryAPI';
 
 interface IState {
   isShowCategories: boolean;
+  categories: Category[];
 }
 
 interface IProps {
-  categories: ICategoryItem[];
   onClickCategory: (value: string) => void;
 }
 
 export default class CategorySelector extends Component<IState, IProps> {
   setup() {
-    this.$state = { isShowCategories: false };
+    this.$state = { isShowCategories: false, categories: [] };
+
+    getCategoriesAsync().then(({ success, data }) => {
+      if (success) {
+        this.setState({ ...this.$state, categories: data });
+      }
+    })
   }
 
   // TODO: property를 통해서 category list 와 색깔 정보를 얻어와야합니다.
   template() {
-    const { categories } = this.$props;
+    const { categories } = this.$state;
     return html`
       <div class="category-selector">
         <div class="category-selector--toggle">선택</div>
         <ul class="category-selector--list">
           ${categories
         ?.map(
-          (category: ICategoryItem) => /* html */ `
+          (category: Category) => /* html */ `
                     <li class="category-selector--list--item ledger-category"
                     data-category="${category.name}" data-category-type="${category.id}">${category.name}</li>
                 `

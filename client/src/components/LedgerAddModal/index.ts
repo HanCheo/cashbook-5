@@ -5,7 +5,7 @@ import { html } from '@/src/utils/codeHelper';
 import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
 import Snackbar from '../SnackBar';
-import { PaymentType } from '@/src/api/paymentTypeAPI';
+import { PaymentType } from '@/src/interfaces/PaymentType';
 
 const mockCategories = [
   { id: 1, name: '취미' },
@@ -92,8 +92,7 @@ export default class LedgerAddModal extends Component<IState, IProps> {
 
     const $categorySelectorElement = qs('#category-selector-container', this.$target) as HTMLElement;
     new CategorySelector($categorySelectorElement, {
-      categories: mockCategories,
-      onClickCategory: (category: string) => this.handleSelectCategory(category),
+      onClickCategory: (category: string) => this.handleSelectCategory(category)
     });
 
     const $cardTypeSelectorElement = qs('#card-type-selector-container', this.$target) as HTMLElement;

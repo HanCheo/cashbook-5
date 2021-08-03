@@ -1,4 +1,5 @@
-import { PaymentType } from '../api/paymentTypeAPI';
+
+import { PaymentType } from '../interfaces/PaymentType';
 import Observer from './Observer';
 
 export class PaymentTypeListModel extends Observer {

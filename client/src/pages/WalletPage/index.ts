@@ -2,9 +2,10 @@ import './index.scss';
 import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
 import { qs, qsAll } from '@/src/utils/selectHelper';
-import { deleteOwnPaymentTypeAsync, getOwnPaymentTypesAsync, PaymentType } from '@/src/api/paymentTypeAPI';
+import { deleteOwnPaymentTypeAsync, getOwnPaymentTypesAsync } from '@/src/api/paymentTypeAPI';
 import PaymentTypeAddModal from '@/src/components/PaymentTypeAddModal';
 import paymentTypeListModel from '@/src/models/PaymentTypeList';
+import { PaymentType } from '@/src/interfaces/PaymentType';
 
 interface IState {
   paymentTypes: PaymentType[];

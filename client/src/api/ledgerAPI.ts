@@ -1,9 +1,5 @@
 import { ILedger, ILedgerList } from '../interfaces/Ledger';
-import { getFetch } from './fetch';
-interface Result<D> {
-  success: boolean;
-  data: D;
-}
+import { getFetch, Result } from './fetch';
 
 export interface LedgerType {
   numDate: string;

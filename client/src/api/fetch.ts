@@ -4,6 +4,12 @@ interface IApiFetch {
   body?: BodyInit | undefined | null;
 }
 
+
+export interface Result<D> {
+  success: boolean;
+  data: D;
+}
+
 const setQuery = (query: object) => {
   let _query = '?';
   for (const [key, value] of Object.entries(query)) {
