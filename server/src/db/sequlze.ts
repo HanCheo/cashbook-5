@@ -9,6 +9,10 @@ const params = {
     host: env.SEQUELIZE_DBHOST,
     port: env.SEQUELIZE_DBPORT,
     dialect: env.SEQUELIZE_DBDIALECT as Dialect,
+    dialectOptions: {
+      decimalNumbers: true, // Decimal Type을 String으로 돌려주는 이슈 해결을 위한 설정 
+      timezone: '+09:00',
+    }
   },
 };
 

@@ -25,11 +25,24 @@ class LedgerController {
     const date = new Date(queryDate);
     const userId = req.user.id!;
     const ledgers: LedgerResponseDTO[] = await LedgerService.getLedgersByMonth(date, userId);
-    const groupLedgers = await LedgerService.getLedgersGroupByDate(ledgers);
+    const groupLedgers = LedgerService.convertToDayGroupLedgers(ledgers);
 
     res.send({
       success: true,
       data: groupLedgers,
+    });
+  }
+
+  async getStatisticLedgersByDate(req: Request, res: Response) {
+    const queryDate = req.query.date as string;
+    const date = new Date(queryDate);
+    const userId = req.user.id!;
+    const ledgers: LedgerResponseDTO[] = await LedgerService.getLedgersByMonth(date, userId);
+    const statisticLedgers = LedgerService.convertToStatisticLedgers(ledgers);
+
+    res.send({
+      success: true,
+      data: statisticLedgers
     });
   }
 
@@ -104,6 +117,10 @@ class LedgerController {
       }).end();
     }
   }
+
+  // TODO: 수정, 삭제 API 추가.
+
+
 }
 
 export default new LedgerController();
