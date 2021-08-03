@@ -11,7 +11,7 @@ import { ILedgerList } from '@/src/interfaces/Ledger';
 interface IState {}
 
 interface IProps {
-  ledgerData: ILedgerList[];
+  ledgerData: ILedgerList[] | undefined;
 }
 
 export default class MainPage extends Component<IProps, IState> {
@@ -41,12 +41,17 @@ export default class MainPage extends Component<IProps, IState> {
     });
   }
 
-  setEvent() {
+  async CalendarModelSubscribeFunction() {
     const body = this.$target.querySelector('#body') as HTMLElement;
-    CalendarModel.subscribe(async () => {
-      await LedgerDataModel.update(CalendarModel.getDate());
-      console.log(LedgerDataModel);
-      new LedgerContainer(body, { ledgerData: LedgerDataModel.getData() });
-    });
+    const calendarDate = CalendarModel.getDate();
+    await LedgerDataModel.update(calendarDate.getFullYear() + '-' + (calendarDate.getMonth() + 1));
+    new LedgerContainer(body, { ledgerData: LedgerDataModel.getData() });
+  }
+  setUnmount() {
+    CalendarModel.unsubscribe('main');
+  }
+  setEvent() {
+    CalendarModel.subscribe('main', this.CalendarModelSubscribeFunction.bind(this));
+    this.resetEvent();
   }
 }

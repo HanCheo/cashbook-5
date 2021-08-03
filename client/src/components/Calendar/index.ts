@@ -9,12 +9,12 @@ import './index.scss';
 
 interface IState {
   date: Date;
-  ledgerData: ILedgerList[];
+  ledgerData: ILedgerList[] | undefined;
 }
 
 interface IProps {
   date: Date;
-  ledgerData: ILedgerList[];
+  ledgerData: ILedgerList[] | undefined;
 }
 
 export default class calendar extends Component<IState, IProps> {
@@ -103,7 +103,7 @@ export default class calendar extends Component<IState, IProps> {
   renderLedgersInCalendar() {
     const { ledgerData } = this.$state;
 
-    ledgerData.forEach(ledgerDayData => {
+    ledgerData?.forEach(ledgerDayData => {
       const { numDate, income, spand } = ledgerDayData;
 
       const day = qs(`li[data-key="${numDate}"]`, this.$target) as HTMLElement;
@@ -124,7 +124,7 @@ export default class calendar extends Component<IState, IProps> {
     const key = (e.target as HTMLElement).dataset.key;
     const dayLedgerInfo = qs('.day-ledger-info', this.$target) as HTMLElement;
 
-    const ledgerList = ledgerData.find(data => data.numDate == key);
+    const ledgerList = ledgerData?.find(data => data.numDate == key);
     if (!ledgerList) return;
 
     dayLedgerInfo.innerHTML = '';

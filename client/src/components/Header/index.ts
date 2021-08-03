@@ -1,5 +1,6 @@
 import Component from '@/src/core/Component';
 import CalendarModel from '@/src/models/Calendar';
+import LedgerDataModel from '@/src/models/Ledgers';
 import LoginModal from '@/src/components/LoginModal';
 import './index.scss';
 import SvgIcon from '@/src/assets/svg';
@@ -16,9 +17,9 @@ interface IState {
 }
 
 export default class Header extends Component<IState, IProp> {
-  setup() {
+  async setup() {
     this.$state.date = CalendarModel.getDate();
-    CalendarModel.subscribe(() => {
+    CalendarModel.subscribe('header', async () => {
       this.setState({
         date: CalendarModel.getDate(),
       });
@@ -80,10 +81,14 @@ export default class Header extends Component<IState, IProp> {
           break;
       }
     });
+  }
+  async setEvent() {
     //LoginModal
     await checkUser().catch(e => {
       this.showLoginModal();
+      return;
     });
+    await CalendarModel.setDate(new Date());
   }
 
   showLoginModal() {
