@@ -1,9 +1,21 @@
+interface Category {
+  color: string;
+  id: number;
+  name: string;
+}
+interface PaymentType {
+  bgColor: string;
+  fontColor: string;
+  id: number;
+  name: string;
+}
 export interface ILedger {
   categoryType: string;
-  category: string;
   content: string;
   cardType: string;
   amount: number;
+  category: Category;
+  paymentType: PaymentType;
 }
 
 export interface ILedgerList {

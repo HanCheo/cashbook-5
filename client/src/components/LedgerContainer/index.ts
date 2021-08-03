@@ -4,10 +4,9 @@ import { addComma, html } from '@/src/utils/codeHelper';
 import LedgerList from '../LedgerList';
 import { ILedgerList, ILedger } from '@/src/interfaces/Ledger';
 import './index.scss';
-import Snackbar from '../SnackBar';
 
 interface IState {
-  ledgerData: ILedgerList[];
+  ledgerData: ILedgerList[] | undefined;
   totalCount?: number;
   totalIncomes?: number;
   totalSpand?: number;
@@ -15,42 +14,40 @@ interface IState {
 }
 
 interface IProps {
-  ledgerData: ILedgerList[];
+  ledgerData: ILedgerList[] | undefined;
 }
 
 export default class LedgerContainer extends Component<IState, IProps> {
   setup() {
     this.$state.ledgerData = this.$props.ledgerData;
-    this.$state.totalCount = 0;
     this.$state.totalIncomes = 0;
     this.$state.totalSpand = 0;
     this.$state.checked = ['spand', 'income'];
-
-    this.$state.ledgerData.forEach((ledgerList: ILedgerList) => {
-      (this.$state.totalCount as number) += ledgerList.ledgers.length;
+    this.$state.ledgerData?.forEach((ledgerList: ILedgerList) => {
       ledgerList.ledgers.forEach((ledger: ILedger) => {
         ledger.amount < 0
-          ? ((this.$state.totalSpand as number) += ledger.amount)
-          : ((this.$state.totalIncomes as number) += ledger.amount);
+          ? ((this.$state.totalSpand as number) += +ledger.amount)
+          : ((this.$state.totalIncomes as number) += +ledger.amount);
       });
     });
   }
 
   template() {
-    const { totalCount, totalIncomes, totalSpand } = this.$state;
+    const { totalIncomes, totalSpand } = this.$state;
+    const totalCount = this.$state.ledgerData?.reduce((sum, ledger) => (sum += ledger.ledgers.length), 0);
 
     return html`
       <div class="ledger-container">
         <div class="ledger-container--header">
-          <div class="total-count">전체 건수 : ${addComma(totalCount as number)}</div>
+          <div class="total-count">전체 건수 : ${totalCount}</div>
           <div class="fillter">
             <div class="checkbox-wrapper">
               <input type="checkbox" id="income" name="filterCheckbox" />
-              <label for="income">수입 ${addComma(totalIncomes as number)}</label>
+              <label for="income">수입 ${addComma(totalIncomes!)}</label>
             </div>
             <div class="checkbox-wrapper">
               <input type="checkbox" id="spand" name="filterCheckbox" />
-              <label for="spand">지출 ${addComma(totalSpand as number)}</label>
+              <label for="spand">지출 ${addComma(totalSpand!)}</label>
             </div>
           </div>
         </div>
@@ -58,10 +55,12 @@ export default class LedgerContainer extends Component<IState, IProps> {
       </div>
     `;
   }
+
   mounted() {
     const wrapper = this.$target.querySelector('.ledger-list-wrapper') as HTMLElement;
     const checkBoxs = [...this.$target.querySelectorAll('input[name="filterCheckbox"]')] as HTMLInputElement[];
     const { ledgerData, checked } = this.$state;
+
     //checkBok
     checked?.forEach((id: string) => {
       (this.$target.querySelector(`input#${id}`) as HTMLInputElement).checked = true;
@@ -80,11 +79,7 @@ export default class LedgerContainer extends Component<IState, IProps> {
       }
     });
 
-    if (!ledgerData.length) {
-      new Snackbar(document.body, { text: '앗 ! 데이터가 없어요 !' });
-    }
-
-    ledgerData.forEach((ledgerList: ILedgerList) => {
+    ledgerData?.forEach((ledgerList: ILedgerList) => {
       new LedgerList(wrapper, { ledgerList: ledgerList });
     });
   }
@@ -106,13 +101,5 @@ export default class LedgerContainer extends Component<IState, IProps> {
       default:
         this.setState({ ledgerData: LedgerDataModel.getData(), checked: ['spand', 'income'] });
     }
-  }
-
-  setEvent() {
-    LedgerDataModel.subscribe(() => {
-      this.setState({
-        ledgerData: LedgerDataModel.getData(),
-      });
-    });
   }
 }

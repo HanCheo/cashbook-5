@@ -20,13 +20,15 @@ export default class LedgerItem extends Component<IState, IProps> {
 
   template() {
     const { ledger } = this.$state;
+    const { name: categoryName, color: categoryColor } = ledger.category;
+    const { name: paymentName } = ledger.paymentType;
 
     return html`
       <li>
-        <div class="ledger-category" data-category-type="${ledger.categoryType}">${ledger.category}</div>
+        <div class="ledger-category" style="background: ${categoryColor};">${categoryName}</div>
         <div class="ledger-content">${ledger.content}</div>
-        <div class="ledger-cardType">${ledger.cardType}</div>
-        <div class="ledger-amount">${addComma(ledger.amount)}</div>
+        <div class="ledger-cardType">${paymentName}</div>
+        <div class="ledger-amount">${addComma(+ledger.amount)}</div>
       </li>
     `;
   }

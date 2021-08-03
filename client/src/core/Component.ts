@@ -23,6 +23,7 @@ export default class Component<S, P> {
     this.render();
     this.setEvent();
   }
+  
   setup() {}
   template() {
     return ``;
