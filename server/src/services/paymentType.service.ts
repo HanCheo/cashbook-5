@@ -4,9 +4,6 @@ import userRepository from "../repositories/user.repository";
 
 class PaymentTypeService {
 
-
-    // TODO: 상위 수준에서 Error를 잡아줘야한다.
-    // TODO: 필요하다면 Error를 정의.
     async getOwnPaymentTypes(userIdAsNumber: number): Promise<PaymentTypeResponseDTO[]> {
         const userWidthPaymentTypes = await userRepository.getUserWithPaymentTypes(userIdAsNumber);
 
