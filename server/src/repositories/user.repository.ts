@@ -67,7 +67,7 @@ class UserRepository {
         User.associations.paymentTypes
       ],
       where: {
-        id: userIdAsNumber
+        id: userIdAsNumber,
       }
     });
 

@@ -4,6 +4,7 @@ import userRepository from "../repositories/user.repository";
 
 class PaymentTypeService {
 
+
     // TODO: 상위 수준에서 Error를 잡아줘야한다.
     // TODO: 필요하다면 Error를 정의.
     async getOwnPaymentTypes(userIdAsNumber: number): Promise<PaymentTypeResponseDTO[]> {
@@ -14,18 +15,20 @@ class PaymentTypeService {
         }
 
         if (!userWidthPaymentTypes.paymentTypes) {
-            throw new Error(`해당 계정(${userIdAsNumber})의 계정의 PaymentType을 불러오는데 실패했습니다.`);
+            throw new Error(`해당 계정(${userIdAsNumber})의 PaymentType을 불러오는데 실패했습니다.`);
         }
 
-        return userWidthPaymentTypes.paymentTypes.map(paymentType => {
-            const { id, bgColor, fontColor, name } = paymentType;
-            return {
-                id: id!,
-                bgColor,
-                fontColor,
-                name
-            }
-        })
+        return userWidthPaymentTypes.paymentTypes
+            .filter(paymentType => !paymentType.isDeleted) // filtering soft deleted items 
+            .map(paymentType => {
+                const { id, bgColor, fontColor, name } = paymentType;
+                return {
+                    id: id!,
+                    bgColor,
+                    fontColor,
+                    name
+                }
+            })
     }
 
     async createPaymentType(paymentTypeDto: PaymentTypeRequestDTO, userId: number): Promise<number | null> {
@@ -43,6 +46,21 @@ class PaymentTypeService {
         } else {
             return null;
         }
+    }
+
+    async deletePaymentType(paymentId: number): Promise<boolean> {
+        const isSuccess = await paymentTypeRepository.deletePaymentType(paymentId);
+        return isSuccess;
+    }
+
+
+    async isOwnPaymentType(paymentTypeId: number, userId: number): Promise<boolean> {
+        const paymentType = await paymentTypeRepository.getPaymentType(paymentTypeId);
+        if (!paymentType) {
+            throw Error(`paymentType(id:${paymentTypeId}) 가 존재하지않습니다.`);
+        }
+
+        return paymentType.userId === userId
     }
 }
 

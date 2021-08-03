@@ -10,3 +10,7 @@ export type PaymentTypeRequestDTO = {
     bgColor: string,
     fontColor: string,
 }
+
+export type PaymentTypeRemoveRequestDTO = {
+    id: number
+}
