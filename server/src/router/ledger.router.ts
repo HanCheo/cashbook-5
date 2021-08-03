@@ -11,12 +11,16 @@ const ledgerRouter = Router();
  */
 ledgerRouter.get('/', authJWT, wrapAsync(LedgerController.getLedgersByDate));
 
+/**
+ * GET /api/ledger/day
+ * 여러 YYYY/MM 데이터를 통해 필터링된 Ledger들을 day로 group한 데이터를 반환해주는 API
+ */
+ledgerRouter.get('/day', authJWT, wrapAsync(LedgerController.getLedgersGroupByDate));
 
 /**
  * POST /api/ledger
  * 새로운 가계부 데이터 추가 
  */
-ledgerRouter.post("/", authJWT, wrapAsync(LedgerController.createLedger));
-
+ledgerRouter.post('/', authJWT, wrapAsync(LedgerController.createLedger));
 
 export default ledgerRouter;

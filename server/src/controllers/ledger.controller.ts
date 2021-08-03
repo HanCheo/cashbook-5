@@ -13,12 +13,23 @@ class LedgerController {
     const queryDate = req.query.date as string;
     const date = new Date(queryDate);
     const userId = req.user.id!;
-
     const ledgers: LedgerResponseDTO[] = await LedgerService.getLedgersByMonth(date, userId);
-
     res.send({
       success: true,
       data: ledgers,
+    });
+  }
+
+  async getLedgersGroupByDate(req: Request, res: Response) {
+    const queryDate = req.query.date as string;
+    const date = new Date(queryDate);
+    const userId = req.user.id!;
+    const ledgers: LedgerResponseDTO[] = await LedgerService.getLedgersByMonth(date, userId);
+    const groupLedgers = await LedgerService.getLedgersGroupDate(ledgers);
+
+    res.send({
+      success: true,
+      data: groupLedgers,
     });
   }
 
@@ -74,7 +85,7 @@ class LedgerController {
     const ledgerDto: LedgerRequestDTO = {
       paymentTypeId: paymentTypeIdAsNumber,
       categoryId: categoryIdAsNumber,
-      date: new Date(date),
+      date,
       content,
       amount: amountAsNumber,
     };

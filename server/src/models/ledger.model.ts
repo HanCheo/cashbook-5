@@ -6,10 +6,10 @@ import User from './user.model';
 
 export interface LedgersAttributes {
   id?: number;
-  userId: number;
-  categoryId: number;
+  userId?: number;
+  categoryId?: number;
   paymentTypeId: number;
-  date: Date;
+  date: string;
   content: string;
   amount: number;
 }
@@ -19,7 +19,7 @@ export default class Ledger extends Model<LedgersAttributes> implements LedgersA
   userId!: number;
   categoryId!: number;
   paymentTypeId!: number;
-  date!: Date;
+  date!: string;
   content!: string;
   amount!: number;
 
@@ -53,7 +53,7 @@ export const LedgerSchema = {
     allowNull: false,
   },
   date: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
     allowNull: false,
   },
   content: {
@@ -72,4 +72,3 @@ export const LedgerSchemaSetting = {
   freezeTableName: true,
   timestamps: true,
 };
-

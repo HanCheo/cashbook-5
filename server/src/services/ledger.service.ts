@@ -1,11 +1,10 @@
 import { CategoryResponseDTO } from '../dto/CategoryDTO';
-import { LedgerRequestDTO, LedgerResponseDTO } from '../dto/LedgerDTO';
+import { LedgerRequestDTO, LedgerResponseDTO, LedgersDayGroupResponseDTO } from '../dto/LedgerDTO';
 import { PaymentTypeResponseDTO } from '../dto/PaymentTypeDTO';
 import LedgerRepository from '../repositories/ledger.repository';
 
 class LedgerService {
   async getLedgersByMonth(date: Date, userId: number): Promise<LedgerResponseDTO[]> {
-
     const startDate = date;
     const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
@@ -17,14 +16,14 @@ class LedgerService {
       } = ledger;
 
       if (!category) {
-        throw new Error("category가 존재하지않는 ledger 데이터가 존재합니다.")
+        throw new Error('category가 존재하지않는 ledger 데이터가 존재합니다.');
       }
 
       const categoryDTO: CategoryResponseDTO = {
         id: category.id!,
         name: category.name,
         color: category.color,
-      }
+      };
 
       if (!paymentType) {
         throw new Error("paymentType이 존재하지않는 Ledger 데이터가 존재합니다.");
@@ -47,10 +46,34 @@ class LedgerService {
         date: date!,
         content: content!,
         amount: amount!,
-      }
-    })
+      };
+    });
 
     return ledgerDTOs;
+  }
+
+  async getLedgersGroupDate(ledgers: LedgerResponseDTO[]): Promise<LedgersDayGroupResponseDTO[]> {
+    const groupByDate = new Map();
+
+    ledgers.forEach(ledger => {
+      const _data = groupByDate.get(ledger.date);
+
+      const income = _data?.income ? _data.income : 0;
+      const spand = _data?.spand ? _data.spand : 0;
+      const ledgers = _data?.ledgers ? _data.ledgers : [];
+
+      const map = {
+        date: ledger.date,
+        numDate: ledger.date.split('-').slice(1).join(''),
+        income: +ledger.amount > 0 ? income + +ledger.amount : income,
+        spand: +ledger.amount < 0 ? spand + +ledger.amount : spand,
+        ledgers: [...ledgers, ledger],
+      };
+
+      groupByDate.set(ledger.date, map);
+    });
+
+    return [...groupByDate.values()];
   }
 
   async createLedger(ledgerDto: LedgerRequestDTO, userId: number): Promise<number | null> {

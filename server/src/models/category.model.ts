@@ -16,7 +16,7 @@ export class Category extends Model<CategorysAttributes> implements CategorysAtt
   public ledgers?: Ledger[];
   public static associations: {
     ledgers: Association<Category, Ledger>
-  }
+  };
 }
 
 export const CategorySchema = {
@@ -44,5 +44,3 @@ export const CategorySchemaSettings = {
 };
 
 export default Category;
-
-
