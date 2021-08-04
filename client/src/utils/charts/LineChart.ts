@@ -1,3 +1,4 @@
+import { addComma } from '../codeHelper';
 import { transformer, ScaleFn } from './scale';
 import { svgGroup, svgLine, svgText, svgCircle, svgLinePath, Point, svgCurveLinePath } from './svgElement';
 
@@ -36,6 +37,7 @@ export interface LineChartOptions {
   lineOpacity?: number;
   lineWidth?: number;
   showGrid?: boolean;
+  countOfGap?: number;
 }
 
 const defaultOptions: LineChartOptions = {
@@ -44,11 +46,12 @@ const defaultOptions: LineChartOptions = {
   yLabelFontSize: '1em',
   lineOpacity: 0.5,
   lineWidth: 3,
+  countOfGap: 3,
   showGrid: false,
   formatXLabel: null,
 };
 
-const LEFT_POS = 100;
+const LEFT_POS = 150;
 const TOP_POS = 50;
 const BOTTOM_POS = 420;
 const RIGHT_POS = 750;
@@ -67,6 +70,8 @@ export default class LineChart {
 
   public xLabelPadding: number = X_LABEL_PADDING;
   public yLabelPadding: number = Y_LABEL_PADDING;
+
+  public yGridGap: number = 0;
 
   public maxValueOfXAxis?: number = undefined;
   public minValueOfXAxis?: number = undefined;
@@ -142,7 +147,16 @@ export default class LineChart {
 
       this.scaleX = transformer().domain(this.minValueOfXAxis, this.maxValueOfXAxis).range(this.left, this.right);
       this.scaleY = transformer().domain(this.minValueOfYAxis, this.maxValueOfYAxis).range(this.bottom, this.top);
+
+      this.yGridGap = this.caculateGap(this.maxValueOfYAxis - this.minValueOfYAxis);
     }
+  }
+
+  caculateGap(range: number) {
+    const tempGap = Math.floor(range / this.options.countOfGap!).toString();
+    const firstDigit = Number(tempGap[0]);
+    const countOfDigit = tempGap.length - 1;
+    return firstDigit * Math.pow(10, countOfDigit);
   }
 
   extendSetting(options: LineChartOptions) {
@@ -176,8 +190,32 @@ export default class LineChart {
       this.renderXAxisGrid(items);
       this.renderYAxisGrid(items);
     }
+    this.renderYAxisRangeGrid();
   }
 
+  renderYAxisRangeGrid() {
+    if (!(this.scaleX && this.scaleY)) {
+      throw new Error('Scale Function is undefined.');
+    }
+    if (this.maxValueOfYAxis) {
+      const yAsixGrid = svgGroup();
+      yAsixGrid.setAttribute('stroke-dasharray', '1 2');
+      yAsixGrid.setAttribute('stroke-width', '1');
+
+      for (let i = 0; i < this.options.countOfGap!; i++) {
+        const y = this.scaleY(this.yGridGap * i);
+        const line = svgLine(this.left, y, this.right, y);
+        yAsixGrid.appendChild(line);
+      }
+      const y = this.scaleY(this.maxValueOfYAxis);
+      const line = svgLine(this.left, y, this.right, y);
+      yAsixGrid.appendChild(line);
+
+      this.element.appendChild(yAsixGrid);
+    }
+  }
+
+  // Deprecated
   renderXAxisGrid(items: ProcessedLineChartData[]) {
     const xAsixGrid = svgGroup();
     xAsixGrid.setAttribute('stroke', 'black');
@@ -198,9 +236,10 @@ export default class LineChart {
     this.element.appendChild(xAsixGrid);
   }
 
+  // Deprecated
   renderYAxisGrid(items: ProcessedLineChartData[]) {
     const yAsixGrid = svgGroup();
-    yAsixGrid.setAttribute('stroke', 'black');
+    // yAsixGrid.setAttribute('stroke', 'curretColor');
     yAsixGrid.setAttribute('stroke-dasharray', '1 2');
     yAsixGrid.setAttribute('stroke-width', '1');
 
@@ -212,6 +251,7 @@ export default class LineChart {
       for (const d of items) {
         const y = this.scaleY(d.value);
         const line = svgLine(this.left, y, this.right, y);
+        line.setAttribute('stroke', 'currentColor');
         yAsixGrid.appendChild(line);
       }
     }
@@ -294,16 +334,16 @@ export default class LineChart {
 
   renderLabels(items: ProcessedLineChartData[]) {
     this.renderXLabel(items);
-    this.renderYLabel(items);
+    // this.renderYLabel(items);
+    this.renderYRangeLabel();
   }
 
   renderXLabel(items: ProcessedLineChartData[]) {
-    const xLabelGroup = svgGroup();
-
     if (!(this.scaleX && this.scaleY)) {
       throw new Error('Scale Function is undefined.');
     }
 
+    const xLabelGroup = svgGroup();
     if (items && items.length > 0) {
       for (const d of items) {
         const x = this.scaleX(d.milliseconds);
@@ -314,33 +354,63 @@ export default class LineChart {
           label = this.options.formatXLabel(d.datetime);
         }
         const text = svgText(x, this.bottom + this.xLabelPadding, label);
+        text.setAttribute('fill', 'currentColor');
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('font-size', this.options.xLabelFontSize || '');
 
         xLabelGroup.appendChild(text);
       }
     }
+
     this.element.appendChild(xLabelGroup);
   }
 
+  // Deprecated
   renderYLabel(items: ProcessedLineChartData[]) {
-    const yLabelGroup = svgGroup();
-
     if (!(this.scaleX && this.scaleY)) {
       throw new Error('Scale Function is undefined.');
     }
 
+    const yLabelGroup = svgGroup();
     if (items && items.length > 0) {
       for (const d of items) {
         const y = this.scaleY(d.value);
         // TODO: Add option callback function formating label;
         const text = svgText(this.left - this.yLabelPadding, y, d.value.toString());
         text.setAttribute('text-anchor', 'end');
+        text.setAttribute('fill', 'currentColor');
         text.setAttribute('font-size', this.options.yLabelFontSize || '');
         yLabelGroup.appendChild(text);
       }
     }
     this.element.appendChild(yLabelGroup);
+  }
+
+  renderYRangeLabel() {
+    const yLabelGroup = svgGroup();
+
+    if (!(this.scaleX && this.scaleY)) {
+      throw new Error('Scale Function is undefined.');
+    }
+
+    if (this.maxValueOfYAxis) {
+      for (let i = 0; i < this.options.countOfGap!; i++) {
+        const value = this.yGridGap * i;
+        const y = this.scaleY(value);
+        const text = svgText(this.left - this.yLabelPadding, y, `${addComma(value)} 원`);
+        text.setAttribute('text-anchor', 'end');
+        text.setAttribute('font-size', this.options.yLabelFontSize || '');
+        yLabelGroup.appendChild(text);
+      }
+
+      const y = this.scaleY(this.maxValueOfYAxis);
+      const text = svgText(this.left - this.yLabelPadding, y, `${addComma(this.maxValueOfYAxis)} 원`);
+      text.setAttribute('text-anchor', 'end');
+      text.setAttribute('font-size', this.options.yLabelFontSize || '');
+      yLabelGroup.appendChild(text);
+
+      this.element.appendChild(yLabelGroup);
+    }
   }
 
   static init(element: SVGElement, groupData: LineGroupChartData = {}, options: LineChartOptions = {}) {
