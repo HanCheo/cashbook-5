@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { BAD_REQUEST, NOT_FOUND, SERVER_ERROR, SUCCESS } from '../utils/HttpStatus';
+import { BAD_REQUEST, NOT_FOUND, SERVER_ERROR, SUCCESS, UNAUTHORIZED } from '../utils/HttpStatus';
 import { LedgerRequestDTO, LedgerResponseDTO } from '../dto/LedgerDTO';
 import LedgerService from '../services/ledger.service';
 import categoryService from '../services/category.service';
@@ -8,16 +8,9 @@ const ERROR_PARAMETER_INVALID = '입력 값이 잘못되었습니다.';
 const ERROR_CATEGORY_NOT_FOUND = '카테고리를 찾을 수 없습니다.';
 const ERROR_CREATION_LEDGER_FAIL = '가계부 데이터를 생성하는데 실패했습니다.';
 const ERROR_LEDGER_NOT_FOUND = '가계부 데이터를 조회하는데 실패했습니다.';
+const ERROR_UNAUTHORIZED_LEDGER = '해당 데이터 조회에 대한 권한이 없습니다.';
 
 class LedgerController {
-  deleteLedger(req: Request, res: Response) {
-    throw new Error('Method not implemented.');
-  }
-
-  updateLedger(req: Request, res: Response) {
-    throw new Error('Method not implemented.');
-  }
-
   async getLedger(req: Request, res: Response) {
     const userId = req.user.id!;
     const { id } = req.params;
@@ -35,13 +28,22 @@ class LedgerController {
 
     const ledger = await LedgerService.getLedger(idAsNumber);
     if (ledger) {
-      res
-        .status(SUCCESS)
-        .send({
-          success: true,
-          data: ledger,
-        })
-        .end();
+      if (ledger.userId !== userId) {
+        res
+          .status(UNAUTHORIZED)
+          .send({
+            error: ERROR_UNAUTHORIZED_LEDGER,
+          })
+          .end();
+      } else {
+        res
+          .status(SUCCESS)
+          .send({
+            success: true,
+            data: ledger,
+          })
+          .end();
+      }
     } else {
       res
         .status(NOT_FOUND)
@@ -50,9 +52,6 @@ class LedgerController {
         })
         .end();
     }
-    // User가 해당 id의 Ledger를 가지고 있는지 체크하면서 동시에 ledger 유무 확인
-    // 사실 query날리면서 증명된다.
-    // 있는지 없는지만 체크해서 처리하자.
   }
 
   async getLedgersByDate(req: Request, res: Response) {
@@ -93,7 +92,6 @@ class LedgerController {
   }
 
   async createLedger(req: Request, res: Response) {
-    // Assert User Id is valid.
     const userIdAsNumber = Number(req.user.id);
 
     const { paymentTypeId, categoryId, date, content, amount } = req.body;
@@ -175,7 +173,64 @@ class LedgerController {
     }
   }
 
-  // TODO: 수정, 삭제 API 추가.
+  async deleteLedger(req: Request, res: Response) {
+    const userId = req.user.id!;
+    const { id } = req.params;
+    const idAsNumber = Number(id);
+
+    if (isNaN(idAsNumber)) {
+      res
+        .status(BAD_REQUEST)
+        .send({
+          error: ERROR_PARAMETER_INVALID + '(id require number)',
+        })
+        .end();
+      return;
+    }
+
+    const ledger = await LedgerService.getLedger(idAsNumber);
+    if (!ledger) {
+      res
+        .status(NOT_FOUND)
+        .send({
+          error: ERROR_LEDGER_NOT_FOUND,
+        })
+        .end();
+      return;
+    }
+
+    if (ledger.userId !== userId) {
+      res
+        .status(UNAUTHORIZED)
+        .send({
+          error: ERROR_UNAUTHORIZED_LEDGER,
+        })
+        .end();
+      return;
+    }
+
+    const isSuccess = await LedgerService.deleteLedger(idAsNumber);
+    if (isSuccess) {
+      res
+        .status(SUCCESS)
+        .send({
+          success: true,
+        })
+        .end();
+    } else {
+      res
+        .status(SUCCESS)
+        .send({
+          success: false,
+          error: '이미 삭제된 데이터 입니다.',
+        })
+        .end();
+    }
+  }
+
+  updateLedger(req: Request, res: Response) {
+    throw new Error('Method not implemented.');
+  }
 }
 
 export default new LedgerController();

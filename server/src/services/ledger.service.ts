@@ -11,6 +11,11 @@ import { range } from '../utils/arrayHelper';
 import { days } from '../utils/dayHelper';
 
 class LedgerService {
+  async deleteLedger(idAsNumber: number): Promise<boolean> {
+    const countOfRemoveRows = await LedgerRepository.deleteLedger(idAsNumber);
+    return countOfRemoveRows > 0;
+  }
+
   async getLedger(id: number): Promise<LedgerResponseDTO | null> {
     const ledger = await LedgerRepository.getLedger(id);
     return ledger ? ledgerToLedgerResponseDTO(ledger) : null;

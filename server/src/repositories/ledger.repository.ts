@@ -64,6 +64,14 @@ class LedgerRepository {
       where: { id },
     });
   }
+
+  /**
+   * id를 이용해서 Ledger 삭제
+   */
+  async deleteLedger(id: number): Promise<number> {
+    const countOfDeleted = await Ledger.destroy({ where: { id } });
+    return countOfDeleted;
+  }
 }
 
 const ledgerRepository = new LedgerRepository();
