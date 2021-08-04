@@ -61,6 +61,8 @@ export default class LedgerContainer extends Component<IState, IProps> {
     const checkBoxs = [...this.$target.querySelectorAll('input[name="filterCheckbox"]')] as HTMLInputElement[];
     const { ledgerData, checked } = this.$state;
 
+    wrapper.addEventListener('click', this.ledgerButtonsToggleHandler);
+
     //checkBok
     checked?.forEach((id: string) => {
       (this.$target.querySelector(`input#${id}`) as HTMLInputElement).checked = true;
@@ -82,6 +84,13 @@ export default class LedgerContainer extends Component<IState, IProps> {
     ledgerData?.forEach((ledgerList: ILedgerList) => {
       new LedgerList(wrapper, { ledgerList: ledgerList });
     });
+  }
+
+  ledgerButtonsToggleHandler(e: MouseEvent) {
+    const target = e.target as HTMLElement;
+    if (target.nodeName === 'LI') {
+      target.classList.toggle('selected');
+    }
   }
 
   getFilterData(checkBoxs: HTMLInputElement[]) {
