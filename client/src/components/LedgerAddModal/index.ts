@@ -1,12 +1,17 @@
 import './index.scss';
 import Component from '@/src/core/Component';
 import { qs } from '@/src/utils/selectHelper';
-import { html } from '@/src/utils/codeHelper';
+import { addComma, html } from '@/src/utils/codeHelper';
 import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
 import Snackbar from '../SnackBar';
 import { createLedgerData, getLedgerData } from '@/src/api/ledgerAPI';
 import calendarModel from '@/src/models/Calendar';
+
+const MAX_AMOUNT = 100000000;
+const MIN_AMOUNT = -100000000;
+const AMOUNT_MAX_WARNING_MESSAGE = `금액은 최대 ${addComma(MAX_AMOUNT)}원까지 가능`;
+const AMOUNT_MIN_WARNING_MESSAGE = `금액은 최소 ${addComma(MIN_AMOUNT)}원까지 가능`;
 
 interface Error {
   [key: string]: string;
@@ -23,7 +28,7 @@ interface IState {
   categoryId: number;
 }
 
-interface IProps { }
+interface IProps {}
 
 export default class LedgerAddModal extends Component<IState, IProps> {
   template() {
@@ -54,7 +59,7 @@ export default class LedgerAddModal extends Component<IState, IProps> {
         <span class="spliter"></span>
         <div class="ledger-modal-container--input-box">
           <label for="amount-input">금액</label>
-          <input id="amount-input" type="number" min="1" step="any" placeholder="입력하세요" />
+          <input id="amount-input" type="number" placeholder="입력하세요" />
         </div>
         <span class="spliter"></span>
         <div class="ledger-modal-container--submit-box">
@@ -65,7 +70,6 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     `;
   }
 
-
   mounted() {
     this.$state.$amountInput = qs('#amount-input', this.$target) as HTMLInputElement;
     this.$state.$categoryInput = qs('#category-input', this.$target) as HTMLInputElement;
@@ -75,7 +79,7 @@ export default class LedgerAddModal extends Component<IState, IProps> {
 
     const $categorySelectorElement = qs('#category-selector-container', this.$target) as HTMLElement;
     new CategorySelector($categorySelectorElement, {
-      onClickCategory: (id, name: string) => this.handleSelectCategory(id, name)
+      onClickCategory: (id, name: string) => this.handleSelectCategory(id, name),
     });
 
     const $cardTypeSelectorElement = qs('#card-type-selector-container', this.$target) as HTMLElement;
@@ -104,6 +108,19 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     $blurBgElement.addEventListener('click', () => {
       this.hide();
     });
+
+    this.$state.$amountInput.addEventListener('input', e => {
+      const element = e.target as HTMLInputElement;
+      const amount = parseInt(element.value);
+
+      if (amount > MAX_AMOUNT) {
+        this.$state.$amountInput.value = MAX_AMOUNT.toString();
+        new Snackbar(document.body, { text: AMOUNT_MAX_WARNING_MESSAGE, duration: 2 });
+      } else if (amount < MIN_AMOUNT) {
+        this.$state.$amountInput.value = MIN_AMOUNT.toString();
+        new Snackbar(document.body, { text: AMOUNT_MIN_WARNING_MESSAGE, duration: 2 });
+      }
+    });
   }
 
   handleSelectPaymentType(id: number, name: string) {
@@ -119,7 +136,10 @@ export default class LedgerAddModal extends Component<IState, IProps> {
   async createLedgerAsync(date: Date, paymentTypeId: number, categoryId: number, amount: number, content: string) {
     const yearAndMonth = `${date.getFullYear()}-${date.getMonth() + 1}`;
 
-    const { success, data: { id } } = await createLedgerData(yearAndMonth, paymentTypeId, categoryId, amount, content);
+    const {
+      success,
+      data: { id },
+    } = await createLedgerData(yearAndMonth, paymentTypeId, categoryId, amount, content);
     if (success) {
       this.clear();
       this.hide();
@@ -148,7 +168,8 @@ export default class LedgerAddModal extends Component<IState, IProps> {
   }
 
   validateForm(): Error {
-    const { $amountInput, $categoryInput, $contentInput, $paymentTypeInput, $dateInput, categoryId, paymentTypeId } = this.$state;
+    const { $amountInput, $categoryInput, $contentInput, $paymentTypeInput, $dateInput, categoryId, paymentTypeId } =
+      this.$state;
     const error: Error = {};
 
     if (!$dateInput.value) {
