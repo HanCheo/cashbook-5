@@ -51,8 +51,8 @@ class LedgerController {
     const userIdAsNumber = Number(req.user.id);
 
     const { paymentTypeId, categoryId, date, content, amount } = req.body;
-
     const paymentTypeIdAsNumber = Number(paymentTypeId);
+    console.log(date);
     if (isNaN(paymentTypeIdAsNumber)) {
       res
         .status(BAD_REQUEST)

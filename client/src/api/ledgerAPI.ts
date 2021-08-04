@@ -12,13 +12,14 @@ export interface LedgerType {
 
 export const getLedgerData = (date: string): Promise<Result<ILedgerList[]>> =>
   getFetch('/ledger/day', {
-    query: { date }, headers: {
-      "Content-Type": 'application/json',
-    }
+    query: { date },
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 
 interface CreateLedgerResult {
-  id: number
+  id: number;
 }
 
 export const createLedgerData = async (
@@ -26,18 +27,18 @@ export const createLedgerData = async (
   paymentTypeId: number,
   categoryId: number,
   amount: number,
-  content: string): Promise<Result<CreateLedgerResult>> => {
-
-  return postFetch("/ledger/", {
+  content: string
+): Promise<Result<CreateLedgerResult>> => {
+  return postFetch('/ledger/', {
     headers: {
-      "Content-Type": 'application/json',
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       date,
       paymentTypeId,
       categoryId,
       amount,
-      content
-    })
-  })
-}
+      content,
+    }),
+  });
+};

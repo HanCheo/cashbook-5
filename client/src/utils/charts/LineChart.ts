@@ -46,7 +46,7 @@ const defaultOptions: LineChartOptions = {
   formatXLabel: null,
 };
 
-const LEFT_POS = 80;
+const LEFT_POS = 100;
 const TOP_POS = 50;
 const BOTTOM_POS = 420;
 const RIGHT_POS = 750;
@@ -163,7 +163,7 @@ export default class LineChart {
       Object.entries(this.groupData).map(([key, entry]) => {
         this.renderAxisGrid(entry.data);
         this.renderLines(entry.data, entry.color);
-        this.renderPoints(entry.data, key);
+        this.renderPoints(entry.data, entry.color);
         this.renderLabels(entry.data);
       });
     }
@@ -215,7 +215,7 @@ export default class LineChart {
     this.element.appendChild(yAsixGrid);
   }
 
-  renderPoints(items: ProcessedLineChartData[], category: string) {
+  renderPoints(items: ProcessedLineChartData[], color = '#000000') {
     if (!(this.scaleX && this.scaleY)) {
       throw new Error('Scale Function is undefined.');
     }
@@ -227,7 +227,8 @@ export default class LineChart {
         const y = this.scaleY(item.value);
         const point = svgCircle(x, y, 6);
         point.setAttribute('data-value', item.name);
-        point.setAttribute('opacity', '0.2');
+        point.setAttribute('fill', color);
+        point.setAttribute('opacity', '0.4');
         point.addEventListener('mouseover', () => {
           point.style.opacity = '1';
           point.style.transition = `transform 0.2s 0s ease`;
