@@ -35,6 +35,7 @@ export interface LineChartOptions {
   yLabelFontSize?: string;
   lineOpacity?: number;
   lineWidth?: number;
+  showGrid?: boolean;
 }
 
 const defaultOptions: LineChartOptions = {
@@ -43,6 +44,7 @@ const defaultOptions: LineChartOptions = {
   yLabelFontSize: '1em',
   lineOpacity: 0.5,
   lineWidth: 3,
+  showGrid: false,
   formatXLabel: null,
 };
 
@@ -170,8 +172,10 @@ export default class LineChart {
   }
 
   renderAxisGrid(items: ProcessedLineChartData[]) {
-    this.renderXAxisGrid(items);
-    this.renderYAxisGrid(items);
+    if (this.options.showGrid) {
+      this.renderXAxisGrid(items);
+      this.renderYAxisGrid(items);
+    }
   }
 
   renderXAxisGrid(items: ProcessedLineChartData[]) {
