@@ -5,6 +5,7 @@ import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
 import { getOwnPaymentTypesAsync } from '@/src/api/paymentTypeAPI';
 import { PaymentType } from '@/src/interfaces/PaymentType';
+import Snackbar from '../../SnackBar';
 
 interface IState {
   isShowCardTypes: boolean;
@@ -26,11 +27,11 @@ export default class CardTypeSelector extends Component<IState, IProps> {
         this.setState({
           ...this.$state,
           paymentTypes: data,
-        })
+        });
       } else {
-        console.error("결제수단을 가져오는데 실패했습니다.");
+        console.error('결제수단을 가져오는데 실패했습니다.');
       }
-    })
+    });
   }
 
   template() {
@@ -40,9 +41,9 @@ export default class CardTypeSelector extends Component<IState, IProps> {
         <div class="card-type-selector--toggle">선택</div>
         <ul class="card-type-selector--list">
           ${paymentTypes &&
-      paymentTypes
-        .map(
-          paymentType => html`
+          paymentTypes
+            .map(
+              paymentType => html`
                 <li
                   data-id="${paymentType.id}"
                   class="card-type-selector--list--item"
@@ -51,8 +52,8 @@ export default class CardTypeSelector extends Component<IState, IProps> {
                   <div>${paymentType.name}</div>
                 </li>
               `
-        )
-        .join('')}
+            )
+            .join('')}
         </ul>
       </div>
     `;
@@ -117,8 +118,13 @@ export default class CardTypeSelector extends Component<IState, IProps> {
   }
 
   handleToggleClickEvent() {
-    const { isShowCardTypes } = this.$state;
-    this.toggleCardTypeList(!isShowCardTypes);
+    const { isShowCardTypes, paymentTypes } = this.$state;
+
+    if (paymentTypes.length === 0) {
+      new Snackbar(this.$target, { text: '결제 수단이 없습니다.' });
+    } else {
+      this.toggleCardTypeList(!isShowCardTypes);
+    }
   }
 
   toggleCardTypeList(flag = false) {
