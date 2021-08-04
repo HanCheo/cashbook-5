@@ -1,6 +1,5 @@
 import Component from '@/src/core/Component';
 import CalendarModel from '@/src/models/Calendar';
-import LedgerDataModel from '@/src/models/Ledgers';
 import LoginModal from '@/src/components/LoginModal';
 import './index.scss';
 import SvgIcon from '@/src/assets/svg';
@@ -92,7 +91,7 @@ export default class Header extends Component<IState, IProp> {
     let Month: string | string[] | undefined = target.querySelector('.month')?.innerHTML.split('');
     Month?.splice(-1);
     Month = Month?.join('');
-    new MonthPicker(target);
+    new MonthPicker(document.body);
   };
 
   pageRouteClickHandler(e: MouseEvent) {
