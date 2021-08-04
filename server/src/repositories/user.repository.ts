@@ -23,18 +23,15 @@ class UserRepository {
   }
 
   async updateUserRefresh(userId: number, refreshToken: string) {
-    const t = await sequelize.transaction();
     try {
-      await User.update({ refreshToken }, { where: { id: userId }, transaction: t });
-      await t.commit();
+      await User.update({ refreshToken }, { where: { id: userId } });
     } catch (err) {
-      t.rollback();
+      throw new Error('Error: ' + err);
     }
   }
 
   // TODO: change UserAttributes => User.
   async createUser(gitUsername: string, avatarURL: string, refreshToken: string): Promise<UsersAttributes> {
-    const t = await sequelize.transaction();
     const originUser = await this.getUser(gitUsername);
     try {
       //유저가 있으면 업데이트
@@ -56,21 +53,17 @@ class UserRepository {
       // TODO: change to only return User class
       return _user.get({ plain: true });
     } catch (err) {
-      t.rollback();
       throw new Error('Error: ' + err);
     }
   }
 
   async getUserWithPaymentTypes(userIdAsNumber: number): Promise<User | null> {
     const userWidthPaymentTypes = User.findOne({
-      include: [
-        User.associations.paymentTypes
-      ],
+      include: [User.associations.paymentTypes],
       where: {
         id: userIdAsNumber,
-      }
+      },
     });
-
     return userWidthPaymentTypes;
   }
 }
