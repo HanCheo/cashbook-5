@@ -1,4 +1,3 @@
-import { CategoryResponseDTO } from '../dto/CategoryDTO';
 import {
   LedgerRequestDTO,
   LedgerResponseDTO,
@@ -6,55 +5,22 @@ import {
   StatisticEntry,
   StatisticLedgersResponseDTO,
 } from '../dto/LedgerDTO';
-import { PaymentTypeResponseDTO } from '../dto/PaymentTypeDTO';
+import { ledgerToLedgerResponseDTO } from '../mapper/ledger.mapper';
 import LedgerRepository from '../repositories/ledger.repository';
 import { range } from '../utils/arrayHelper';
 import { days } from '../utils/dayHelper';
-import categoryService from './category.service';
 
 class LedgerService {
+  async getLedger(id: number): Promise<LedgerResponseDTO | null> {
+    const ledger = await LedgerRepository.getLedger(id);
+    return ledger ? ledgerToLedgerResponseDTO(ledger) : null;
+  }
+
   async getLedgersByMonth(date: Date, userId: number): Promise<LedgerResponseDTO[]> {
     const startDate = date;
     const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
     const ledgers = await LedgerRepository.userLedgersByMonth(startDate, endDate, userId);
-
-    const ledgerDTOs: LedgerResponseDTO[] = ledgers.map(ledger => {
-      const { id, userId, paymentTypeId, paymentType, categoryId, category, amount, date, content } = ledger;
-      if (!category) {
-        throw new Error('category가 존재하지않는 ledger 데이터가 존재합니다.');
-      }
-
-      const categoryDTO: CategoryResponseDTO = {
-        id: category.id!,
-        name: category.name,
-        color: category.color,
-      };
-
-      if (!paymentType) {
-        throw new Error('paymentType이 존재하지않는 Ledger 데이터가 존재합니다.');
-      }
-
-      const paymentTypeDTO: PaymentTypeResponseDTO = {
-        id: paymentType.id!,
-        name: paymentType.name,
-        bgColor: paymentType.bgColor,
-        fontColor: paymentType.bgColor,
-      };
-
-      return {
-        id: id!,
-        userId: userId!,
-        paymentTypeId: paymentTypeId!,
-        paymentType: paymentTypeDTO,
-        categoryId: categoryId!,
-        category: categoryDTO,
-        date: date!,
-        content: content!,
-        amount: amount!,
-      };
-    });
-
+    const ledgerDTOs: LedgerResponseDTO[] = ledgers.map(ledger => ledgerToLedgerResponseDTO(ledger));
     return ledgerDTOs;
   }
 

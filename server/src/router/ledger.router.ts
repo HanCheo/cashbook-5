@@ -21,14 +21,29 @@ ledgerRouter.get('/day', authJWT, wrapAsync(LedgerController.getLedgersGroupByDa
  * GET /api/ledger/statistic
  * 통계를 위한 Ledger Data를 반환해줍니다.
  */
-ledgerRouter.get("/statistic", authJWT, wrapAsync(LedgerController.getStatisticLedgersByDate));
+ledgerRouter.get('/statistic', authJWT, wrapAsync(LedgerController.getStatisticLedgersByDate));
 
 /**
  * POST /api/ledger
- * 새로운 가계부 데이터 추가 
+ * 새로운 가계부 데이터 추가
  */
 ledgerRouter.post('/', authJWT, wrapAsync(LedgerController.createLedger));
 
+/**
+ * GET /api/ledger/:id
+ * Ledger Id를 이용해서 Ledger를 조회합니다.
+ */
+ledgerRouter.get('/:id', authJWT, wrapAsync(LedgerController.getLedger));
 
+/**
+ * PUT /api/ledger/:id
+ * Ledger API
+ */
+ledgerRouter.put('/:id', authJWT, wrapAsync(LedgerController.updateLedger));
+
+/**
+ * DELETE /api/ledger/:id
+ */
+ledgerRouter.delete('/:id', authJWT, wrapAsync(LedgerController.deleteLedger));
 
 export default ledgerRouter;

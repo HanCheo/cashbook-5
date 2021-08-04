@@ -11,14 +11,8 @@ class LedgerRepository {
    */
   async userLedgersByMonth(startDate: Date, endDate: Date, userId: number): Promise<Ledger[]> {
     const Ledgers = await Ledger.findAll({
-      include: [
-        Ledger.associations.category,
-        Ledger.associations.user,
-        Ledger.associations.paymentType
-      ],
-      order: [
-        ['date', 'ASC']
-      ],
+      include: [Ledger.associations.category, Ledger.associations.user, Ledger.associations.paymentType],
+      order: [['date', 'ASC']],
       where: {
         userId: userId,
         date: { [Op.between]: [startDate, endDate] },
@@ -37,20 +31,38 @@ class LedgerRepository {
    * @param date Ledger의 생성 일자
    * @returns 생성된 Ledger 데이터의 id
    */
-  async createLedger(userId: number, categoryId: number, paymentTypeId: number, content: string, amount: number, date: string): Promise<number | null> {
+  async createLedger(
+    userId: number,
+    categoryId: number,
+    paymentTypeId: number,
+    content: string,
+    amount: number,
+    date: string
+  ): Promise<number | null> {
     const newLedger = await Ledger.create<Ledger>({
       userId,
       paymentTypeId,
       categoryId,
       date,
       content,
-      amount
+      amount,
     });
     if (newLedger) {
       return newLedger.id!;
     } else {
       return null;
     }
+  }
+
+  /**
+   * 하나의 Ledger를 조회하는 API
+   * @param id Ledger Id
+   */
+  async getLedger(id: number): Promise<Ledger | null> {
+    return await Ledger.findOne({
+      include: [Ledger.associations.category, Ledger.associations.paymentType, Ledger.associations.user],
+      where: { id },
+    });
   }
 }
 
