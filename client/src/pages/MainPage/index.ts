@@ -7,7 +7,7 @@ import './index.scss';
 import LedgerDataModel from '@/src/models/Ledgers';
 import CalendarModel from '@/src/models/Calendar';
 import { ILedgerList } from '@/src/interfaces/Ledger';
-import { html } from '@/src/utils/codeHelper';
+import { converToYYYYMM, html } from '@/src/utils/codeHelper';
 import Snackbar from '@/src/components/SnackBar';
 
 interface IState {}
@@ -18,8 +18,14 @@ interface IProps {
 const CALENDAR_OBSERVER_LISTENER_KEY = 'main';
 export default class MainPage extends Component<IProps, IState> {
   setup() {
-    this.$state.ledgerData = LedgerDataModel.getData();
+    this.fetchInitLedgers();
   }
+
+  async fetchInitLedgers() {
+    await LedgerDataModel.update(converToYYYYMM(CalendarModel.getDate()));
+    this.setState({ ledgerData: LedgerDataModel.getData() });
+  }
+
   template() {
     return html`
       <div id="body"></div>
@@ -44,22 +50,21 @@ export default class MainPage extends Component<IProps, IState> {
   }
 
   async CalendarModelSubscribeFunction() {
-    const body = this.$target.querySelector('#body') as HTMLElement;
-    const calendarDate = CalendarModel.getDate();
-    await LedgerDataModel.update(calendarDate.getFullYear() + '-' + (calendarDate.getMonth() + 1));
+    await LedgerDataModel.update(converToYYYYMM(CalendarModel.getDate()));
 
     const ledgerData = LedgerDataModel.getData();
 
+    const body = this.$target.querySelector('#body') as HTMLElement;
     if (!ledgerData?.length) {
       new Snackbar(document.body, { text: '앗 ! 데이터가 없어요 !' });
-      return;
     }
-
     new LedgerContainer(body, { ledgerData });
   }
+
   setUnmount() {
     CalendarModel.unsubscribe(CALENDAR_OBSERVER_LISTENER_KEY);
   }
+
   setEvent() {
     CalendarModel.subscribe(CALENDAR_OBSERVER_LISTENER_KEY, this.CalendarModelSubscribeFunction.bind(this));
     this.resetEvent();

@@ -1,11 +1,18 @@
 import { CategoryResponseDTO } from '../dto/CategoryDTO';
-import { LedgerRequestDTO, LedgerResponseDTO, LedgersDayGroupResponseDTO, StatisticEntry, StatisticLedgersResponseDTO } from '../dto/LedgerDTO';
+import {
+  LedgerRequestDTO,
+  LedgerResponseDTO,
+  LedgersDayGroupResponseDTO,
+  StatisticEntry,
+  StatisticLedgersResponseDTO,
+} from '../dto/LedgerDTO';
 import { PaymentTypeResponseDTO } from '../dto/PaymentTypeDTO';
 import LedgerRepository from '../repositories/ledger.repository';
+import { range } from '../utils/arrayHelper';
+import { days } from '../utils/dayHelper';
 import categoryService from './category.service';
 
 class LedgerService {
-
   async getLedgersByMonth(date: Date, userId: number): Promise<LedgerResponseDTO[]> {
     const startDate = date;
     const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -13,9 +20,7 @@ class LedgerService {
     const ledgers = await LedgerRepository.userLedgersByMonth(startDate, endDate, userId);
 
     const ledgerDTOs: LedgerResponseDTO[] = ledgers.map(ledger => {
-      const {
-        id, userId, paymentTypeId, paymentType, categoryId, category, amount, date, content
-      } = ledger;
+      const { id, userId, paymentTypeId, paymentType, categoryId, category, amount, date, content } = ledger;
       if (!category) {
         throw new Error('category가 존재하지않는 ledger 데이터가 존재합니다.');
       }
@@ -27,7 +32,7 @@ class LedgerService {
       };
 
       if (!paymentType) {
-        throw new Error("paymentType이 존재하지않는 Ledger 데이터가 존재합니다.");
+        throw new Error('paymentType이 존재하지않는 Ledger 데이터가 존재합니다.');
       }
 
       const paymentTypeDTO: PaymentTypeResponseDTO = {
@@ -35,7 +40,7 @@ class LedgerService {
         name: paymentType.name,
         bgColor: paymentType.bgColor,
         fontColor: paymentType.bgColor,
-      }
+      };
 
       return {
         id: id!,
@@ -54,13 +59,7 @@ class LedgerService {
   }
 
   async createLedger(ledgerDto: LedgerRequestDTO, userId: number): Promise<number | null> {
-    const {
-      categoryId,
-      paymentTypeId,
-      date,
-      content,
-      amount
-    } = ledgerDto;
+    const { categoryId, paymentTypeId, date, content, amount } = ledgerDto;
 
     const newLedgerId = await LedgerRepository.createLedger(userId, categoryId, paymentTypeId, content, amount, date);
     if (newLedgerId) {
@@ -69,7 +68,6 @@ class LedgerService {
       return null;
     }
   }
-
 
   convertToDayGroupLedgers(ledgers: LedgerResponseDTO[]): LedgersDayGroupResponseDTO[] {
     const groupByDate = new Map();
@@ -95,52 +93,65 @@ class LedgerService {
     return [...groupByDate.values()];
   }
 
-  convertToStatisticLedgers(ledgers: LedgerResponseDTO[]): StatisticLedgersResponseDTO {
-    const groupByCategory = new Map<string, LedgerResponseDTO[]>();
-
+  convertToStatisticLedgers(ledgers: LedgerResponseDTO[], yearAndMonthDate: Date): StatisticLedgersResponseDTO {
+    const categoryAndLedgersMap = new Map<string, LedgerResponseDTO[]>();
+    // Make category To ledger Map for preprocessing
     ledgers.forEach(ledger => {
       const categoryName = ledger.category.name;
-      const originLedgers = groupByCategory.get(categoryName);
+      const originLedgers = categoryAndLedgersMap.get(categoryName);
       if (originLedgers === undefined) {
-        groupByCategory.set(categoryName, [ledger]);
+        categoryAndLedgersMap.set(categoryName, [ledger]);
       } else {
-        groupByCategory.set(categoryName, [...originLedgers, ledger]);
+        categoryAndLedgersMap.set(categoryName, [...originLedgers, ledger]);
       }
     });
 
+    // Make StatisticLedger Response
     const statisticLedgers: StatisticLedgersResponseDTO = {};
 
-    for (const [category, ledgers] of groupByCategory) {
-      if (ledgers) {
+    const month = yearAndMonthDate.getMonth() + 1;
+    const year = yearAndMonthDate.getFullYear();
+    const countOfDay = days(month, year);
 
-        const dayAndTotalAmountMap = new Map<string, number>();
-        const total = ledgers.reduce((acc, curr) => acc + curr.amount, 0);
-        const color = ledgers[0].category.color;
-        ledgers.forEach(ledger => {
-          const totalOfDay = dayAndTotalAmountMap.get(ledger.date);
-          if (!totalOfDay) {
-            dayAndTotalAmountMap.set(ledger.date, ledger.amount);
-          } else {
-            dayAndTotalAmountMap.set(ledger.date, totalOfDay + ledger.amount);
-          }
-        })
+    categoryAndLedgersMap.forEach((ledgerListByCategory, categoryName) => {
+      // category에 의해 분류된 ledgers들이 없으면 통계 데이터를 생성하지않는다.
+      if (ledgerListByCategory.length === 0) return;
+      const dayAndAmountMap = new Map<string, number>();
+      const total = ledgerListByCategory.reduce((acc, curr) => acc + curr.amount, 0);
+      const color = ledgerListByCategory[0].category.color;
 
-        const entries: StatisticEntry[] = [];
-        for (const [date, totalAmountOfDay] of dayAndTotalAmountMap) {
-          entries.push({
-            datetime: new Date(date),
-            amount: totalAmountOfDay
-          });
+      // populate amounts(0) in all day of target month.
+      range(countOfDay).forEach((n: number) => {
+        const day = n + 1;
+        const formattedDay = day / 10 < 1 ? '0' + day : day;
+        const formattedMonth = month / 10 < 1 ? '0' + month : month;
+        const date = `${year}-${formattedMonth}-${formattedDay}`;
+        dayAndAmountMap.set(date, 0);
+      });
+
+      // insert amounts by date;
+      ledgerListByCategory.forEach(ledger => {
+        const amountOfDay = dayAndAmountMap.get(ledger.date);
+        if (!amountOfDay) {
+          dayAndAmountMap.set(ledger.date, ledger.amount);
+        } else {
+          dayAndAmountMap.set(ledger.date, amountOfDay + ledger.amount);
         }
+      });
 
-        statisticLedgers[category] = {
-          total,
-          color,
-          entries
-        }
-      }
-    }
+      const entries: StatisticEntry[] = Array.from(dayAndAmountMap.entries()).map(([date, amountOfDay]) => {
+        return {
+          datetime: new Date(date),
+          amount: amountOfDay,
+        };
+      });
 
+      statisticLedgers[categoryName] = {
+        total,
+        color,
+        entries,
+      };
+    });
     return statisticLedgers;
   }
 }

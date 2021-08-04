@@ -1,39 +1,46 @@
 @import '../../../global.scss';
 
 .category-container {
-    align-self: flex-start;
-    &--title {
-      font-size: 2em;
-    }
+  align-self: flex-start;
+  &--title {
+    font-size: 2em;
+  }
 
-    &--list {
-      padding: 0px;
-      margin-top: 35px;
-      &--item {
-        display: grid;
-        padding: 1em 0;
-        grid-template-columns: 5em 1fr 0.5fr;
-        grid-column-gap: 0.5em;
-        align-items: center;
-        & > .category {
-          display: flex;
-          justify-content: center;
-          align-content: center;
-          border-radius: 3em;
-          background-color: transparent;
-          color: $off-white;
-          font-size: 0.85em;
-          padding-top: 0.2em;
-          padding-bottom: 0.2em;
-        }
-        & > .percent {
-          flex-grow: 1;
-          border:1px solid red;
-        }
-        & > .cost {
-          text-align: end;
-          flex-grow: 1;
-        }
+  &--list {
+    padding: 0px;
+    margin-top: 35px;
+    &--item {
+      display: grid;
+      padding: 1em 0;
+      grid-template-columns: 5em 1fr 0.5fr;
+      grid-column-gap: 0.5em;
+      align-items: center;
+      & > .category {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        border-radius: 3em;
+        background-color: transparent;
+        color: $off-white;
+        font-size: 0.85em;
+        padding-top: 0.2em;
+        padding-bottom: 0.2em;
+      }
+      & > .percent {
+        flex-grow: 1;
+        border: 1px solid red;
+      }
+      & > .cost {
+        text-align: end;
+        flex-grow: 1;
+      }
+      & > * {
+        pointer-events: none;
+        user-select: none;
+      }
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
       }
     }
   }
+}

@@ -17,23 +17,6 @@ interface IProps {
 }
 
 export default class CardTypeSelector extends Component<IState, IProps> {
-  setup() {
-    this.$state = {
-      paymentTypes: [],
-      isShowCardTypes: false,
-    };
-    getOwnPaymentTypesAsync().then(({ success, data }) => {
-      if (success) {
-        this.setState({
-          ...this.$state,
-          paymentTypes: data,
-        });
-      } else {
-        console.error('결제수단을 가져오는데 실패했습니다.');
-      }
-    });
-  }
-
   template() {
     const { paymentTypes } = this.$state;
     return html`
@@ -57,6 +40,30 @@ export default class CardTypeSelector extends Component<IState, IProps> {
         </ul>
       </div>
     `;
+  }
+  setup() {
+    this.$state = {
+      paymentTypes: [],
+      isShowCardTypes: false,
+    };
+    this.fetchOwnPaymentTypes();
+  }
+
+  async fetchOwnPaymentTypes() {
+    try {
+      const { success, data } = await getOwnPaymentTypesAsync();
+      if (success) {
+        this.setState({
+          ...this.$state,
+          paymentTypes: data,
+        });
+      } else {
+        console.error('결제수단을 가져오는데 실패했습니다.');
+      }
+    } catch (err) {
+      // only Unauthorized Error.
+      console.error(err);
+    }
   }
 
   mounted() {

@@ -1,7 +1,7 @@
 import './index.scss';
 import Component from '@/src/core/Component';
 import { qs } from '@/src/utils/selectHelper';
-import { addComma, html } from '@/src/utils/codeHelper';
+import { addComma, convertToYYYYMMDD, html } from '@/src/utils/codeHelper';
 import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
 import Snackbar from '../SnackBar';
@@ -134,12 +134,9 @@ export default class LedgerAddModal extends Component<IState, IProps> {
   }
 
   async createLedgerAsync(date: Date, paymentTypeId: number, categoryId: number, amount: number, content: string) {
-    const yearAndMonth = `${date.getFullYear()}-${date.getMonth() + 1}`;
+    const formatedDate = convertToYYYYMMDD(date);
 
-    const {
-      success,
-      data: { id },
-    } = await createLedgerData(yearAndMonth, paymentTypeId, categoryId, amount, content);
+    const { success } = await createLedgerData(formatedDate, paymentTypeId, categoryId, amount, content);
     if (success) {
       this.clear();
       this.hide();
