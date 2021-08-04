@@ -6,17 +6,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
-  devtool: 'inline-source-map',
-  devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    publicPath: '/',
-    overlay: true,
-    port: 8081,
-    stats: 'errors-only',
-    historyApiFallback: true,
-    proxy: {},
-  },
   entry: './src/index.ts',
   output: {
     filename: 'app.js',

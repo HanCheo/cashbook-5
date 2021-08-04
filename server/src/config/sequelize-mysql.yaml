@@ -1,7 +1,0 @@
-dbname: notes
-username:
-password:
-params:
-  host: localhost
-  port: 3306
-  dialect: mysql
