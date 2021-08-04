@@ -4,7 +4,7 @@ import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
 import { qs, qsAll } from '@/src/utils/selectHelper';
 import { createPaymentTypeAsync, getOwnPaymentTypesAsync } from '@/src/api/paymentTypeAPI';
-import paymentTypeListModel from "@/src/models/PaymentTypeList";
+import paymentTypeListModel from '@/src/models/PaymentTypeList';
 const backgroundColors = [
   '#6ed5eb',
   '#4cb8b8',
@@ -21,7 +21,7 @@ const backgroundColors = [
 const fontColors = ['#ffffff', '#000000'];
 
 interface Error {
-  [field: string]: string
+  [field: string]: string;
 }
 
 interface IState {
@@ -31,7 +31,7 @@ interface IState {
   error: Error;
 }
 
-interface IProps { }
+interface IProps {}
 
 export default class PaymentTypeAddModal extends Component<IState, IProps> {
   setup() {
@@ -39,7 +39,7 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
       bgColor: '',
       fontColor: '',
       name: '',
-      error: {}
+      error: {},
     };
   }
   template() {
@@ -53,7 +53,7 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
           <input
             id="name-input"
             class="payment-type-modal--name-section--input"
-            value="${name ? name : ""}"
+            value="${name ? name : ''}"
             placeholder="결제 수단의 이름을 입력해주세요."
           />
         </div>
@@ -61,28 +61,28 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
           <div class="payment-type-modal--bg-section--label">배경색</div>
           <ul id="bg-color-picker" class="color-picker">
             ${backgroundColors
-        .map(
-          color => html`
-                  <li class="color-picker--item" data-color="${color}">
+              .map(
+                color => html`
+                  <li class="color-picker--item ${bgColor === color ? 'select' : ''}" data-color="${color}">
                     <div class="box" style="background-color:${color}"></div>
                   </li>
                 `
-        )
-        .join('')}
+              )
+              .join('')}
           </ul>
         </div>
         <div class="payment-type-modal--font-section">
           <div class="payment-type-modal--font-section--label ">글자색</div>
           <ul id="font-color-picker" class="color-picker">
             ${fontColors
-        .map(
-          color => html`
+              .map(
+                color => html`
                   <li class="color-picker--item" data-color="${color}">
                     <div class="box" style="background-color:${color}"></div>
                   </li>
                 `
-        )
-        .join('')}
+              )
+              .join('')}
           </ul>
         </div>
         <div class="payment-type-modal--preview-section">
@@ -91,7 +91,7 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
         </div>
         <div class="payment-type-modal--btn-container">
           <div id="cancel-btn" class="payment-type-modal--btn-container--btn">취소</div>
-          ${Object.keys(error).length > 0 ? html`<p class="error-message">${Object.values(error)[0]}</p>` : ""}
+          ${Object.keys(error).length > 0 ? html`<p class="error-message">${Object.values(error)[0]}</p>` : ''}
           <div id="submit-btn" class="payment-type-modal--btn-container--btn">생성</div>
         </div>
       </div>
@@ -183,14 +183,14 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
   async createPaymentTypeAsync(name: string, bgColor: string, fontColor: string) {
     const { success: creatSuccess } = await createPaymentTypeAsync(name, bgColor, fontColor);
     if (creatSuccess) {
+      this.clear();
       const { success: retrieveSuccess, data } = await getOwnPaymentTypesAsync();
       if (retrieveSuccess) {
         paymentTypeListModel.setPaymentTypes(data);
-        this.clear();
         this.hide();
       } else {
         // TODO: add loading spinner
-        console.error("retrieve payment types fail");
+        console.error('retrieve payment types fail');
       }
     }
   }
@@ -202,34 +202,33 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
       this.createPaymentTypeAsync(name, bgColor, fontColor);
       return true;
     } else {
-      this.clear();
       this.setState({ ...this.$state, error });
       return false;
     }
   }
 
   clear() {
-    this.$state = {
+    this.setState({
       bgColor: '',
       fontColor: '',
       name: '',
       error: {},
-    };
+    });
   }
 
   validate(): Error {
     const error: Error = {};
     const { fontColor, bgColor, name } = this.$state;
-    if (!name || name === "") {
-      error.name = "카드 이름을 입력해주세요."
+    if (!name || name === '') {
+      error.name = '카드 이름을 입력해주세요.';
     }
 
-    if (!fontColor || fontColor === "") {
-      error.fontColor = "카드 글씨색을 선택해주세요."
+    if (!fontColor || fontColor === '') {
+      error.fontColor = '카드 글씨색을 선택해주세요.';
     }
 
-    if (!bgColor || bgColor === "") {
-      error.bgColor = "카드 배경색을 선택해주세요."
+    if (!bgColor || bgColor === '') {
+      error.bgColor = '카드 배경색을 선택해주세요.';
     }
     return error;
   }
