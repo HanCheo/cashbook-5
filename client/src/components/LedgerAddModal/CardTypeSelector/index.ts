@@ -3,7 +3,8 @@ import './index.scss';
 import { qs, qsAll } from '@/src/utils/selectHelper';
 import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
-import { getOwnPaymentTypesAsync, PaymentType } from '@/src/api/paymentTypeAPI';
+import { getOwnPaymentTypesAsync } from '@/src/api/paymentTypeAPI';
+import { PaymentType } from '@/src/interfaces/PaymentType';
 
 interface IState {
   isShowCardTypes: boolean;
@@ -11,7 +12,7 @@ interface IState {
 }
 
 interface IProps {
-  onClickCard: (value: string) => void;
+  onClickCard: (id: number, value: string) => void;
 }
 
 export default class CardTypeSelector extends Component<IState, IProps> {
@@ -21,10 +22,14 @@ export default class CardTypeSelector extends Component<IState, IProps> {
       isShowCardTypes: false,
     };
     getOwnPaymentTypesAsync().then(({ success, data }) => {
-      this.setState({
-        ...this.$state,
-        paymentTypes: data,
-      })
+      if (success) {
+        this.setState({
+          ...this.$state,
+          paymentTypes: data,
+        })
+      } else {
+        console.error("결제수단을 가져오는데 실패했습니다.");
+      }
     })
   }
 
@@ -39,7 +44,7 @@ export default class CardTypeSelector extends Component<IState, IProps> {
         .map(
           paymentType => html`
                 <li
-                  data-card="${paymentType.name}"
+                  data-id="${paymentType.id}"
                   class="card-type-selector--list--item"
                   style="background-color:${paymentType.bgColor};color:${paymentType.fontColor}"
                 >
@@ -77,11 +82,15 @@ export default class CardTypeSelector extends Component<IState, IProps> {
     const itemElements = qsAll('.card-type-selector--list--item', this.$target);
     for (const itemElement of Array.from(itemElements)) {
       if (target === itemElement) {
-        const { card } = target.dataset;
-        if (card) {
-          onClickCard(card);
-          this.toggleCardTypeList(false);
+        const { id } = target.dataset;
+        const idAsNumber = Number(id);
+        if (!isNaN(idAsNumber)) {
+          const paymentType = this.$state.paymentTypes.find(paymentType => paymentType.id === idAsNumber);
+          if (paymentType) {
+            onClickCard(idAsNumber, paymentType.name);
+          }
         }
+        this.toggleCardTypeList(false);
       }
     }
   }

@@ -1,20 +1,5 @@
-import { deleteFetch, getFetch, postFetch } from "./fetch";
-
-interface Result<D> {
-  success: boolean;
-  data: D;
-}
-
-export interface PaymentType {
-  id: number;
-  accountId: number;
-  name: string;
-  bgColor: string;
-  fontColor: string;
-  createAt: Date;
-  updateAt: Date;
-  image: string;
-}
+import { PaymentType } from "../interfaces/PaymentType";
+import { deleteFetch, getFetch, postFetch, Result } from "./fetch";
 
 
 export const getOwnPaymentTypesAsync = async (): Promise<Result<PaymentType[]>> => {

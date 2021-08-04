@@ -1,35 +1,42 @@
 import './index.scss';
 import Component from '@/src/core/Component';
 import { html } from '@/src/utils/codeHelper';
-import { ICategoryItem } from '@/src/interfaces/Category';
+import { Category } from '@/src/interfaces/Category';
 import { qs, qsAll } from '@/src/utils/selectHelper';
+import { getCategoriesAsync } from '@/src/api/categoryAPI';
 
 interface IState {
   isShowCategories: boolean;
+  categories: Category[];
 }
 
 interface IProps {
-  categories: ICategoryItem[];
-  onClickCategory: (value: string) => void;
+  onClickCategory: (id: number, name: string) => void;
 }
 
 export default class CategorySelector extends Component<IState, IProps> {
   setup() {
-    this.$state = { isShowCategories: false };
+    this.$state = { isShowCategories: false, categories: [] };
+
+    getCategoriesAsync().then(({ success, data }) => {
+      if (success) {
+        this.setState({ ...this.$state, categories: data });
+      }
+    })
   }
 
   // TODO: property를 통해서 category list 와 색깔 정보를 얻어와야합니다.
   template() {
-    const { categories } = this.$props;
+    const { categories } = this.$state;
     return html`
       <div class="category-selector">
         <div class="category-selector--toggle">선택</div>
         <ul class="category-selector--list">
           ${categories
         ?.map(
-          (category: ICategoryItem) => /* html */ `
-                    <li class="category-selector--list--item ledger-category"
-                    data-category="${category.name}" data-category-type="${category.id}">${category.name}</li>
+          (category: Category) => /* html */ `
+                    <li class="category-selector--list--item ledger-category" style="background-color:${category.color}"
+                    data-id="${category.id}">${category.name}</li>
                 `
         )
         .join('')}
@@ -63,11 +70,15 @@ export default class CategorySelector extends Component<IState, IProps> {
     const itemElements = qsAll('.category-selector--list--item', this.$target);
     for (const itemElement of Array.from(itemElements)) {
       if (target === itemElement) {
-        const { category } = target.dataset;
-        if (category) {
-          onClickCategory(category);
-          this.toggleCategoryList(false);
+        const { id } = target.dataset;
+        const idAsNumber = Number(id);
+        if (!isNaN(idAsNumber)) {
+          const category = this.$state.categories.find(category => category.id === idAsNumber);
+          if (category) {
+            onClickCategory(idAsNumber, category.name);
+          }
         }
+        this.toggleCategoryList(false);
       }
     }
   }

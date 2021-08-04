@@ -107,19 +107,18 @@ class LedgerController {
 
     if (newLedgerId) {
       res.send({
-        succuss: true,
+        success: true,
         data: { id: newLedgerId }
       }).end();
     } else {
       res.status(SERVER_ERROR).send({
-        succuss: false,
+        success: false,
         error: ERROR_CREATION_LEDGER_FAIL
       }).end();
     }
   }
 
   // TODO: 수정, 삭제 API 추가.
-
 
 }
 
