@@ -2,41 +2,53 @@ import './index.scss';
 
 import { qs, qsAll } from '@/src/utils/selectHelper';
 import Component from '@/src/core/Component';
-import { CardType } from '@/src/interfaces/CardType';
 import { html } from '@/src/utils/codeHelper';
+import { getOwnPaymentTypesAsync } from '@/src/api/paymentTypeAPI';
+import { PaymentType } from '@/src/interfaces/PaymentType';
 
 interface IState {
   isShowCardTypes: boolean;
+  paymentTypes: PaymentType[];
 }
 
 interface IProps {
-  cardTypes: CardType[];
-  onClickCard: (value: string) => void;
+  onClickCard: (id: number, value: string) => void;
 }
 
 export default class CardTypeSelector extends Component<IState, IProps> {
   setup() {
     this.$state = {
+      paymentTypes: [],
       isShowCardTypes: false,
     };
+    getOwnPaymentTypesAsync().then(({ success, data }) => {
+      if (success) {
+        this.setState({
+          ...this.$state,
+          paymentTypes: data,
+        })
+      } else {
+        console.error("결제수단을 가져오는데 실패했습니다.");
+      }
+    })
   }
+
   template() {
-    const { cardTypes } = this.$props;
+    const { paymentTypes } = this.$state;
     return html`
       <div class="card-type-selector">
         <div class="card-type-selector--toggle">선택</div>
         <ul class="card-type-selector--list">
-          ${cardTypes &&
-      cardTypes
+          ${paymentTypes &&
+      paymentTypes
         .map(
-          cardType => html`
+          paymentType => html`
                 <li
-                  data-card="${cardType.name}"
+                  data-id="${paymentType.id}"
                   class="card-type-selector--list--item"
-                  style="background-color:${cardType.color}"
+                  style="background-color:${paymentType.bgColor};color:${paymentType.fontColor}"
                 >
-                  <div>${cardType.name}</div>
-                  <div>${cardType.color}</div>
+                  <div>${paymentType.name}</div>
                 </li>
               `
         )
@@ -70,11 +82,15 @@ export default class CardTypeSelector extends Component<IState, IProps> {
     const itemElements = qsAll('.card-type-selector--list--item', this.$target);
     for (const itemElement of Array.from(itemElements)) {
       if (target === itemElement) {
-        const { card } = target.dataset;
-        if (card) {
-          onClickCard(card);
-          this.toggleCardTypeList(false);
+        const { id } = target.dataset;
+        const idAsNumber = Number(id);
+        if (!isNaN(idAsNumber)) {
+          const paymentType = this.$state.paymentTypes.find(paymentType => paymentType.id === idAsNumber);
+          if (paymentType) {
+            onClickCard(idAsNumber, paymentType.name);
+          }
         }
+        this.toggleCardTypeList(false);
       }
     }
   }
