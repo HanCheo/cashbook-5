@@ -3,14 +3,14 @@
 @keyframes loginShow {
   0% {
     bottom: -200%;
-    transform: translate(-50%, -50%) scaleY(0);
+    transform: translate(-50%, 50%) scaleY(0);
   }
   50% {
-    transform: translate(-50%, -50%) scaleX(0);
+    transform: translate(-50%, 50%) scaleX(0);
   }
   100% {
     bottom: 50%;
-    transform: translate(-50%, -50%) scaleX(100%) scaleY(100%);
+    transform: stranslate(-50%, 50%) caleX(100%) scaleY(100%);
   }
 }
 
