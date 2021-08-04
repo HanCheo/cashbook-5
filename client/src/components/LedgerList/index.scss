@@ -20,6 +20,10 @@
     + .ledger-list {
       font-size: 0;
       transform: scaleY(0);
+
+      button {
+        display: none;
+      }
     }
   }
 }
