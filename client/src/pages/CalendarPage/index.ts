@@ -14,8 +14,16 @@ interface IProps {}
 const CALENDAR_OBSERVER_LISTENER_KEY = 'calendar';
 export default class CalendarPages extends Component<IState, IProps> {
   setup() {
-    this.$state.ledgerData = LedgerDataModel.getData();
-    this.$state.date = CalendarModel.getDate();
+    this.$state = {
+      ledgerData: [],
+      date: CalendarModel.getDate(),
+    };
+    this.fetchInitLedgers();
+  }
+
+  async fetchInitLedgers() {
+    await LedgerDataModel.update(converToYYYYMM(CalendarModel.getDate()));
+    this.setState({ ledgerData: LedgerDataModel.getData(), date: CalendarModel.getDate() });
   }
 
   template() {

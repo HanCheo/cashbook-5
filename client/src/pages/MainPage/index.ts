@@ -18,8 +18,12 @@ interface IProps {
 const CALENDAR_OBSERVER_LISTENER_KEY = 'main';
 export default class MainPage extends Component<IProps, IState> {
   setup() {
-    this.$state.ledgerData = LedgerDataModel.getData();
-    LedgerDataModel.update(converToYYYYMM(CalendarModel.getDate()));
+    this.fetchInitLedgers();
+  }
+
+  async fetchInitLedgers() {
+    await LedgerDataModel.update(converToYYYYMM(CalendarModel.getDate()));
+    this.setState({ ledgerData: LedgerDataModel.getData() });
   }
 
   template() {
@@ -46,16 +50,14 @@ export default class MainPage extends Component<IProps, IState> {
   }
 
   async CalendarModelSubscribeFunction() {
-    const body = this.$target.querySelector('#body') as HTMLElement;
-
     await LedgerDataModel.update(converToYYYYMM(CalendarModel.getDate()));
 
     const ledgerData = LedgerDataModel.getData();
 
+    const body = this.$target.querySelector('#body') as HTMLElement;
     if (!ledgerData?.length) {
       new Snackbar(document.body, { text: '앗 ! 데이터가 없어요 !' });
     }
-
     new LedgerContainer(body, { ledgerData });
   }
 
