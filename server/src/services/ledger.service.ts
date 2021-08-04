@@ -11,8 +11,8 @@ import { range } from '../utils/arrayHelper';
 import { days } from '../utils/dayHelper';
 
 class LedgerService {
-  async deleteLedger(idAsNumber: number): Promise<boolean> {
-    const countOfRemoveRows = await LedgerRepository.deleteLedger(idAsNumber);
+  async deleteLedger(id: number): Promise<boolean> {
+    const countOfRemoveRows = await LedgerRepository.deleteLedger(id);
     return countOfRemoveRows > 0;
   }
 
@@ -37,6 +37,17 @@ class LedgerService {
       return newLedgerId;
     } else {
       return null;
+    }
+  }
+
+  async updateLedger(id: number, ledgerDto: LedgerRequestDTO, userId: number): Promise<boolean> {
+    const { categoryId, paymentTypeId, date, content, amount } = ledgerDto;
+    try {
+      await LedgerRepository.updateLedger(id, userId, categoryId, paymentTypeId, content, amount, date);
+      return true;
+    } catch (error) {
+      console.error(error); // TODO: change logger
+      return false;
     }
   }
 
