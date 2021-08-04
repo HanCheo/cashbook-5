@@ -38,7 +38,9 @@ export class LedgerDataModel extends Observer {
   }
   async update(date: string) {
     //TODO LEDGERS DATA UPDATE
+    console.log(date);
     const newLedgerData = (await getLedgerData(date)).data;
+    console.log(newLedgerData);
     this.setData(newLedgerData);
   }
 }

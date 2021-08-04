@@ -3,6 +3,7 @@ import Component from '@/src/core/Component';
 import { ILedgerList } from '@/src/interfaces/Ledger';
 import CalendarModel from '@/src/models/Calendar';
 import LedgerDataModel from '@/src/models/Ledgers';
+import { converToYYYYMM } from '@/src/utils/codeHelper';
 import './index.scss';
 
 interface IState {
@@ -34,8 +35,8 @@ export default class CalendarPages extends Component<IState, IProps> {
   async CalendarModelSubscribeFunction() {
     const target = this.$target.querySelector('.calendar-wrapper') as HTMLElement;
     const date = CalendarModel.getDate();
-    await LedgerDataModel.update(date.getFullYear() + '-' + (date.getMonth() + 1));
-    new Calendar(target, { ledgerData: LedgerDataModel.getData(), date: CalendarModel.getDate() });
+    await LedgerDataModel.update(converToYYYYMM(date));
+    new Calendar(target, { ledgerData: LedgerDataModel.getData(), date });
   }
 
   setEvent() {
