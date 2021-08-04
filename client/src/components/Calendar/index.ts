@@ -34,8 +34,8 @@ export default class Calendar extends Component<IState, IProps> {
     this.$state.ledgerData?.forEach((ledgerList: ILedgerList) => {
       ledgerList.ledgers.forEach((ledger: ILedger) => {
         ledger.amount < 0
-          ? ((this.$state.totalSpand as number) += +ledger.amount)
-          : ((this.$state.totalIncomes as number) += +ledger.amount);
+          ? ((this.$state.totalSpand) += ledger.amount)
+          : ((this.$state.totalIncomes) += ledger.amount);
       });
     });
   }

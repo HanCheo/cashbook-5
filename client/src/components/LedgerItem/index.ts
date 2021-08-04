@@ -30,7 +30,7 @@ export default class LedgerItem extends Component<IState, IProps> {
         <div class="ledger-content">${ledger.content}</div>
         <div class="ledger-cardType">${paymentName}</div>
         <div class="ledger-amount">
-          <div>${addComma(+ledger.amount)}</div>
+          <div>${addComma(ledger.amount)}</div>
           <div class="setting-buttons">
             <button class="edit">수정</button>
             <button class="delete">삭제</button>
