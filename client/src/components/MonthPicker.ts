@@ -36,15 +36,22 @@ export default class MonthPicker {
     return ` 
       .month-calendar-wrapper {
         position: absolute;
-        bottom: 0;
+        top: 0;
         background: var(--background-color);
         padding: .9em;
         left: 50%;
         border-radius: 9px;
         font-size: 16px;
         z-index: 9;
-        transform: translate(-50%, 110%);
+        transform: translate(-50%, 100%);
         box-shadow: 0 3px 5px grey;
+      }
+      .month-calendar-background {
+        top: 0;
+        left: 0;
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
       }
       .month-calendar-wrapper .month-calendar-inner {
         position: relative;
@@ -79,6 +86,7 @@ export default class MonthPicker {
   template() {
     const currentYear = this.date.getFullYear() == this.year;
     return html`
+      <div class="month-calendar-background"></div>
       <div class="month-calendar-wrapper">
         <style>
           ${this.style()}
@@ -111,12 +119,13 @@ export default class MonthPicker {
   render() {
     const MonthPicker = document.querySelector('.month-calendar-wrapper') as HTMLElement;
     MonthPicker?.remove();
-    this.$target.insertAdjacentHTML('afterend', this.template());
+    this.$target.insertAdjacentHTML('beforeend', this.template());
     this.mounted();
   }
 
   mounted() {
     const MonthPicker = document.querySelector('.month-calendar-wrapper') as HTMLElement;
+    const MonthPickerBackground = document.querySelector('.month-calendar-background') as HTMLElement;
     const prev = MonthPicker.querySelector('.prev') as HTMLElement;
     const next = MonthPicker.querySelector('.next') as HTMLElement;
 
@@ -128,7 +137,13 @@ export default class MonthPicker {
       if (target.classList.contains('month')) {
         CalendarModel.setDate(new Date(this.year, Number(target.dataset.monthNumber) - 1, 1));
         MonthPicker.remove();
+        MonthPickerBackground.remove();
       }
+    });
+
+    MonthPickerBackground.addEventListener('click', (e: MouseEvent) => {
+      MonthPicker.remove();
+      MonthPickerBackground.remove();
     });
   }
 }

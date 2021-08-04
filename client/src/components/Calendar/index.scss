@@ -30,6 +30,7 @@
   .body {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    gap: 0.5em;
     border-radius: 0.5em;
     padding: 0;
     margin: 0;
@@ -45,11 +46,21 @@
       padding: 0.4em;
       height: 5em;
       cursor: pointer;
-      border-right: 1px solid $line;
-      border-bottom: 1px solid $line;
+      border: 1px solid $line;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      transition: transform 0.5s;
+      background: $background;
+
+      @media (max-width: $tablet-max-width) {
+        height: 4em;
+      }
+
+      &.selected {
+        transform: scale(1.1);
+        box-shadow: 0 0 26px $line;
+      }
 
       > * {
         pointer-events: none;
@@ -58,6 +69,19 @@
       .day-amount {
         text-align: right;
         font-size: 0.9em;
+        div.mobile {
+          display: none;
+        }
+
+        @media (max-width: $tablet-max-width) {
+          div {
+            display: none;
+          }
+          div.mobile {
+            display: block;
+          }
+        }
+
         .income {
           color: $primary;
         }
@@ -78,6 +102,19 @@
       .other {
         opacity: 0.3;
       }
+    }
+  }
+
+  .calendar--footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8em 0.5em;
+    opacity: 0.5;
+    color: $text-color 50%;
+
+    .amouts {
+      display: flex;
+      grid-column-gap: 0.5em;
     }
   }
 }

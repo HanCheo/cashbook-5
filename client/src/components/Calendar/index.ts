@@ -1,7 +1,9 @@
 import Component from '@/src/core/Component';
-import { ILedgerList } from '@/src/interfaces/Ledger';
+import { ILedger, ILedgerList } from '@/src/interfaces/Ledger';
+import CalendarModel from '@/src/models/Calendar';
+import LedgerDataModel from '@/src/models/Ledgers';
 import { YOIL_ENG_SHORT } from '@/src/utils/calendar';
-import { addComma, html } from '@/src/utils/codeHelper';
+import { addComma, html, sibling } from '@/src/utils/codeHelper';
 import { qs } from '@/src/utils/selectHelper';
 import LedgerList from '../LedgerList';
 import './index.scss';
@@ -9,6 +11,9 @@ import './index.scss';
 interface IState {
   date: Date;
   ledgerData: ILedgerList[] | undefined;
+  totalCount: number;
+  totalIncomes: number;
+  totalSpand: number;
 }
 
 interface IProps {
@@ -16,18 +21,40 @@ interface IProps {
   ledgerData: ILedgerList[] | undefined;
 }
 
+const PREV_MONTHDAY_KEY = 'prev';
+const NEXT_MONTHDAY_KEY = 'next';
+
 export default class Calendar extends Component<IState, IProps> {
   setup() {
     this.$state.ledgerData = this.$props.ledgerData;
     this.$state.date = this.$props.date;
+
+    this.$state.totalIncomes = 0;
+    this.$state.totalSpand = 0;
+    this.$state.ledgerData?.forEach((ledgerList: ILedgerList) => {
+      ledgerList.ledgers.forEach((ledger: ILedger) => {
+        ledger.amount < 0
+          ? ((this.$state.totalSpand) += ledger.amount)
+          : ((this.$state.totalIncomes) += ledger.amount);
+      });
+    });
   }
 
   template() {
-    return `<div class="calendar-container">
-              <ul class="header"></ul>
-              <ul class="body"></ul>
-            </div>
-            <div class="day-ledger-info"></div>`;
+    const { totalIncomes, totalSpand } = this.$state;
+
+    return html`<div class="calendar-container">
+        <ul class="header"></ul>
+        <ul class="body"></ul>
+        <div class="calendar--footer">
+          <div class="amouts">
+            <div>총 수입 : ${'' + totalIncomes}</div>
+            <div>총 지출 : ${'' + totalSpand}</div>
+          </div>
+          <div class="total-amount">총계 : ${'' + (totalIncomes + totalSpand)}</div>
+        </div>
+      </div>
+      <div class="day-ledger-info"></div>`;
   }
 
   mounted() {
@@ -88,11 +115,17 @@ export default class Calendar extends Component<IState, IProps> {
     calendarBody.innerHTML = dates
       .map((day, i) => {
         const condition = i >= firstDateIndex && i < lastDateIndex + 1;
+
         let key: string = '';
         key += viewMonth < 10 ? '0' + viewMonth : viewMonth;
         key += day < 10 ? '0' + day : day;
 
-        return html` <li class="date" ${condition ? `data-key="${key}"` : ''}>
+        if (!condition) {
+          key = i >= firstDateIndex ? NEXT_MONTHDAY_KEY : key;
+          key = i < lastDateIndex + 1 ? PREV_MONTHDAY_KEY : key;
+        }
+
+        return html` <li class="date" data-key="${key}">
           <div ${condition ? '' : 'class="other"'}>${day}</div>
         </li>`;
       })
@@ -103,28 +136,47 @@ export default class Calendar extends Component<IState, IProps> {
     const { ledgerData } = this.$state;
 
     ledgerData?.forEach(ledgerDayData => {
-      const { numDate, income, spand } = ledgerDayData;
+      const { numDate, income, spand, ledgers } = ledgerDayData;
+      let incomeCnt = 0;
+      let spandCnt = 0;
+      ledgers.forEach(ledger => {
+        if (ledger.amount > 0) incomeCnt++;
+        if (ledger.amount < 0) spandCnt++;
+      });
 
       const day = qs(`li[data-key="${numDate}"]`, this.$target) as HTMLElement;
 
       day?.insertAdjacentHTML(
         'beforeend',
-        `<div class="day-amount">
-        <div class="income">${addComma(income)}</div>
-        <div class="spand">${addComma(spand)}</div>
-        <div class="amount">${addComma(spand + income)}</div>
-      </div>`
+        html`<div class="day-amount">
+          <div class="income">${addComma(income)}</div>
+          <div class="spand">${addComma(spand)}</div>
+          <div class="amount">${addComma(spand + income)}</div>
+
+          ${incomeCnt ? `<div class="income mobile"> ${incomeCnt} 건</div>` : ''}
+          ${spandCnt ? `<div class="spand mobile"> ${spandCnt} 건 </div>` : ''}
+        </div>`
       );
     });
   }
 
   showDayLedger(e: MouseEvent) {
     const { ledgerData } = this.$state;
-    const key = (e.target as HTMLElement).dataset.key;
+    const target = e.target as HTMLElement;
+    const key = target.dataset.key;
     const dayLedgerInfo = qs('.day-ledger-info', this.$target) as HTMLElement;
 
+    if (key == PREV_MONTHDAY_KEY) CalendarModel.prevMonth();
+    if (key == NEXT_MONTHDAY_KEY) CalendarModel.nextMonth();
+
+    sibling(target).forEach(el => el.classList.remove('selected'));
+    target.classList.add('selected');
+
     const ledgerList = ledgerData?.find(data => data.numDate == key);
-    if (!ledgerList) return;
+    if (!ledgerList) {
+      dayLedgerInfo.innerHTML = '';
+      return;
+    }
 
     dayLedgerInfo.innerHTML = '';
     new LedgerList(dayLedgerInfo, { ledgerList: ledgerList });

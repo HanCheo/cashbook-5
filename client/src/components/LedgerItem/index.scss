@@ -1,0 +1,71 @@
+@import '../../global.scss';
+
+li.ledger-list-item {
+  border-bottom: 1px solid $line;
+  display: grid;
+  padding: 0.5em 0;
+  position: relative;
+  grid-template-columns: 5em 3fr 1.5fr 1fr;
+  grid-column-gap: 0.5em;
+  min-height: 2.5em;
+  align-items: center;
+  transition: transform 0.3s ease-in-out;
+
+  div {
+    pointer-events: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    button {
+      pointer-events: initial;
+    }
+  }
+
+  .ledger-content,
+  .ledger-cardType {
+    white-space: normal;
+    overflow: hidden;
+  }
+
+  .ledger-category {
+    border-radius: 3em;
+    color: $off-white;
+    padding: 0.3em 0 0.2em;
+    font-size: 0.85em;
+    text-align: center;
+  }
+
+  .ledger-cardType {
+    text-align: center;
+  }
+  .ledger-amount {
+    display: flex;
+    justify-self: flex-end;
+    align-items: center;
+  }
+
+  &.selected {
+    .setting-buttons {
+      width: 6em;
+      margin-left: 0.5em;
+      transform: translateX(0px);
+    }
+  }
+  .setting-buttons {
+    transition: all 0.5s ease-in-out;
+    transform: translateX(10px);
+    width: 0;
+    transform-origin: right;
+
+    button {
+      padding: 0.5em;
+      background-color: $primary;
+      color: $off-white;
+      border-radius: 0.3em;
+      border: none;
+
+      &:last-child {
+        background-color: $error;
+      }
+    }
+  }
+}

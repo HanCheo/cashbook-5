@@ -2,7 +2,6 @@
 
 .wallet-container {
   position: relative;
-  top: -30px;
   align-items: center;
   height: 500px;
   width: 80%;
@@ -12,7 +11,7 @@
   border-radius: 8px;
 
   background-color: $background;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1), 0px 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--line-color);
 }
 
 .wallet-edit-container {
@@ -62,7 +61,7 @@
     box-shadow: -1rem 0 0.2rem rgba(0, 0, 0, 0.5);
     background-color: white;
     transition: 0.2s;
-    animation-name:  fade-in-effect;
+    animation-name: fade-in-effect;
     animation-duration: 0.5s;
     &--name {
       color: black;
@@ -118,8 +117,8 @@
   from {
     opacity: 0.5;
     transform: translate(50%, 0%);
-  } 
-  to{
+  }
+  to {
     transform: translate(0%, 0%);
     opacity: 1;
   }

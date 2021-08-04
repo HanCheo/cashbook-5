@@ -15,9 +15,9 @@
   }
 
   .fillter {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     grid-column-gap: 1em;
+
     input[type='checkbox'] {
       position: fixed;
       top: -100vh;
@@ -43,6 +43,7 @@
       position: relative;
       padding-left: 1.5em;
       color: $label;
+
       &:before {
         content: '';
         position: absolute;
