@@ -14,20 +14,25 @@ interface IProp {}
 
 interface IState {
   date: Date;
+  darkMode?: boolean;
 }
 const HEADER_OBSERVER_LISTENER_KEY = 'header';
 export default class Header extends Component<IState, IProp> {
   setup() {
+    this.$state.darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
     this.$state.date = CalendarModel.getDate();
     CalendarModel.subscribe(HEADER_OBSERVER_LISTENER_KEY, () => {
       this.setState({
         date: CalendarModel.getDate(),
       });
     });
+    //   const
   }
 
   template() {
-    const { date } = this.$state;
+    const { date, darkMode } = this.$state;
+
     return html`
       <div class="header-wrap">
         <ul>
@@ -46,6 +51,9 @@ export default class Header extends Component<IState, IProp> {
             <div class="svg-icon" data-page="/statistic">${SvgIcon.chart}</div>
             <div class="svg-icon" data-page="/wallet">${SvgIcon.card}</div>
           </li>
+          <li class="theme-changer">
+            <button class="theme-changer--button ${darkMode ? 'dark' : 'light'}"></button>
+          </li>
         </ul>
       </div>
     `;
@@ -53,36 +61,20 @@ export default class Header extends Component<IState, IProp> {
 
   async mounted() {
     const dataWrap = document.querySelector('.date-wrap') as HTMLElement;
-    const iconsWrap = this.$target.querySelector('.header-wrap-right') as HTMLElement;
+    const iconsWrap = qs('.header-wrap-right', this.$target) as HTMLElement;
+    const themeToggleButton = qs('.theme-changer--button', this.$target) as HTMLElement;
     dataWrap.addEventListener('click', () => this.showMonthPiceker(dataWrap));
 
     (iconsWrap.querySelector(`[data-page="${location.pathname}"]`) as HTMLElement).classList.add('selected');
     //router
-    iconsWrap.addEventListener('click', e => {
-      const target = e.target as HTMLElement;
-      const page = target.dataset.page;
-
-      if (page && location.pathname != page) {
-        sibling(target).forEach((el: Element) => el.classList.remove('selected'));
-        target.classList.add('selected');
-        router.push(`${page}`);
-      }
-    });
+    iconsWrap.addEventListener('click', this.pageRouteClickHandler);
     //month-picker
     const headerCenter = qs('.header-wrap .center', this.$target) as HTMLElement;
-    headerCenter.addEventListener('click', e => {
-      const target = e.target as HTMLElement;
+    headerCenter.addEventListener('click', this.monthChangeClickHandler);
 
-      switch (target.dataset.click) {
-        case 'prev':
-          CalendarModel.prevMonth();
-          break;
-        case 'next':
-          CalendarModel.nextMonth();
-          break;
-      }
-    });
+    themeToggleButton.addEventListener('click', this.themeChangeClickHandler);
   }
+
   async setEvent() {
     try {
       await checkUser();
@@ -93,7 +85,6 @@ export default class Header extends Component<IState, IProp> {
   }
 
   showLoginModal() {
-    //LoginModal
     new LoginModal(document.body);
   }
 
@@ -103,4 +94,39 @@ export default class Header extends Component<IState, IProp> {
     Month = Month?.join('');
     new MonthPicker(target);
   };
+
+  pageRouteClickHandler(e: MouseEvent) {
+    const target = e.target as HTMLElement;
+    const page = target.dataset.page;
+
+    if (page && location.pathname != page) {
+      sibling(target).forEach((el: Element) => el.classList.remove('selected'));
+      target.classList.add('selected');
+      router.push(`${page}`);
+    }
+  }
+
+  monthChangeClickHandler(e: MouseEvent) {
+    const target = e.target as HTMLElement;
+
+    switch (target.dataset.click) {
+      case 'prev':
+        CalendarModel.prevMonth();
+        break;
+      case 'next':
+        CalendarModel.nextMonth();
+        break;
+    }
+  }
+
+  themeChangeClickHandler(e: MouseEvent) {
+    const toggleButton = e.currentTarget as HTMLElement;
+    if (toggleButton.classList.contains('dark')) {
+      document.body.setAttribute('class', 'light-mode');
+      toggleButton.classList.replace('dark', 'light');
+    } else {
+      document.body.setAttribute('class', 'dark-mode');
+      toggleButton.classList.replace('light', 'dark');
+    }
+  }
 }

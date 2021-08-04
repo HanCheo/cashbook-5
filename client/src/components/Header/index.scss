@@ -1,13 +1,14 @@
 @import '../../global.scss';
 
 .header-wrap {
-  // background: $primary;
+  position: relative;
   ul {
     list-style: none;
     display: grid;
     max-width: $pc-max-width;
     justify-content: center;
     align-items: center;
+    position: relative;
     margin: 0 auto;
     padding: 2em;
     grid-template-columns: 1.1fr 0.8fr 1.1fr;
@@ -47,6 +48,25 @@
           font-size: 1.8em;
           font-weight: bold;
         }
+      }
+    }
+  }
+  .theme-changer {
+    position: absolute;
+    top: 1em;
+    right: 2em;
+
+    .theme-changer--button {
+      background: none;
+      font-weight: bold;
+      font-size: 1.5em;
+      border: none;
+      color: $text-color;
+      &.dark:before {
+        content: 'DARK';
+      }
+      &.light:before {
+        content: 'LIGHT';
       }
     }
   }
