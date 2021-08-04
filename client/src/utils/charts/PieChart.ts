@@ -93,6 +93,7 @@ export default class PieChart {
       textEl.setAttribute('y', (middleY * r).toString());
       textEl.setAttribute('text-anchor', 'middle');
       textEl.setAttribute('font-size', '1.2em');
+      textEl.setAttribute('fill', 'currentColor');
 
       textEl.textContent = entry.name;
       textEl.style.pointerEvents = 'none';
