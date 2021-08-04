@@ -19,7 +19,10 @@ const CALENDAR_OBSERVER_LISTENER_KEY = 'main';
 export default class MainPage extends Component<IProps, IState> {
   setup() {
     this.$state.ledgerData = LedgerDataModel.getData();
+    const calendarDate = CalendarModel.getDate();
+    LedgerDataModel.update(calendarDate.getFullYear() + '-' + (calendarDate.getMonth() + 1));
   }
+
   template() {
     return html`
       <div id="body"></div>
@@ -44,6 +47,7 @@ export default class MainPage extends Component<IProps, IState> {
   }
 
   async CalendarModelSubscribeFunction() {
+    console.log('Calendar Subscribe!');
     const body = this.$target.querySelector('#body') as HTMLElement;
     const calendarDate = CalendarModel.getDate();
     await LedgerDataModel.update(calendarDate.getFullYear() + '-' + (calendarDate.getMonth() + 1));
@@ -52,7 +56,6 @@ export default class MainPage extends Component<IProps, IState> {
 
     if (!ledgerData?.length) {
       new Snackbar(document.body, { text: '앗 ! 데이터가 없어요 !' });
-      return;
     }
 
     new LedgerContainer(body, { ledgerData });
