@@ -1,5 +1,5 @@
 import { isClass } from './routerHelper';
-import { emitCustomEvent, listen } from '../utils/CustomEvent';
+import { emitCustomEvent, listen } from '../utils/customEvent';
 
 /**
  * **DO NOT MODIFY THIS FILE**
