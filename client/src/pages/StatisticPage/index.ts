@@ -1,6 +1,6 @@
 import { getStatisticLedgers, StatisticLedgerByCategory } from '@/src/api/statisticAPI';
 import Component from '@/src/core/Component';
-import { qs } from "@/src/utils/selectHelper";
+import { qs } from '@/src/utils/selectHelper';
 import { html } from '@/src/utils/codeHelper';
 import LineChart, { LineChartData, LineGroupChartData } from '@/src/utils/charts/LineChart';
 import PieChart, { PieChartData } from '@/src/utils/charts/PieChart';
@@ -9,24 +9,20 @@ import { removeAllChildNode } from '@/src/utils/domHelper';
 import './index.scss';
 import calendarDataModel from '@/src/models/Calendar';
 
-const CALENDAR_OBSERVER_LISTENER_KEY = "statistic"
+const CALENDAR_OBSERVER_LISTENER_KEY = 'statistic';
 
 interface IState {
   statisticData?: StatisticLedgerByCategory;
-
 }
-interface IProps { }
+interface IProps {}
 
 export default class StatisticPage extends Component<IState, IProps> {
   template() {
     const { statisticData } = this.$state;
-    return /* html */`
+    return /* html */ `
             <div class='statistic-container'>
               <div class="chart-container">
-                ${!statisticData || Object.keys(statisticData).length === 0
-        ? html`
-                  <h1>데이터가 없습니다.</h1>
-                  ` : ""}
+                ${!statisticData || Object.keys(statisticData).length === 0 ? html` <h1>데이터가 없습니다.</h1> ` : ''}
                 <div id="pie-chart"></div>
                 <div id="statistic-category-container"></div>
               </div>
@@ -56,8 +52,8 @@ export default class StatisticPage extends Component<IState, IProps> {
   }
 
   mounted() {
-    const $lineChartResetBtn = qs("#reset-line-chart-btn") as HTMLElement;
-    $lineChartResetBtn.addEventListener("click", () => {
+    const $lineChartResetBtn = qs('#reset-line-chart-btn') as HTMLElement;
+    $lineChartResetBtn.addEventListener('click', () => {
       this.renderLineChartAllCategory();
     });
 
@@ -68,14 +64,15 @@ export default class StatisticPage extends Component<IState, IProps> {
 
   renderCategoryList() {
     const { statisticData } = this.$state;
-    const $categoryList = qs("#statistic-category-container") as HTMLElement;
+    const $categoryList = qs('#statistic-category-container') as HTMLElement;
+    const items = statisticData ? mapToCategoryItemData(statisticData) : [];
 
-    if (!statisticData) {
-      new CategoryList($categoryList, { items: [] });
-    } else {
-      const items = mapToCategoryItemData(statisticData);
-      new CategoryList($categoryList, { items });
-    }
+    new CategoryList($categoryList, {
+      items,
+      onClickItem: (category: string) => {
+        this.renderLineChartByCategory(category);
+      },
+    });
   }
 
   renderPieChart() {
@@ -84,7 +81,7 @@ export default class StatisticPage extends Component<IState, IProps> {
     if (statisticData) {
       const pieChartData = mapToPieChartData(statisticData);
       removeAllChildNode($pieChartContainer);
-      const $pieChartSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg") as SVGElement;
+      const $pieChartSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as SVGElement;
       $pieChartContainer.appendChild($pieChartSVG);
       PieChart.init($pieChartSVG, pieChartData, {
         onClick: (name: string) => {
@@ -100,7 +97,7 @@ export default class StatisticPage extends Component<IState, IProps> {
     removeAllChildNode($lineChartContainer);
 
     if (statisticData) {
-      const lineChartData = mapToLineChartData(statisticData)
+      const lineChartData = mapToLineChartData(statisticData);
       this.renderLineChart(lineChartData);
     }
   }
@@ -113,8 +110,8 @@ export default class StatisticPage extends Component<IState, IProps> {
     if (statisticData) {
       let categortAsKey: keyof StatisticLedgerByCategory = category;
       const filtered: StatisticLedgerByCategory = {
-        [category]: statisticData[categortAsKey]
-      }
+        [category]: statisticData[categortAsKey],
+      };
       const lineChartData = mapToLineChartData(filtered);
       this.renderLineChart(lineChartData);
     }
@@ -122,7 +119,7 @@ export default class StatisticPage extends Component<IState, IProps> {
 
   renderLineChart(lineChartData: LineGroupChartData) {
     const $lineChartContainer = document.querySelector('#line-chart') as HTMLElement;
-    const $lineChartSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg") as SVGElement;
+    const $lineChartSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as SVGElement;
     LineChart.init($lineChartSVG, lineChartData);
     $lineChartContainer.appendChild($lineChartSVG);
   }
@@ -147,14 +144,13 @@ export default class StatisticPage extends Component<IState, IProps> {
     calendarDataModel.subscribe(CALENDAR_OBSERVER_LISTENER_KEY, this.CalendarModelSubscribeFunction.bind(this));
     this.resetEvent();
   }
-
 }
 
 function mapToCategoryItemData(data: StatisticLedgerByCategory): CategoryItem[] {
   const categoryItems: CategoryItem[] = [];
   let totalOfAllCategory = 0;
 
-  for (const key in data) totalOfAllCategory += data[key].total
+  for (const key in data) totalOfAllCategory += data[key].total;
 
   for (const [key, value] of Object.entries(data)) {
     const { total, color } = value;
@@ -163,7 +159,7 @@ function mapToCategoryItemData(data: StatisticLedgerByCategory): CategoryItem[] 
       name: key,
       color: color,
       percentage,
-      value: total
+      value: total,
     });
   }
   return categoryItems;

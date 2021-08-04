@@ -43,6 +43,7 @@ const defaultOptions: LineChartOptions = {
   yLabelFontSize: '1em',
   lineOpacity: 0.5,
   lineWidth: 3,
+  formatXLabel: null,
 };
 
 const LEFT_POS = 80;
@@ -138,7 +139,6 @@ export default class LineChart {
       this.minValueOfYAxis = Math.min(...values);
 
       this.scaleX = transformer().domain(this.minValueOfXAxis, this.maxValueOfXAxis).range(this.left, this.right);
-
       this.scaleY = transformer().domain(this.minValueOfYAxis, this.maxValueOfYAxis).range(this.bottom, this.top);
     }
   }
@@ -266,7 +266,7 @@ export default class LineChart {
     }
 
     // const $path = svgLinePath(points.reverse());
-    const $path = svgCurveLinePath(points.reverse());
+    const $path = svgLinePath(points.reverse());
 
     // Line의 총 길이 구하기
     const l = $path.getTotalLength();
@@ -303,7 +303,11 @@ export default class LineChart {
       for (const d of items) {
         const x = this.scaleX(d.milliseconds);
         // TODO: Add option callback function formating label;
-        const label = d.datetime.getMonth() + '/' + d.datetime.getDate();
+
+        let label = d.datetime.getDate().toString();
+        if (this.options.formatXLabel) {
+          label = this.options.formatXLabel(d.datetime);
+        }
         const text = svgText(x, this.bottom + this.xLabelPadding, label);
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('font-size', this.options.xLabelFontSize || '');
