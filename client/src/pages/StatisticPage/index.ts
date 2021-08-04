@@ -1,13 +1,14 @@
-import { getStatisticLedgers, StatisticLedgerByCategory } from '@/src/api/statisticAPI';
+import './index.scss';
 import Component from '@/src/core/Component';
 import { qs } from '@/src/utils/selectHelper';
 import { html } from '@/src/utils/codeHelper';
-import LineChart, { LineChartData, LineGroupChartData } from '@/src/utils/charts/LineChart';
 import PieChart, { PieChartData } from '@/src/utils/charts/PieChart';
-import CategoryList, { CategoryItem } from './CategoryList';
-import { removeAllChildNode } from '@/src/utils/domHelper';
-import './index.scss';
+import CategoryList, { CategoryListItem } from './CategoryList';
+
 import calendarDataModel from '@/src/models/Calendar';
+import LineChart, { LineChartData, LineGroupChartData } from '@/src/utils/charts/LineChart';
+import { removeAllChildNode } from '@/src/utils/domHelper';
+import { getStatisticLedgers, StatisticLedgerByCategory } from '@/src/api/statisticAPI';
 
 const CALENDAR_OBSERVER_LISTENER_KEY = 'statistic';
 
@@ -146,8 +147,8 @@ export default class StatisticPage extends Component<IState, IProps> {
   }
 }
 
-function mapToCategoryItemData(data: StatisticLedgerByCategory): CategoryItem[] {
-  const categoryItems: CategoryItem[] = [];
+function mapToCategoryItemData(data: StatisticLedgerByCategory): CategoryListItem[] {
+  const categoryItems: CategoryListItem[] = [];
   let totalOfAllCategory = 0;
 
   for (const key in data) totalOfAllCategory += data[key].total;

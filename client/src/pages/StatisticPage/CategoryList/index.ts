@@ -6,11 +6,11 @@ import './index.scss';
 interface IState {}
 
 interface IProps {
-  items?: CategoryItem[];
+  items?: CategoryListItem[];
   onClickItem: (name: string) => void;
 }
 
-export interface CategoryItem {
+export interface CategoryListItem {
   name: string;
   percentage: number;
   value: number;

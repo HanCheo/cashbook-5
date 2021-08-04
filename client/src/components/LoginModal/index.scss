@@ -31,8 +31,7 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 0 23px var(--line-color);
-    animation: loginShow 1.5s ease-in-out 1 forwards;
-
+    animation: loginShow 1s ease-in-out 0.5s forwards;
     @media (max-width: $phone-max-width) {
       height: 100%;
       border-radius: 0;
