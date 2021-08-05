@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "cashbook5",
+      "script": "./dist/bundle.js",
+      "merge_logs": true,
+      "max_restarts": 100,
+      "max_memory_restart": "200M",
+      "env": {
+        "PORT": 3000
+      }
+    }
+  ]
+}

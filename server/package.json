@@ -33,7 +33,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --exec ts-node --files ./src/app.ts",
-    "build": "webpack --config ./src/config/webpack.config.js"
+    "build": "webpack --config ./webpack.config.js",
+    "prod-start": "pm2 start ./dist/bundle.js"
   },
   "author": "",
   "license": "ISC"
