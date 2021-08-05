@@ -18,7 +18,7 @@ const setQuery = (query: object) => {
   return _query.slice(0, -1);
 };
 
-const serverURL = `http://${location.host}:3000/api`;
+const serverURL = `http://${location.hostname}:3000/api`;
 
 export const getFetch = async <T>(url: string, options?: IApiFetch): Promise<T> => {
   let querystring = '';
@@ -27,6 +27,7 @@ export const getFetch = async <T>(url: string, options?: IApiFetch): Promise<T> 
   }
 
   const fetchUrl = serverURL + url + querystring;
+  console.log(fetchUrl);
   const response = await fetch(fetchUrl, {
     method: 'GET',
     credentials: 'include',
