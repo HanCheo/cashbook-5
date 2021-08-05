@@ -23,7 +23,7 @@ if [[ "$CURRENT_HASH" != "$REMOTE_HASH" ]];  then
 	cd ./client
     npm install
     npm run build
-	mv ./dist/* /var/www/html
+	sudo mv ./dist/* /var/www/html
 	echo "Client Deployed"
 
 	echo "Start Server Deploy"
