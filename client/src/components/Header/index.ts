@@ -8,6 +8,7 @@ import { router } from '@/src/core/router';
 import { html, sibling } from '@/src/utils/codeHelper';
 import { qs } from '@/src/utils/selectHelper';
 import { checkUser } from '@/src/api/loginAPI';
+import { MONTH_SHORT } from '@/src/utils/calendar';
 
 interface IProp {}
 
@@ -31,18 +32,26 @@ export default class Header extends Component<IState, IProp> {
 
   template() {
     const { date, darkMode } = this.$state;
+    const prevDate = new Date(date.getFullYear(), date.getMonth(), 0);
+    const nextDate = new Date(date.getFullYear(), date.getMonth(), 32);
 
     return html`
       <div class="header-wrap">
         <ul>
           <li class="left">Woowa<br />Money Diary</li>
           <li class="center">
-            <div class="arrow" data-click="prev"><</div>
+            <div class="arrow" data-click="prev">
+              <div class="month">${MONTH_SHORT[prevDate.getMonth()]}</div>
+              <div class="year">${prevDate.getFullYear()}</div>
+            </div>
             <div class="date-wrap">
-              <div class="month">${date.getMonth() + 1}월</div>
+              <div class="month">${MONTH_SHORT[date.getMonth()]}</div>
               <div class="year">${date.getFullYear()}</div>
             </div>
-            <div class="arrow" data-click="next">></div>
+            <div class="arrow" data-click="next">
+              <div class="month">${MONTH_SHORT[nextDate.getMonth()]}</div>
+              <div class="year">${nextDate.getFullYear()}</div>
+            </div>
           </li>
           <li class="header-wrap-right">
             <div class="svg-icon" data-page="/">${SvgIcon.fileText}</div>
