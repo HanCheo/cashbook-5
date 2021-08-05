@@ -1,6 +1,7 @@
 import Component from '@/src/core/Component';
 import { ILedger } from '@/src/interfaces/Ledger';
 import { addComma, html } from '@/src/utils/codeHelper';
+import { qs } from '@/src/utils/selectHelper';
 import './index.scss';
 
 interface IState {
@@ -32,8 +33,8 @@ export default class LedgerItem extends Component<IState, IProps> {
         <div class="ledger-amount">
           <div>${addComma(ledger.amount)}</div>
           <div class="setting-buttons">
-            <button class="edit">수정</button>
-            <button class="delete">삭제</button>
+            <button class="edit" data-type="edit" data-id=${ledger.id}>수정</button>
+            <button class="delete" data-type="delete" data-id=${ledger.id}>삭제</button>
           </div>
         </div>
       </li>
