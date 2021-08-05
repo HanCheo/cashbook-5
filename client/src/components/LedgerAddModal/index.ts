@@ -8,6 +8,7 @@ import Snackbar from '../SnackBar';
 import { createLedgerData, editLedgerData, getLedgerData } from '@/src/api/ledgerAPI';
 import calendarModel from '@/src/models/Calendar';
 import { ILedger } from '@/src/interfaces/Ledger';
+import { UsageState } from 'webpack';
 
 const MAX_AMOUNT = 100000000;
 const MIN_AMOUNT = -100000000;
@@ -51,12 +52,15 @@ export default class LedgerAddModal extends Component<IState, IProps> {
       content = '',
       paymentName = '',
       amount = 0;
+
     if (ledger) {
       date = ledger.date!;
       categoryName = ledger.category.name;
       content = ledger.content;
       paymentName = ledger.paymentType.name;
       amount = ledger.amount;
+    } else {
+      date = convertToYYYYMMDD(new Date());
     }
 
     return html`
@@ -255,5 +259,8 @@ export default class LedgerAddModal extends Component<IState, IProps> {
 
   show() {
     this.$target.style.display = 'flex';
+    this.setState({
+      ...this.$state,
+    });
   }
 }
