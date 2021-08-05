@@ -1,0 +1,25 @@
+{
+  "apps": [
+    {
+      "name": "cashbook5",
+      "script": "./dist/bundle.js",
+      "merge_logs": true,
+      "max_restarts": 100,
+      "max_memory_restart": "200M",
+      "env": {
+        "PORT": 3000,
+        "GIT_CLIENT_ID": "",
+        "GIT_CLIENT_SECRET": "",
+        "CORS_ALLOW_URL": "",
+        "JWT_SECRET": "",
+        "JWT_EXPIRESIN": "20h",
+        "SEQUELIZE_DBNAME": "",
+        "SEQUELIZE_DBUSER": "",
+        "SEQUELIZE_DBPASSWORD": "",
+        "SEQUELIZE_DBHOST": "",
+        "SEQUELIZE_DBPORT": 3306,
+        "SEQUELIZE_DBDIALECT": "mysql"
+      }
+    }
+  ]
+}

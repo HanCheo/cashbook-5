@@ -1,0 +1,49 @@
+@import '../../global.scss';
+
+@keyframes progress {
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes topShow {
+  50% {
+    top: 26%;
+  }
+  100% {
+    top: 20%;
+  }
+}
+
+.snack-bar {
+  position: absolute;
+  font-size: 1.3em;
+  top: -20%;
+  left: 50%;
+  overflow: hidden;
+  box-shadow: 0px 1px 4px $line;
+  transform: translateX(-50%);
+  background: $background;
+  padding: 0.5em 1.5em;
+  border-radius: 0.5em;
+
+  &.show {
+    animation: topShow 0.5s ease-in-out forwards;
+  }
+
+  hr {
+    position: absolute;
+    bottom: 0;
+    padding: 0;
+    left: 0;
+    margin: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: 2px solid $primary;
+    width: 100%;
+    animation: progress 2s linear 1 forwards;
+  }
+}

@@ -1,0 +1,40 @@
+@import '../../global.scss';
+
+.ledger-header {
+  display: flex;
+  font-size: 1.1em;
+  cursor: pointer;
+  justify-content: space-between;
+  position: relative;
+  padding-bottom: 1em;
+  border-bottom: 1px solid $line;
+
+  .ledger-day {
+    color: $label;
+  }
+  .ledger-amount {
+    color: $label;
+  }
+
+  &.active {
+    + .ledger-list {
+      font-size: 0;
+      transform: scaleY(0);
+
+      button {
+        display: none;
+      }
+    }
+  }
+}
+
+.ledger-list {
+  padding: 0;
+  margin-top: 0;
+  cursor: pointer;
+  overflow: hidden;
+  font-size: 1.2em;
+  transition: font-size 0.2s ease-in-out, transform 0.3s ease-in-out;
+  transform-origin: top;
+  display: grid;
+}

@@ -1,0 +1,52 @@
+@import '../../../global.scss';
+
+.category-container {
+  padding: 0 2em;
+  &--title {
+    line-height: 1.4;
+    .plus {
+      color: $primary;
+    }
+    .minus {
+      color: $error;
+    }
+  }
+
+  &--list {
+    padding: 0px;
+    margin-top: 35px;
+    &--item {
+      display: grid;
+      padding: 1em 0;
+      grid-template-columns: 5em 4em 1fr;
+      grid-column-gap: 0.5em;
+      align-items: center;
+      & > .category {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        border-radius: 3em;
+        background-color: transparent;
+        color: $off-white;
+        font-size: 0.85em;
+        padding-top: 0.2em;
+        padding-bottom: 0.2em;
+      }
+      & > .percent {
+        flex-grow: 1;
+        border: 1px solid red;
+      }
+      & > .cost {
+        text-align: end;
+        white-space: nowrap;
+      }
+      & > * {
+        pointer-events: none;
+        user-select: none;
+      }
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}

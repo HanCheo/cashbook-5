@@ -1,0 +1,88 @@
+@import '../../global.scss';
+
+@keyframes dialogShow {
+  0% {
+    transform: scaleX(0) translate(-50%, 200%);
+  }
+
+  50% {
+    transform: scaleX(0.5) scaleY(0) translate(-50%, 100%);
+  }
+
+  100% {
+    transform: scaleX(1) scaleY(1) translate(-50%, -50%);
+  }
+}
+
+@keyframes dialogHidden {
+  100% {
+    transform: scaleX(0) translate(-50%, 200%);
+  }
+
+  50% {
+    transform: scaleX(0.5) scaleY(0) translate(-50%, 100%);
+  }
+
+  0% {
+    transform: scaleX(1) scaleY(1) translate(-50%, -50%);
+  }
+}
+
+.dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+}
+.dialog-wrapper {
+  position: fixed;
+  max-width: 300px;
+  min-width: 200px;
+  width: 50vw;
+  top: 50%;
+  left: 50%;
+  background: $background;
+  box-shadow: 0 0 5px $line;
+  border-radius: 0.5em;
+  padding: 1.5em;
+  animation: dialogHidden 0.8s ease-in-out forwards;
+  &.show {
+    animation: dialogShow 0.8s ease-in-out forwards;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 2em;
+  }
+  .contents {
+    margin: 2em 0;
+    text-align: center;
+  }
+  .dialog-buttons {
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      background: none;
+      border: none;
+      padding: 0.5em 1em;
+      border-radius: 0.2em;
+      &.cancle {
+        color: $error;
+        &:hover {
+          color: $text-color;
+          background: $error;
+        }
+      }
+      &.confirm {
+        color: $primary;
+        &:hover {
+          color: $text-color;
+          background: $primary;
+        }
+      }
+    }
+  }
+}

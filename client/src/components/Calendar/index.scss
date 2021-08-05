@@ -1,0 +1,127 @@
+@import '../../global.scss';
+
+.calendar-container {
+  max-width: $pc-max-width;
+  position: relative;
+  margin: 0 auto;
+  width: 95%;
+
+  .header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-radius: 0.2em;
+    margin: 0 0 0.9em 0;
+    padding: 0;
+    font-size: 1.1em;
+    background-color: $background;
+    box-shadow: 0 2px 8px $line;
+
+    li {
+      padding: 1em 0;
+      text-align: center;
+
+      &:nth-child(7n - 6),
+      &:nth-child(7n) {
+        color: #fd6868;
+      }
+    }
+  }
+
+  .body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5em;
+    border-radius: 0.5em;
+    padding: 0;
+    margin: 0;
+    background-color: $background;
+    box-shadow: 0 2px 8px $line;
+
+    .date:nth-child(7n - 6),
+    .date:nth-child(7n) {
+      color: #fd6868;
+    }
+
+    .date {
+      padding: 0.4em;
+      height: 5em;
+      cursor: pointer;
+      border: 1px solid $line;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.5s;
+      background: $background;
+
+      @media (max-width: $tablet-max-width) {
+        height: 4em;
+      }
+
+      &.selected {
+        transform: scale(1.1);
+        box-shadow: 0 0 26px $line;
+      }
+
+      > * {
+        pointer-events: none;
+      }
+
+      .day-amount {
+        text-align: right;
+        font-size: 0.9em;
+        div.mobile {
+          display: none;
+        }
+
+        @media (max-width: $tablet-max-width) {
+          div {
+            display: none;
+          }
+          div.mobile {
+            display: block;
+          }
+        }
+
+        .income {
+          color: $primary;
+        }
+        .spand {
+          color: $error;
+        }
+        .amount {
+          color: $text-color;
+        }
+      }
+    }
+
+    .date:nth-child(7n) {
+      border-right: 0;
+    }
+
+    .date {
+      .other {
+        opacity: 0.3;
+      }
+    }
+  }
+
+  .calendar--footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8em 0.5em;
+    opacity: 0.5;
+    color: $text-color 50%;
+
+    .amouts {
+      display: flex;
+      grid-column-gap: 0.5em;
+    }
+  }
+}
+
+.day-ledger-info {
+  max-width: $pc-max-width;
+  width: 95%;
+  margin: 0 auto;
+  padding-top: 1em;
+}

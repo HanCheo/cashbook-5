@@ -1,0 +1,64 @@
+@import '../../../global.scss';
+
+.category-selector {
+  margin: auto 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  &--toggle {
+    border-radius: 999px;
+    padding: 0.5em 1em;
+    user-select: none;
+    cursor: pointer;
+    color: $primary;
+    border: 1px solid $primary;
+    background-color: transparent;
+    color: $primary;
+    &:hover {
+      background-color: $primary;
+      color: $off-white;
+    }
+  }
+  &--list {
+    display: none;
+    position: absolute;
+    border-right: 2px solid $primary;
+    padding-left: 1rem;
+    padding-right: 0.5rem;
+    max-height: 300px;
+    overflow-y: scroll;
+    z-index: 9;
+    margin: 0;
+    transform: translate(0%, -50%);
+    background-color: transparent;
+
+    animation-name: category-fade-in-effect;
+    animation-duration: 0.5s;
+    &--item {
+      cursor: pointer;
+      width: 100px;
+      border-radius: 999px;
+      padding: 4px 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      & > * {
+        pointer-events: none;
+        user-select: none;
+      }
+    }
+  }
+}
+
+@keyframes category-fade-in-effect {
+  from {
+    opacity: 0;
+    transform: translate(50%, -50%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0%, -50%);
+  }
+}

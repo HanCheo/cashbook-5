@@ -1,0 +1,27 @@
+@import '../../global.scss';
+
+#ledger-add-modal {
+  display: none;
+}
+
+#ledger-add-button {
+  position: fixed;
+  left: 50%;
+  bottom: 0%;
+  transform: translate(-50%, 50%);
+}
+
+#ledger-add-button:hover {
+  transform: translate(-50%, 0%);
+  animation-name: up-effect;
+  animation-duration: 0.5s;
+}
+
+@keyframes up-effect {
+  from {
+    transform: translate(-50%, 50%);
+  }
+  to {
+    transform: translate(-50%, 0%);
+  }
+}

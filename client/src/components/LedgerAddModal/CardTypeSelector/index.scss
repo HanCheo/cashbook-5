@@ -1,0 +1,79 @@
+@import '../../../global.scss';
+
+.card-type-selector {
+  margin: auto 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  &--toggle {
+    background-color: $primary;
+    color: white;
+    border-radius: 999px;
+    padding: 0.5em 1em;
+    user-select: none;
+    cursor: pointer;
+    border: 1px solid $primary;
+    background-color: transparent;
+    color: $primary;
+    &:hover {
+      background-color: $primary;
+      color: $off-white;
+    }
+  }
+  &--list {
+    display: none;
+    position: absolute;
+    max-height: 60vw;
+    overflow-y: scroll;
+    margin: 0;
+    left: 0;
+    transform: translateX(0%) translateY(-50%);
+    padding-left: 1rem;
+
+    animation-name: card-fade-in-effect;
+    animation-duration: 0.5s;
+    &--item {
+      cursor: pointer;
+      display: block;
+      position: relative;
+      height: 80px;
+      width: 200px;
+      padding: 1.5rem;
+      border-radius: 16px;
+      background-color: $label;
+      box-shadow: 0 -0.5rem 0.5rem rgba(255, 255, 255, 0.2);
+      color: white;
+      transition: 0.2s;
+
+      & > * {
+        pointer-events: none;
+        user-select: none;
+      }
+
+      &:hover {
+        transform: translateX(-1rem);
+      }
+
+      &:hover ~ & {
+        transform: translateY(20px);
+      }
+
+      &:not(:first-child) {
+        margin-top: -20px;
+      }
+    }
+  }
+}
+
+@keyframes card-fade-in-effect {
+  from {
+    opacity: 0;
+    transform: translateX(50%) translateY(-50%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0%) translateY(-50%);
+  }
+}
