@@ -1,7 +1,7 @@
 import User, { UserSchema, UserSchemaSettings } from './user.model';
 import Ledger, { LedgerSchema, LedgerSchemaSetting } from './ledger.model';
 import Category, { CategorySchema, CategorySchemaSettings } from './category.model';
-import PaymentType, { PaymentTypeSchema, PaymentTypeSchemaSetting } from './paymenttype.model';
+import PaymentType, { PaymentTypeSchema, PaymentTypeSchemaSetting } from './paymentType.model';
 
 export default () => {
   User.init(UserSchema, UserSchemaSettings);
