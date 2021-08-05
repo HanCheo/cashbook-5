@@ -55,7 +55,9 @@ export default class LedgerContainer extends Component<IState, IProps> {
             </div>
           </div>
         </div>
-        <div class="ledger-list-wrapper"></div>
+        <div class="ledger-list-wrapper">
+          ${!totalCount ? html` <div class="no-data">No Data</div> ` : ''}
+        </div>
       </div>
     `;
   }
