@@ -45,7 +45,6 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
 
   template() {
     const { error, name, fontColor, bgColor } = this.$state;
-    console.log(fontColor);
     return html`
       <div class="blur-background"></div>
       <div class="payment-type-modal">
