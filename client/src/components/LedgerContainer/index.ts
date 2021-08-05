@@ -101,7 +101,7 @@ export default class LedgerContainer extends Component<IState, IProps> {
       target.classList.toggle('selected');
     }
     this.ledgerEditButtonClickHandler(target);
-    this.ledgerDeleteButtonClickHandelr(target);
+    this.ledgerDeleteButtonClickHandler(target);
   }
 
   async ledgerEditButtonClickHandler(target: HTMLElement) {
@@ -118,7 +118,7 @@ export default class LedgerContainer extends Component<IState, IProps> {
     ledgerAddModal.show();
   }
 
-  async ledgerDeleteButtonClickHandelr(target: HTMLElement) {
+  async ledgerDeleteButtonClickHandler(target: HTMLElement) {
     if (target.nodeName !== 'BUTTON' || target.dataset.type !== 'delete') return;
     const ledgerId = target.dataset.id ? +target.dataset.id : -1;
 
