@@ -1,14 +1,13 @@
-import { getFetch } from './fetch';
+import { getFetch, Result } from './fetch';
 
-export const checkUser = async () => {
-  let data = await getFetch('/user/account', {
-    headers: {
-      "Content-Type": 'application/json',
-    },
-  });
+export interface User {
+  id: number;
+  gitUsername: string;
+  avatarURL: string;
+}
 
-  return data;
-};
+export const checkUser = (): Promise<Result<User>> =>
+  getFetch('/user/account', { headers: { 'Content-Type': 'application/json' } });
 
 export const getGitLoginUrl = (): Promise<{ [key: string]: string }> =>
-  getFetch('/auth/giturl', { headers: { contentType: 'application/json' } });
+  getFetch('/auth/giturl', { headers: { 'Content-Type': 'application/json' } });

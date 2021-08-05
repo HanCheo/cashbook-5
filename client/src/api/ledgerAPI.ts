@@ -75,7 +75,7 @@ export const editLedgerData = (
 };
 
 export const deleteLedgerData = (id: number): Promise<Result<undefined>> => {
-  return deleteFetch('/ledger/', {
+  return deleteFetch(`/ledger/${id}`, {
     headers: {
       'Content-Type': 'application/json',
     },
