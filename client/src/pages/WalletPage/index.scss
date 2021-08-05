@@ -7,6 +7,7 @@
   @media (max-width: $phone-max-width) {
     height: 300px;
   }
+  max-width: $pc-max-width;
   width: 80%;
   margin: 0 auto;
   padding: 1em;

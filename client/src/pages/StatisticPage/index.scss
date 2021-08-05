@@ -8,23 +8,26 @@
   padding: 1em;
   margin: 0 auto;
   width: 80%;
-  border-radius: 8px;
-  background-color: $background;
-  box-shadow: 0 2px 8px var(--line-color);
+  max-width: $pc-max-width;
 }
 
 .chart-container {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 2em;
+  background-color: $background;
+  box-shadow: 0 2px 8px var(--line-color);
   min-height: 400px;
   @media (max-width: $tablet-max-width) {
-    flex-wrap: wrap;
-    width: 90%;
+    grid-template-columns: 1fr;
   }
 
   #pie-chart {
     flex-shrink: 0;
+    justify-self: center;
     width: 300px;
     height: 300px;
     > svg {
@@ -36,8 +39,7 @@
   }
 
   #statistic-category-container {
-    justify-self: stretch;
-    align-self: stretch;
+    padding: 1em;
   }
 }
 
@@ -45,24 +47,19 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  background-color: $background;
+  box-shadow: 0 2px 8px var(--line-color);
   width: 100%;
   &--header {
     display: flex;
     align-self: flex-end;
     .reset-btn {
-      display: flex;
-      align-content: center;
-      flex-grow: 0;
+      cursor: pointer;
       border-radius: 8px;
-      background-color: $primary;
-      color: $off-white;
+      color: var(--text-color);
       font-size: 0.85em;
-      padding: 0.4em;
-      border: 1px solid $primary;
-      &:hover {
-        color: $primary;
-        background-color: transparent;
-      }
+      padding: 1.5em 1.5em 0 0;
+      text-align: right;
     }
   }
 

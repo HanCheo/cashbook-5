@@ -1,4 +1,5 @@
 import Component from '@/src/core/Component';
+import CalendarModel from '@/src/models/Calendar';
 import { addComma, html } from '@/src/utils/codeHelper';
 import { qs, qsAll } from '@/src/utils/selectHelper';
 import './index.scss';
@@ -25,9 +26,14 @@ export default class CategoryList extends Component<IState, IProps> {
           return acc + curr.value;
         }, 0)
       : 0;
+    const selectDate = CalendarModel.getDate();
+
     return html`
       <div class="category-container">
-        <h1 class="category-container--title">이번 달 지출 금액 ${addComma(totalCost)} 원</h1>
+        <h1 class="category-container--title">
+          ${selectDate.getFullYear() + '년 ' + (selectDate.getMonth() + 1) + '월'}
+          <div><span class="${totalCost > 0 ? 'plus' : 'minus'}">${addComma(totalCost)}</span> 원</div>
+        </h1>
         <ul class="category-container--list">
           ${items &&
           items
