@@ -27,7 +27,6 @@ export const getFetch = async <T>(url: string, options?: IApiFetch): Promise<T> 
   }
 
   const fetchUrl = serverURL + url + querystring;
-  console.log(fetchUrl);
   const response = await fetch(fetchUrl, {
     method: 'GET',
     credentials: 'include',
