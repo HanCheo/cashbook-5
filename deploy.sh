@@ -1,4 +1,7 @@
 #!/bin/bash
+echo ""
+echo $(date)
+cd /home/ubuntu/app/cashbook-5
 
 git fetch
 
@@ -33,7 +36,7 @@ if [[ "$CURRENT_HASH" != "$REMOTE_HASH" ]];  then
 	npm run prod-start
 	echo "Server Deployed"
 else
-	echo $(date)
+	
 	echo "변경 사항이 없습니다".
 fi
 
