@@ -1,5 +1,6 @@
 import sequelize from '../db/sequlze';
 import User, { UsersAttributes } from '../models/user.model';
+import LedgerRepository from './ledger.repository';
 
 class UserRepository {
   // TODO: change UserAttributes => User.
@@ -49,6 +50,7 @@ class UserRepository {
 
       // TODO: Append detail error message
       if (!_user) throw new Error('사용자 생성실패');
+      await LedgerRepository.initLedgersData(_user.id!);
 
       // TODO: change to only return User class
       return _user.get({ plain: true });
