@@ -5,12 +5,12 @@ import { addComma, convertToYYYYMMDD, html } from '@/src/utils/codeHelper';
 import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
 import Snackbar from '../SnackBar';
-import { createLedgerData, editLedgerData, getLedgerData } from '@/src/api/ledgerAPI';
+import { createLedgerData, editLedgerData } from '@/src/api/ledgerAPI';
 import calendarModel from '@/src/models/Calendar';
 import { ILedger } from '@/src/interfaces/Ledger';
 
 const MAX_AMOUNT = 100000000;
-const MIN_AMOUNT = -100000000;
+const MIN_AMOUNT = 0;
 const AMOUNT_MAX_WARNING_MESSAGE = `금액은 최대 ${addComma(MAX_AMOUNT)}원까지 가능`;
 const AMOUNT_MIN_WARNING_MESSAGE = `금액은 최소 ${addComma(MIN_AMOUNT)}원까지 가능`;
 
@@ -28,6 +28,7 @@ interface IState {
   ledger?: ILedger;
   paymentTypeId: number;
   categoryId: number;
+  isExpenseAmount: boolean;
 }
 
 interface IProps {
@@ -38,6 +39,7 @@ interface IProps {}
 
 export default class LedgerAddModal extends Component<IState, IProps> {
   setup() {
+    this.$state.isExpenseAmount = true;
     this.$state.ledger = this.$props.ledger;
     if (this.$state.ledger) {
       this.$state.paymentTypeId = this.$state.ledger.paymentType.id;
@@ -46,17 +48,22 @@ export default class LedgerAddModal extends Component<IState, IProps> {
   }
   template() {
     const ledger = this.$state.ledger;
+    const isExpenseAmount = this.$state.isExpenseAmount;
     let date = '',
       categoryName = '',
       content = '',
       paymentName = '',
       amount = 0;
+
     if (ledger) {
       date = ledger.date!;
       categoryName = ledger.category.name;
       content = ledger.content;
       paymentName = ledger.paymentType.name;
-      amount = ledger.amount;
+      amount = Math.abs(ledger.amount);
+      this.$state.isExpenseAmount = ledger.amount < 0;
+    } else {
+      date = convertToYYYYMMDD(new Date());
     }
 
     return html`
@@ -87,7 +94,11 @@ export default class LedgerAddModal extends Component<IState, IProps> {
         <span class="spliter"></span>
         <div class="ledger-modal-container--input-box">
           <label for="amount-input">금액</label>
-          <input id="amount-input" type="number" placeholder="입력하세요" value="${amount}" />
+          <input id="amount-input" type="number" min="0" placeholder="입력하세요" value="${amount}" />
+          <div class="amount-type-selector">
+            <div id="income-btn" class="amount-type-selector--btn ${isExpenseAmount ? '' : 'select'}">수입</div>
+            <div id="expense-btn" class="amount-type-selector--btn ${isExpenseAmount ? 'select' : ''}">지출</div>
+          </div>
         </div>
         <span class="spliter"></span>
         <div class="ledger-modal-container--submit-box">
@@ -121,6 +132,16 @@ export default class LedgerAddModal extends Component<IState, IProps> {
   }
 
   bindingEvents() {
+    const $incomeTypeBtn = qs('#income-btn', this.$target) as HTMLElement;
+    $incomeTypeBtn.addEventListener('click', e => {
+      this.changeAmountType(true);
+    });
+
+    const $expenseTypeBtn = qs('#expense-btn', this.$target) as HTMLElement;
+    $expenseTypeBtn.addEventListener('click', e => {
+      this.changeAmountType(false);
+    });
+
     const $submitBtnElement = qs('.submit-btn', this.$target) as HTMLElement;
     $submitBtnElement.addEventListener('click', () => {
       const result = this.submit();
@@ -161,6 +182,20 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     this.$state.categoryId = id;
   }
 
+  changeAmountType(isIncome: boolean) {
+    const $incomeTypeBtn = qs('#income-btn', this.$target) as HTMLElement;
+    const $expenseTypeBtn = qs('#expense-btn', this.$target) as HTMLElement;
+    if (isIncome) {
+      $incomeTypeBtn.classList.add('select');
+      $expenseTypeBtn.classList.remove('select');
+      this.$state.isExpenseAmount = false;
+    } else {
+      $expenseTypeBtn.classList.add('select');
+      $incomeTypeBtn.classList.remove('select');
+      this.$state.isExpenseAmount = true;
+    }
+  }
+
   async createLedgerAsync(date: Date, paymentTypeId: number, categoryId: number, amount: number, content: string) {
     const formatedDate = convertToYYYYMMDD(date);
 
@@ -189,8 +224,6 @@ export default class LedgerAddModal extends Component<IState, IProps> {
   }
 
   submit() {
-    // TODO: 입력값 validation 추가
-    // TODO: data inset api call
     const errors = this.validateForm();
     const errorNames = Object.keys(errors);
     if (errorNames.length > 0) {
@@ -198,10 +231,10 @@ export default class LedgerAddModal extends Component<IState, IProps> {
       return false;
     }
 
-    const { $amountInput, $contentInput, $dateInput, categoryId, paymentTypeId } = this.$state;
+    const { $amountInput, $contentInput, $dateInput, categoryId, paymentTypeId, isExpenseAmount } = this.$state;
 
     const date = new Date($dateInput.value);
-    const amount = Number($amountInput.value);
+    const amount = (isExpenseAmount ? -1 : 1) * Math.abs(Number($amountInput.value));
     const content = $contentInput.value;
 
     if (this.$state.ledger) {
@@ -255,5 +288,8 @@ export default class LedgerAddModal extends Component<IState, IProps> {
 
   show() {
     this.$target.style.display = 'flex';
+    this.setState({
+      ...this.$state,
+    });
   }
 }
