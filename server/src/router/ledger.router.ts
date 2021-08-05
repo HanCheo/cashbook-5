@@ -21,7 +21,7 @@ ledgerRouter.get('/day', authJWT, wrapAsync(LedgerController.getLedgersGroupByDa
  * GET /api/ledger/statistic
  * 통계를 위한 Ledger Data를 반환해줍니다.
  */
-ledgerRouter.get('/statistic', authJWT, wrapAsync(LedgerController.getStatisticLedgersByDate));
+ledgerRouter.get('/statistic', authJWT, wrapAsync(LedgerController.getStatisticExpenseLedgersByDate));
 
 /**
  * POST /api/ledger

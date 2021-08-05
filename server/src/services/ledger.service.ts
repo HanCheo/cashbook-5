@@ -29,6 +29,14 @@ class LedgerService {
     return ledgerDTOs;
   }
 
+  async getExpenseLedgersByMonth(date: Date, userId: number): Promise<LedgerResponseDTO[]> {
+    const startDate = date;
+    const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const ledgers = await LedgerRepository.userExpenseLedgersByMonth(startDate, endDate, userId);
+    const ledgerDTOs: LedgerResponseDTO[] = ledgers.map(ledger => ledgerToLedgerResponseDTO(ledger));
+    return ledgerDTOs;
+  }
+
   async createLedger(ledgerDto: LedgerRequestDTO, userId: number): Promise<number | null> {
     const { categoryId, paymentTypeId, date, content, amount } = ledgerDto;
 
@@ -124,12 +132,12 @@ class LedgerService {
       const entries: StatisticEntry[] = Array.from(dayAndAmountMap.entries()).map(([date, amountOfDay]) => {
         return {
           datetime: new Date(date),
-          amount: amountOfDay,
+          amount: Math.abs(amountOfDay),
         };
       });
 
       statisticLedgers[categoryName] = {
-        total,
+        total: Math.abs(total),
         color,
         entries,
       };
