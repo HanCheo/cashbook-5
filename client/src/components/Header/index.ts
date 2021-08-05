@@ -58,7 +58,7 @@ export default class Header extends Component<IState, IProp> {
             <div class="svg-icon page-router" data-page="/calendar">${SvgIcon.calendar}</div>
             <div class="svg-icon page-router" data-page="/statistic">${SvgIcon.chart}</div>
             ${this.$state.user
-              ? html` <div class="avatar page-router" data-page="/wallet">
+              ? html` <div class="avatar svg-icon page-router" data-page="/wallet">
                   <img id="userAvatar" src="${this.$state.user.avatarURL}" />
                 </div>`
               : ''}
