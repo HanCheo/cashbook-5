@@ -36,14 +36,16 @@ interface IProps {}
 export default class PaymentTypeAddModal extends Component<IState, IProps> {
   setup() {
     this.$state = {
-      bgColor: '',
-      fontColor: '',
+      bgColor: backgroundColors[0],
+      fontColor: fontColors[0],
       name: '',
       error: {},
     };
   }
+
   template() {
     const { error, name, fontColor, bgColor } = this.$state;
+    console.log(fontColor);
     return html`
       <div class="blur-background"></div>
       <div class="payment-type-modal">
@@ -77,7 +79,7 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
             ${fontColors
               .map(
                 color => html`
-                  <li class="color-picker--item" data-color="${color}">
+                  <li class="color-picker--item ${fontColor === color ? 'select' : ''}" data-color="${color}">
                     <div class="box" style="background-color:${color}"></div>
                   </li>
                 `
@@ -209,8 +211,8 @@ export default class PaymentTypeAddModal extends Component<IState, IProps> {
 
   clear() {
     this.setState({
-      bgColor: '',
-      fontColor: '',
+      bgColor: backgroundColors[0],
+      fontColor: fontColors[0],
       name: '',
       error: {},
     });

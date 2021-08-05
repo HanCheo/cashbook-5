@@ -78,7 +78,8 @@ export default class Header extends Component<IState, IProp> {
     const themeToggleButton = qs('.theme-changer--button', this.$target) as HTMLElement;
     dataWrap.addEventListener('click', () => this.showMonthPiceker(dataWrap));
 
-    (iconsWrap.querySelector(`[data-page="${location.pathname}"]`) as HTMLElement).classList.add('selected');
+    const selectedIconsWrap = iconsWrap.querySelector(`[data-page="${location.pathname}"]`) as HTMLElement;
+    selectedIconsWrap?.classList.add('selected');
     //router
     iconsWrap.addEventListener('click', this.pageRouteClickHandler);
     logoPageRouters.addEventListener('click', this.pageRouteClickHandler);
