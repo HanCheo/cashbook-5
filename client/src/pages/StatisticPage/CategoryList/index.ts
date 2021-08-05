@@ -35,7 +35,7 @@ export default class CategoryList extends Component<IState, IProps> {
               item => html`
                 <li class="category-container--list--item" data-name="${item.name}">
                   <div class="category" style="background-color:${item.color}"><span>${item.name}</span></div>
-                  <div class="percentage">${item.percentage}%</div>
+                  <div class="percentage">${item.percentage || '0.00'}%</div>
                   <div class="cost">${addComma(item.value)}원</div>
                 </li>
               `

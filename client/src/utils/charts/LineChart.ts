@@ -54,12 +54,12 @@ const defaultOptions: LineChartOptions = {
 const LEFT_POS = 150;
 const TOP_POS = 50;
 const BOTTOM_POS = 420;
-const RIGHT_POS = 750;
+const RIGHT_POS = 900;
 const X_LABEL_PADDING = 40;
 const Y_LABEL_PADDING = 20;
 const VIEWBOX_X_OFFSET = 0;
 const VIEWBOX_Y_OFFSET = 0;
-const VIEWBOX_WIDTH = 800;
+const VIEWBOX_WIDTH = 1000;
 const VIEWBOX_HEIGHT = 500;
 
 export default class LineChart {
@@ -72,6 +72,7 @@ export default class LineChart {
   public yLabelPadding: number = Y_LABEL_PADDING;
 
   public yGridGap: number = 0;
+  public yGridGapCount: number = 0;
 
   public maxValueOfXAxis?: number = undefined;
   public minValueOfXAxis?: number = undefined;
@@ -149,6 +150,8 @@ export default class LineChart {
       this.scaleY = transformer().domain(this.minValueOfYAxis, this.maxValueOfYAxis).range(this.bottom, this.top);
 
       this.yGridGap = this.caculateGap(this.maxValueOfYAxis - this.minValueOfYAxis);
+      const isFitGap = this.maxValueOfYAxis % this.yGridGap === 0;
+      this.yGridGapCount = isFitGap ? this.options.countOfGap! : this.options.countOfGap! + 1;
     }
   }
 
@@ -202,14 +205,12 @@ export default class LineChart {
       yAsixGrid.setAttribute('stroke-dasharray', '1 2');
       yAsixGrid.setAttribute('stroke-width', '1');
 
-      for (let i = 0; i < this.options.countOfGap!; i++) {
+      for (let i = 0; i < this.yGridGapCount + 1; i++) {
         const y = this.scaleY(this.yGridGap * i);
+        if (TOP_POS >= y) break;
         const line = svgLine(this.left, y, this.right, y);
         yAsixGrid.appendChild(line);
       }
-      const y = this.scaleY(this.maxValueOfYAxis);
-      const line = svgLine(this.left, y, this.right, y);
-      yAsixGrid.appendChild(line);
 
       this.element.appendChild(yAsixGrid);
     }
@@ -394,20 +395,15 @@ export default class LineChart {
     }
 
     if (this.maxValueOfYAxis) {
-      for (let i = 0; i < this.options.countOfGap!; i++) {
+      for (let i = 0; i < this.yGridGapCount + 1; i++) {
         const value = this.yGridGap * i;
         const y = this.scaleY(value);
+        if (TOP_POS >= y) break;
         const text = svgText(this.left - this.yLabelPadding, y, `${addComma(value)} 원`);
         text.setAttribute('text-anchor', 'end');
         text.setAttribute('font-size', this.options.yLabelFontSize || '');
         yLabelGroup.appendChild(text);
       }
-
-      const y = this.scaleY(this.maxValueOfYAxis);
-      const text = svgText(this.left - this.yLabelPadding, y, `${addComma(this.maxValueOfYAxis)} 원`);
-      text.setAttribute('text-anchor', 'end');
-      text.setAttribute('font-size', this.options.yLabelFontSize || '');
-      yLabelGroup.appendChild(text);
 
       this.element.appendChild(yLabelGroup);
     }
