@@ -28,11 +28,6 @@
     color: $primary;
     user-select: none;
 
-    &:hover {
-      color: $off-white;
-      background-color: $primary;
-    }
-
     &:not(:first-child) {
       margin-left: 1em;
     }

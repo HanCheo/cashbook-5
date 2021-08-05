@@ -13,12 +13,12 @@ interface IState {
   $editButton?: HTMLElement;
 }
 
-interface IProps { }
+interface IProps {}
 
 const EDIT_MODE_ON_STRING = '수정 하기';
-const EDIT_MODE_OFF_STRING = '수정 중';
+const EDIT_MODE_OFF_STRING = '수정 확인';
 
-const PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY = "wallet";
+const PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY = 'wallet';
 
 export default class WalletPage extends Component<IState, IProps> {
   template() {
@@ -51,8 +51,6 @@ export default class WalletPage extends Component<IState, IProps> {
       }
     });
   }
-
-
 
   mounted() {
     this.$state.$editButton = qs('#edit-mode-toggle-btn', this.$target) as HTMLElement;
@@ -94,9 +92,9 @@ export default class WalletPage extends Component<IState, IProps> {
     }
 
     // deletgate item delete event
-    const $cardList = qs(".card-list", this.$target) as HTMLElement;
-    $cardList.addEventListener("click", (e: MouseEvent) => {
-      const cardDeleteBtns = qsAll(".card-list--item--delete-btn", $cardList);
+    const $cardList = qs('.card-list', this.$target) as HTMLElement;
+    $cardList.addEventListener('click', (e: MouseEvent) => {
+      const cardDeleteBtns = qsAll('.card-list--item--delete-btn', $cardList);
       const target = e.target as HTMLElement;
       for (const btn of cardDeleteBtns) {
         if (target === btn) {
@@ -104,7 +102,7 @@ export default class WalletPage extends Component<IState, IProps> {
           this.handleCardDeleteBtnClickEvent(paymentTypeId);
         }
       }
-    })
+    });
   }
 
   async handleCardDeleteBtnClickEvent(id: number) {
@@ -161,7 +159,6 @@ export default class WalletPage extends Component<IState, IProps> {
     this.$state.paymentTypes = newPaymentTypes;
     this.renderCardItems();
     this.updateEditButton(this.$state.isEditMode);
-
   }
 
   setUnmount() {
@@ -169,7 +166,10 @@ export default class WalletPage extends Component<IState, IProps> {
   }
 
   setEvent() {
-    paymentTypeListModel.subscribe(PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY, this.paymentTypeListModelSubscribeFunction.bind(this));
+    paymentTypeListModel.subscribe(
+      PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY,
+      this.paymentTypeListModelSubscribeFunction.bind(this)
+    );
     this.resetEvent();
   }
 }
