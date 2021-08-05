@@ -15,8 +15,8 @@ interface IState {
 
 interface IProps {}
 
-const EDIT_MODE_ON_STRING = '수정 하기';
-const EDIT_MODE_OFF_STRING = '수정 확인';
+const EDIT_MODE_ON_STRING = '수정';
+const EDIT_MODE_OFF_STRING = '확인';
 
 const PAYMENT_TYPE_LIST_OBSERVER_LISTENER_KEY = 'wallet';
 
