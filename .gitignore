@@ -105,4 +105,4 @@ dist
 
 # PM2 process.json
 
-.process.json
+server/process.json
