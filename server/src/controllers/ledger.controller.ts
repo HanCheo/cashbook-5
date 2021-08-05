@@ -312,7 +312,7 @@ class LedgerController {
         .end();
     } else {
       res
-        .status(SUCCESS)
+        .status(SERVER_ERROR)
         .send({
           success: false,
           error: ERROR_UPDATE_LEDGER,
