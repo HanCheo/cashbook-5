@@ -39,6 +39,7 @@
     width: 100%;
     flex-basis: 4.4em;
     display: flex;
+    align-items: center;
     background-color: transparent;
     & > label {
       flex-basis: 4em;
@@ -127,4 +128,26 @@
 #card-type-selector-container {
   display: flex;
   align-content: center;
+}
+
+.amount-type-selector {
+  display: flex;
+  width: 8em;
+  height: 100%;
+  justify-content: space-between;
+  &--btn {
+    display: flex;
+    justify-content: center;
+    border-radius: 8px;
+    padding: 0.5em 1em;
+    user-select: none;
+    cursor: pointer;
+    color: $primary;
+    border: 1px solid $primary;
+    background-color: transparent;
+    &.select {
+      background-color: $primary;
+      color: $off-white;
+    }
+  }
 }
