@@ -79,11 +79,11 @@ class LedgerController {
     });
   }
 
-  async getStatisticLedgersByDate(req: Request, res: Response) {
+  async getStatisticExpenseLedgersByDate(req: Request, res: Response) {
     const queryDate = req.query.date as string;
     const date = new Date(queryDate);
     const userId = req.user.id!;
-    const ledgers: LedgerResponseDTO[] = await LedgerService.getLedgersByMonth(date, userId);
+    const ledgers: LedgerResponseDTO[] = await LedgerService.getExpenseLedgersByMonth(date, userId);
     const statisticLedgers = LedgerService.convertToStatisticLedgers(ledgers, date);
 
     res.send({

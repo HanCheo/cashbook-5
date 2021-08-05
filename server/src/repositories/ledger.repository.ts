@@ -3,7 +3,7 @@ import Ledger from '../models/ledger.model';
 
 class LedgerRepository {
   /**
-   * Get Ledgers (between startDate and endDate)
+   * Get All Ledgers between startDate and endDate
    * @param startDate Date
    * @param endDate Date
    * @param userId number
@@ -15,6 +15,27 @@ class LedgerRepository {
       order: [['date', 'ASC']],
       where: {
         userId: userId,
+        date: { [Op.between]: [startDate, endDate] },
+      },
+    });
+
+    return Ledgers;
+  }
+
+  /**
+   * Get All Ledgers between startDate and endDate
+   * @param startDate Date
+   * @param endDate Date
+   * @param userId number
+   * @returns  Promise<Ledger[]>
+   */
+  async userExpenseLedgersByMonth(startDate: Date, endDate: Date, userId: number): Promise<Ledger[]> {
+    const Ledgers = await Ledger.findAll({
+      include: [Ledger.associations.category, Ledger.associations.user, Ledger.associations.paymentType],
+      order: [['date', 'ASC']],
+      where: {
+        userId: userId,
+        amount: { [Op.lt]: [0] },
         date: { [Op.between]: [startDate, endDate] },
       },
     });
