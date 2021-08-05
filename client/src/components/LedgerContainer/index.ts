@@ -5,9 +5,11 @@ import LedgerList from '../LedgerList';
 import { ILedgerList, ILedger } from '@/src/interfaces/Ledger';
 import './index.scss';
 import LedgerAddModal from '../LedgerAddModal';
-import { qs } from '@/src/utils/selectHelper';
-import { getLedgerDataByID } from '@/src/api/ledgerAPI';
+import { qs, qsAll } from '@/src/utils/selectHelper';
+import { deleteLedgerData, getLedgerDataByID } from '@/src/api/ledgerAPI';
 import Snackbar from '../SnackBar';
+import ConfirmDialog from '../ConfirmDialog';
+import CalendarModel from '@/src/models/Calendar';
 
 interface IState {
   ledgerData: ILedgerList[] | undefined;
@@ -55,9 +57,7 @@ export default class LedgerContainer extends Component<IState, IProps> {
             </div>
           </div>
         </div>
-        <div class="ledger-list-wrapper">
-          ${!totalCount ? html` <div class="no-data">No Data</div> ` : ''}
-        </div>
+        <div class="ledger-list-wrapper">${!totalCount ? html` <div class="no-data">No Data</div> ` : ''}</div>
       </div>
     `;
   }
@@ -95,13 +95,17 @@ export default class LedgerContainer extends Component<IState, IProps> {
   ledgerButtonsToggleHandler(e: MouseEvent) {
     const target = e.target as HTMLElement;
     if (target.nodeName === 'LI') {
+      [...qsAll('.ledger-list-item.selected')].forEach(item => {
+        if (item != target) item.classList.remove('selected');
+      });
       target.classList.toggle('selected');
     }
     this.ledgerEditButtonClickHandler(target);
+    this.ledgerDeleteButtonClickHandelr(target);
   }
 
   async ledgerEditButtonClickHandler(target: HTMLElement) {
-    if (target.nodeName !== 'BUTTON' && target.dataset.type !== 'edit') return;
+    if (target.nodeName !== 'BUTTON' || target.dataset.type !== 'edit') return;
     const $editModal = qs('#ledger-edit-modal', document.body) as HTMLElement;
     const ledgerId = target.dataset.id ? +target.dataset.id : -1;
     const response = await getLedgerDataByID(ledgerId);
@@ -112,6 +116,24 @@ export default class LedgerContainer extends Component<IState, IProps> {
 
     const ledgerAddModal = new LedgerAddModal($editModal, { ledger: response.data });
     ledgerAddModal.show();
+  }
+
+  async ledgerDeleteButtonClickHandelr(target: HTMLElement) {
+    if (target.nodeName !== 'BUTTON' || target.dataset.type !== 'delete') return;
+    const ledgerId = target.dataset.id ? +target.dataset.id : -1;
+
+    new ConfirmDialog(document.body, {
+      confirmCallback: async () => {
+        const { success } = await deleteLedgerData(ledgerId);
+        CalendarModel.setDate(CalendarModel.getDate());
+        if (success) {
+          new Snackbar(document.body, { text: '가계부가 삭제되었어요.' });
+        }
+      },
+      confirm: '삭제',
+      content: '정말로 삭제하시겠어요?',
+      title: '삭제',
+    });
   }
 
   getFilterData(checkBoxs: HTMLInputElement[]) {
