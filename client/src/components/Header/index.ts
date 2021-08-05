@@ -7,7 +7,7 @@ import MonthPicker from '../MonthPicker';
 import { router } from '@/src/core/router';
 import { html, sibling } from '@/src/utils/codeHelper';
 import { qs } from '@/src/utils/selectHelper';
-import { checkUser } from '@/src/api/loginAPI';
+import { checkUser, User } from '@/src/api/loginAPI';
 import { MONTH_SHORT } from '@/src/utils/calendar';
 
 interface IProp {}
@@ -15,12 +15,12 @@ interface IProp {}
 interface IState {
   date: Date;
   darkMode?: boolean;
+  user?: User | undefined;
 }
 const HEADER_OBSERVER_LISTENER_KEY = 'header';
 export default class Header extends Component<IState, IProp> {
   setup() {
     this.$state.darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
     this.$state.date = CalendarModel.getDate();
     CalendarModel.subscribe(HEADER_OBSERVER_LISTENER_KEY, () => {
       this.setState({
@@ -57,7 +57,11 @@ export default class Header extends Component<IState, IProp> {
             <div class="svg-icon" data-page="/">${SvgIcon.fileText}</div>
             <div class="svg-icon" data-page="/calendar">${SvgIcon.calendar}</div>
             <div class="svg-icon" data-page="/statistic">${SvgIcon.chart}</div>
-            <div class="svg-icon" data-page="/wallet">${SvgIcon.card}</div>
+            ${this.$state.user
+              ? html` <div class="avatar svg-icon" data-page="/wallet">
+                  <img id="userAvatar" src="${this.$state.user.avatarURL}" />
+                </div>`
+              : ''}
           </li>
           <li class="theme-changer">
             <button class="theme-changer--button ${darkMode ? 'dark' : 'light'}"></button>
@@ -85,7 +89,8 @@ export default class Header extends Component<IState, IProp> {
 
   async setEvent() {
     try {
-      await checkUser();
+      const user = await checkUser();
+      this.$state.user = user.data;
       CalendarModel.setDate(new Date());
     } catch (error) {
       this.showLoginModal();

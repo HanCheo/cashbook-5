@@ -7,6 +7,7 @@
   @media (max-width: $phone-max-width) {
     height: 300px;
   }
+  max-width: $pc-max-width;
   width: 80%;
   margin: 0 auto;
   padding: 1em;
@@ -48,6 +49,11 @@
   display: flex;
   padding: 2em;
   overflow-x: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
   &--item {
     position: relative;

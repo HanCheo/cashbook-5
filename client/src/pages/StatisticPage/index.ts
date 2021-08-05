@@ -9,6 +9,7 @@ import calendarDataModel from '@/src/models/Calendar';
 import LineChart, { LineChartData, LineGroupChartData } from '@/src/utils/charts/LineChart';
 import { removeAllChildNode } from '@/src/utils/domHelper';
 import { getStatisticLedgers, StatisticLedgerByCategory } from '@/src/api/statisticAPI';
+import Snackbar from '@/src/components/SnackBar';
 
 const CALENDAR_OBSERVER_LISTENER_KEY = 'statistic';
 
@@ -20,10 +21,12 @@ interface IProps {}
 export default class StatisticPage extends Component<IState, IProps> {
   template() {
     const { statisticData } = this.$state;
-    return /* html */ `
-            <div class='statistic-container'>
+    return html`
+      <div class="statistic-container">
+        ${!statisticData || Object.keys(statisticData).length === 0
+          ? html` <div class="no-data">No Data</div>`
+          : html`
               <div class="chart-container">
-                ${!statisticData || Object.keys(statisticData).length === 0 ? html` <h1>데이터가 없습니다.</h1> ` : ''}
                 <div id="pie-chart"></div>
                 <div id="statistic-category-container"></div>
               </div>
@@ -33,8 +36,9 @@ export default class StatisticPage extends Component<IState, IProps> {
                 </div>
                 <div id="line-chart"></div>
               </div>
-            </div>
-          `;
+            `}
+      </div>
+    `;
   }
 
   setup() {
@@ -44,7 +48,6 @@ export default class StatisticPage extends Component<IState, IProps> {
     getStatisticLedgers(calendarDate).then(result => {
       if (result.success) {
         const statisticData = result.data;
-
         this.setState({
           statisticData: statisticData,
         });
@@ -53,6 +56,7 @@ export default class StatisticPage extends Component<IState, IProps> {
   }
 
   mounted() {
+    if (!this.$state.statisticData || Object.keys(this.$state.statisticData).length === 0) return;
     const $lineChartResetBtn = qs('#reset-line-chart-btn') as HTMLElement;
     $lineChartResetBtn.addEventListener('click', () => {
       this.renderLineChartAllCategory();
@@ -131,6 +135,9 @@ export default class StatisticPage extends Component<IState, IProps> {
       if (result.success) {
         const statisticData = result.data;
 
+        if (!statisticData || !Object.keys(statisticData).length) {
+          new Snackbar(document.body, { text: '데이터가 없어요...' });
+        }
         this.setState({
           statisticData: statisticData,
         });
