@@ -5,7 +5,7 @@ import { addComma, convertToYYYYMMDD, html } from '@/src/utils/codeHelper';
 import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
 import Snackbar from '../SnackBar';
-import { createLedgerData, editLedgerData, getLedgerData } from '@/src/api/ledgerAPI';
+import { createLedgerData, editLedgerData } from '@/src/api/ledgerAPI';
 import calendarModel from '@/src/models/Calendar';
 import { ILedger } from '@/src/interfaces/Ledger';
 
@@ -39,6 +39,7 @@ interface IProps {}
 
 export default class LedgerAddModal extends Component<IState, IProps> {
   setup() {
+    this.$state.isExpenseAmount = true;
     this.$state.ledger = this.$props.ledger;
     if (this.$state.ledger) {
       this.$state.paymentTypeId = this.$state.ledger.paymentType.id;
@@ -59,7 +60,8 @@ export default class LedgerAddModal extends Component<IState, IProps> {
       categoryName = ledger.category.name;
       content = ledger.content;
       paymentName = ledger.paymentType.name;
-      amount = ledger.amount;
+      amount = Math.abs(ledger.amount);
+      this.$state.isExpenseAmount = ledger.amount < 0;
     } else {
       date = convertToYYYYMMDD(new Date());
     }
