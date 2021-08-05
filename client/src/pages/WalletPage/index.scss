@@ -49,6 +49,11 @@
   display: flex;
   padding: 2em;
   overflow-x: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
   &--item {
     position: relative;
