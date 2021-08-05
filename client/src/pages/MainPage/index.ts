@@ -2,7 +2,6 @@ import LedgerContainer from '@/src/components/LedgerContainer';
 import LedgerAddModal from '@/src/components/LedgerAddModal';
 import Component from '@/src/core/Component';
 import LedgerAddButton from '@/src/components/LedgerAddButton';
-
 import './index.scss';
 import LedgerDataModel from '@/src/models/Ledgers';
 import CalendarModel from '@/src/models/Calendar';
@@ -57,7 +56,7 @@ export default class MainPage extends Component<IProps, IState> {
 
     const body = this.$target.querySelector('#body') as HTMLElement;
     if (!ledgerData?.length) {
-      new Snackbar(document.body, { text: '앗 ! 데이터가 없어요 !' });
+      new Snackbar(document.body, { text: '데이터가 없어요...' });
     }
     new LedgerContainer(body, { ledgerData });
   }
