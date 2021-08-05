@@ -16,8 +16,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
-  max-width: 500px;
-  min-height: 50%;
+  max-width: $phone-max-width;
   padding: 1em 2em;
   border-radius: 8px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1), 0px 4px 20px rgba(0, 0, 0, 0.1);
@@ -31,57 +30,72 @@
   align-items: center;
   justify-content: flex-start;
 
+  .edit-label {
+    padding: 0.5em;
+    font-weight: 700;
+  }
+
   &--input-box {
     width: 100%;
-    flex-grow: 1;
-    flex-basis: 5em;
+    flex-basis: 4.4em;
     display: flex;
     background-color: transparent;
     & > label {
       flex-basis: 4em;
-      flex-shrink: 0;
-      flex-grow: 0;
-      color: $label;
-      font-size: 1.5em;
+      font-size: 1.2em;
+      font-weight: 700;
+      border-right: 1px solid $label;
       margin: auto 0;
       text-align: left;
     }
     & > input {
       background-color: transparent;
       flex-grow: 1;
+      color: $label;
+      padding-left: 0.5em;
       flex-shrink: 1;
       color: inherit;
       border: none;
       outline: none;
     }
+
+    input[type='number']::-webkit-outer-spin-button,
+    input[type='number']::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    /* Firefox */
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
   }
 
   &--submit-box {
     width: 90%;
-    padding-top: 1rem;
+    padding-top: 2rem;
     display: flex;
     justify-content: space-between;
 
-    & > .cancel-btn {
+    & > .cancel-btn,
+    & > .submit-btn {
       border-radius: 8px;
       font-size: 1rem;
-      padding: 1em 1.5em;
-      border: 1px solid $primary;
+      padding: 0.8em 1.3em;
       background-color: transparent;
-      color: $primary;
+    }
+
+    & > .cancel-btn {
+      cursor: pointer;
+      border: 1px solid $error;
+      color: $error;
       &:hover {
-        background-color: $primary;
+        background-color: $error;
         color: $off-white;
       }
     }
 
     & > .submit-btn {
-      border-radius: 8px;
-      color: white;
-      padding: 1em 1.5em;
-      font-size: 1rem;
       border: 1px solid $primary;
-      background-color: transparent;
       color: $primary;
       &:hover {
         background-color: $primary;
@@ -92,7 +106,7 @@
 
   .spliter {
     width: 100%;
-    border: 1px solid $placeholder;
+    border: 1px dashed $placeholder;
   }
 }
 

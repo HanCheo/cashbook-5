@@ -62,6 +62,7 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     return html`
       <div class="blur-background"></div>
       <div class="ledger-modal-container">
+        ${ledger ? html`<div class="edit-label">가계부 수정</div>` : ''}
         <div class="ledger-modal-container--input-box">
           <label for="date-input">날짜</label>
           <input id="date-input" type="date" value="${date}" />

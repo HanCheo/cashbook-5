@@ -62,4 +62,10 @@
   margin: 2em auto;
   display: grid;
   grid-row-gap: 2em;
+
+  .no-data {
+    font-size: 5em;
+    position: relative;
+    margin: 1em auto;
+  }
 }

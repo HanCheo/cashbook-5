@@ -4,7 +4,6 @@ import LedgerItem from '../LedgerItem';
 import { ILedger, ILedgerList } from '@/src/interfaces/Ledger';
 import { YOIL_KOR } from '@/src/utils/calendar';
 import './index.scss';
-import { qs } from '@/src/utils/selectHelper';
 
 interface IState {
   ledgerList: ILedgerList;

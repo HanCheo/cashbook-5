@@ -38,12 +38,12 @@ export default class LedgerContainer extends Component<IState, IProps> {
 
   template() {
     const { totalIncomes, totalSpand } = this.$state;
-    const totalCount = this.$state.ledgerData?.reduce((sum, ledger) => (sum += ledger.ledgers.length), 0);
+    const totalCount = this.$state.ledgerData?.reduce((sum, ledger) => (sum += ledger.ledgers.length), 0) || 0;
 
     return html`
       <div class="ledger-container">
         <div class="ledger-container--header">
-          <div class="total-count">전체 건수 : ${totalCount}</div>
+          <div class="total-count">전체 건수 : ${addComma(totalCount)}</div>
           <div class="fillter">
             <div class="checkbox-wrapper">
               <input type="checkbox" id="income" name="filterCheckbox" />
@@ -55,7 +55,9 @@ export default class LedgerContainer extends Component<IState, IProps> {
             </div>
           </div>
         </div>
-        <div class="ledger-list-wrapper"></div>
+        <div class="ledger-list-wrapper">
+          ${!totalCount ? html` <div class="no-data">No Data</div> ` : ''}
+        </div>
       </div>
     `;
   }
