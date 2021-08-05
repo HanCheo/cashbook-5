@@ -1,7 +1,6 @@
 import Component from '@/src/core/Component';
 import { ILedger } from '@/src/interfaces/Ledger';
 import { addComma, html } from '@/src/utils/codeHelper';
-import { qs } from '@/src/utils/selectHelper';
 import './index.scss';
 
 interface IState {
