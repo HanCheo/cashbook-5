@@ -18,7 +18,7 @@ const setQuery = (query: object) => {
   return _query.slice(0, -1);
 };
 
-const serverURL = 'http://localhost:3000/api';
+const serverURL = `http://${location.hostname}:3000/api`;
 
 export const getFetch = async <T>(url: string, options?: IApiFetch): Promise<T> => {
   let querystring = '';
@@ -41,7 +41,7 @@ export const getFetch = async <T>(url: string, options?: IApiFetch): Promise<T> 
   return await response.json();
 };
 
-export const postFetch = async<T>(url: string, options?: IApiFetch): Promise<T> => {
+export const postFetch = async <T>(url: string, options?: IApiFetch): Promise<T> => {
   let querystring = '';
   if (options?.query) {
     querystring = setQuery(options.query);
@@ -52,7 +52,7 @@ export const postFetch = async<T>(url: string, options?: IApiFetch): Promise<T> 
     method: 'POST',
     credentials: 'include',
     headers: options?.headers,
-    body: options?.body
+    body: options?.body,
   });
 
   if (response.status >= 400) {
@@ -104,4 +104,4 @@ export const deleteFetch = async <T>(url: string, options?: IApiFetch): Promise<
   }
 
   return await response.json();
-}
+};

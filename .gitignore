@@ -103,6 +103,6 @@ dist
 # TernJS port file
 .tern-port
 
-# sqlite3
+# PM2 process.json
 
-*.sqlite3
+server/process.json

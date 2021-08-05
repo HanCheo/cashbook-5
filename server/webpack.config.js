@@ -21,4 +21,5 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  externals: ['pg', 'sqlite3', 'tedious', 'pg-hstore', 'cardinal'],
 };

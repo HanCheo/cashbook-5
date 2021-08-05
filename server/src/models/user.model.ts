@@ -19,9 +19,9 @@ export default class User extends Model<UsersAttributes> implements UsersAttribu
   public paymentTypes?: PaymentType[];
 
   public static associations: {
-    ledgers: Association<User, Ledger>,
-    paymentTypes: Association<User, PaymentType>
-  }
+    ledgers: Association<User, Ledger>;
+    paymentTypes: Association<User, PaymentType>;
+  };
 }
 
 export const UserSchema = {
@@ -52,4 +52,3 @@ export const UserSchemaSettings = {
   freezeTableName: true,
   timestamps: true,
 };
-

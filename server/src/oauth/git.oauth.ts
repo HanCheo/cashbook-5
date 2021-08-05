@@ -13,7 +13,6 @@ type GithubUserResponse = {
   avatar_url: string;
 };
 
-
 const OAUTH_GIT_URL = 'https://github.com/login/oauth';
 const API_GIT_URL = 'https://api.github.com/user';
 
@@ -44,5 +43,5 @@ class GithubAuthManager {
   }
 }
 
-const githubManagerInstance =  new GithubAuthManager();
+const githubManagerInstance = new GithubAuthManager();
 export default githubManagerInstance;

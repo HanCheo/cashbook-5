@@ -1,4 +1,6 @@
 import { Dialect, Sequelize } from 'sequelize';
+import mysql2 from 'mysql2'; // Needed to fix sequelize issues with WebPack
+
 import env from '../config';
 
 const params = {
@@ -9,6 +11,7 @@ const params = {
     host: env.SEQUELIZE_DBHOST,
     port: env.SEQUELIZE_DBPORT,
     dialect: env.SEQUELIZE_DBDIALECT as Dialect,
+    dialectModule: mysql2, // Needed to fix sequelize issues with WebPack
     dialectOptions: {
       decimalNumbers: true, // Decimal Type을 String으로 돌려주는 이슈 해결을 위한 설정
       timezone: '+09:00',
