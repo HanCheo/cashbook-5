@@ -24,7 +24,7 @@ export default class StatisticPage extends Component<IState, IProps> {
     return html`
       <div class="statistic-container">
         ${!statisticData || Object.keys(statisticData).length === 0
-          ? html` <div class="no-data">No Spand Data</div>`
+          ? html` <div class="no-data">이번달 지출 비용이 없습니다.</div>`
           : html`
               <div class="chart-container">
                 <div id="pie-chart"></div>
