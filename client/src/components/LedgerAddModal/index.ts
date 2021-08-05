@@ -5,8 +5,9 @@ import { addComma, convertToYYYYMMDD, html } from '@/src/utils/codeHelper';
 import CategorySelector from './CategorySelector';
 import CardTypeSelector from './CardTypeSelector';
 import Snackbar from '../SnackBar';
-import { createLedgerData, getLedgerData } from '@/src/api/ledgerAPI';
+import { createLedgerData, editLedgerData, getLedgerData } from '@/src/api/ledgerAPI';
 import calendarModel from '@/src/models/Calendar';
+import { ILedger } from '@/src/interfaces/Ledger';
 
 const MAX_AMOUNT = 100000000;
 const MIN_AMOUNT = -100000000;
@@ -24,42 +25,68 @@ interface IState {
   $paymentTypeInput: HTMLInputElement;
   $dateInput: HTMLInputElement;
 
+  ledger?: ILedger;
   paymentTypeId: number;
   categoryId: number;
+}
+
+interface IProps {
+  ledger?: ILedger;
 }
 
 interface IProps {}
 
 export default class LedgerAddModal extends Component<IState, IProps> {
+  setup() {
+    this.$state.ledger = this.$props.ledger;
+    if (this.$state.ledger) {
+      this.$state.paymentTypeId = this.$state.ledger.paymentType.id;
+      this.$state.categoryId = this.$state.ledger.category.id;
+    }
+  }
   template() {
+    const ledger = this.$state.ledger;
+    let date = '',
+      categoryName = '',
+      content = '',
+      paymentName = '',
+      amount = 0;
+    if (ledger) {
+      date = ledger.date!;
+      categoryName = ledger.category.name;
+      content = ledger.content;
+      paymentName = ledger.paymentType.name;
+      amount = ledger.amount;
+    }
+
     return html`
       <div class="blur-background"></div>
       <div class="ledger-modal-container">
         <div class="ledger-modal-container--input-box">
           <label for="date-input">날짜</label>
-          <input id="date-input" type="date" />
+          <input id="date-input" type="date" value="${date}" />
         </div>
         <span class="spliter"></span>
         <div class="ledger-modal-container--input-box">
           <label for="category-input">분류</label>
-          <input id="category-input" type="text" placeholder="선택하세요" readonly />
+          <input id="category-input" type="text" placeholder="선택하세요" readonly value="${categoryName}" />
           <div id="category-selector-container"></div>
         </div>
         <span class="spliter"></span>
         <div class="ledger-modal-container--input-box">
           <label for="content-input">내용</label>
-          <input id="content-input" type="text" placeholder="입력하세요" />
+          <input id="content-input" type="text" placeholder="입력하세요" value="${content}" />
         </div>
         <span class="spliter"></span>
         <div class="ledger-modal-container--input-box">
           <label for="card-type-input">결제수단</label>
-          <input id="card-type-input" type="text" placeholder="선택하세요" readonly />
+          <input id="card-type-input" type="text" placeholder="선택하세요" readonly value="${paymentName}" />
           <div id="card-type-selector-container"></div>
         </div>
         <span class="spliter"></span>
         <div class="ledger-modal-container--input-box">
           <label for="amount-input">금액</label>
-          <input id="amount-input" type="number" placeholder="입력하세요" />
+          <input id="amount-input" type="number" placeholder="입력하세요" value="${amount}" />
         </div>
         <span class="spliter"></span>
         <div class="ledger-modal-container--submit-box">
@@ -143,6 +170,22 @@ export default class LedgerAddModal extends Component<IState, IProps> {
       calendarModel.setDate(calendarModel.getDate()); // for refresh main page;
     }
   }
+  async editLedgerAsync(
+    id: number,
+    date: Date,
+    paymentTypeId: number,
+    categoryId: number,
+    amount: number,
+    content: string
+  ) {
+    const formatedDate = convertToYYYYMMDD(date);
+    const { success } = await editLedgerData(id, formatedDate, paymentTypeId, categoryId, amount, content);
+    if (success) {
+      this.clear();
+      this.hide();
+      calendarModel.setDate(calendarModel.getDate()); // for refresh main page;
+    }
+  }
 
   submit() {
     // TODO: 입력값 validation 추가
@@ -160,7 +203,11 @@ export default class LedgerAddModal extends Component<IState, IProps> {
     const amount = Number($amountInput.value);
     const content = $contentInput.value;
 
-    this.createLedgerAsync(date, paymentTypeId, categoryId, amount, content);
+    if (this.$state.ledger) {
+      this.editLedgerAsync(this.$state.ledger.id, date, paymentTypeId, categoryId, amount, content);
+    } else {
+      this.createLedgerAsync(date, paymentTypeId, categoryId, amount, content);
+    }
     return true;
   }
 

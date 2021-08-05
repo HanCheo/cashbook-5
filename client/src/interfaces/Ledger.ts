@@ -10,11 +10,13 @@ interface PaymentType {
   name: string;
 }
 export interface ILedger {
+  id: number;
   categoryType: string;
   content: string;
   cardType: string;
   amount: number;
   category: Category;
+  date?: string;
   paymentType: PaymentType;
 }
 

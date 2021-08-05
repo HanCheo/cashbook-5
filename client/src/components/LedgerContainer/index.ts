@@ -4,6 +4,10 @@ import { addComma, html } from '@/src/utils/codeHelper';
 import LedgerList from '../LedgerList';
 import { ILedgerList, ILedger } from '@/src/interfaces/Ledger';
 import './index.scss';
+import LedgerAddModal from '../LedgerAddModal';
+import { qs } from '@/src/utils/selectHelper';
+import { getLedgerDataByID } from '@/src/api/ledgerAPI';
+import Snackbar from '../SnackBar';
 
 interface IState {
   ledgerData: ILedgerList[] | undefined;
@@ -61,7 +65,7 @@ export default class LedgerContainer extends Component<IState, IProps> {
     const checkBoxs = [...this.$target.querySelectorAll('input[name="filterCheckbox"]')] as HTMLInputElement[];
     const { ledgerData, checked } = this.$state;
 
-    wrapper.addEventListener('click', this.ledgerButtonsToggleHandler);
+    wrapper.addEventListener('click', this.ledgerButtonsToggleHandler.bind(this));
 
     //checkBok
     checked?.forEach((id: string) => {
@@ -91,6 +95,21 @@ export default class LedgerContainer extends Component<IState, IProps> {
     if (target.nodeName === 'LI') {
       target.classList.toggle('selected');
     }
+    this.ledgerEditButtonClickHandler(target);
+  }
+
+  async ledgerEditButtonClickHandler(target: HTMLElement) {
+    if (target.nodeName !== 'BUTTON' && target.dataset.type !== 'edit') return;
+    const $editModal = qs('#ledger-edit-modal', document.body) as HTMLElement;
+    const ledgerId = target.dataset.id ? +target.dataset.id : -1;
+    const response = await getLedgerDataByID(ledgerId);
+
+    if (!response.success) {
+      new Snackbar(document.body, { text: '없는 가계부 정보에요.' });
+    }
+
+    const ledgerAddModal = new LedgerAddModal($editModal, { ledger: response.data });
+    ledgerAddModal.show();
   }
 
   getFilterData(checkBoxs: HTMLInputElement[]) {
