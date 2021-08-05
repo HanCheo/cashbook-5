@@ -4,10 +4,10 @@ interface IApiFetch {
   body?: BodyInit | undefined | null;
 }
 
-
 export interface Result<D> {
   success: boolean;
   data: D;
+  error?: string;
 }
 
 const setQuery = (query: object) => {
@@ -61,10 +61,31 @@ export const postFetch = async<T>(url: string, options?: IApiFetch): Promise<T> 
   }
 
   return await response.json();
+};
 
-}
+export const putFetch = async <T>(url: string, options?: IApiFetch): Promise<T> => {
+  let querystring = '';
+  if (options?.query) {
+    querystring = setQuery(options.query);
+  }
 
-export const deleteFetch = async<T>(url: string, options?: IApiFetch): Promise<T> => {
+  const fetchUrl = serverURL + url + querystring;
+  const response = await fetch(fetchUrl, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: options?.headers,
+    body: options?.body,
+  });
+
+  if (response.status >= 400) {
+    const res = JSON.stringify(await response.json());
+    throw new Error(`${response.status}: ${res}`);
+  }
+
+  return await response.json();
+};
+
+export const deleteFetch = async <T>(url: string, options?: IApiFetch): Promise<T> => {
   let querystring = '';
   if (options?.query) {
     querystring = setQuery(options.query);
