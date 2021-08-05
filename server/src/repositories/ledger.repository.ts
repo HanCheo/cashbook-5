@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import Ledger from '../models/ledger.model';
+import PaymentTypeRepository from './paymentType.repository';
 
 class LedgerRepository {
   /**
@@ -127,6 +128,108 @@ class LedgerRepository {
     originLedger.amount = amount;
 
     return originLedger.save();
+  }
+
+  async initLedgersData(userId: number) {
+    try {
+      const paymentTypes = await PaymentTypeRepository.initPaymentType(userId);
+      const date = new Date();
+      const basicYearMonth = date.getFullYear() + '-' + (date.getMonth() + 1) + '-';
+      const initData = [
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 1,
+          content: '안녕하세요 :)',
+          amount: 100000,
+        },
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 1,
+          content: '이건 데모 및 테스트용 데이터 입니다.',
+          amount: -100000,
+        },
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 2,
+          content: '유저를 생성할때 자동으로 만들어지며',
+          amount: -5000,
+        },
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 3,
+          content: '좀더 원활한 테스트 진행을 위해 만들어졌습니다.',
+          amount: -25000,
+        },
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 4,
+          content: '재미있게 구경해주세요 :)',
+          amount: -15000,
+        },
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 5,
+          content: '시퀄라이저를 사용하였는데 다른 OMR에 비해 코딩할 내용이 많은것 같습니다.',
+          amount: -8000,
+        },
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 5,
+          content: '옵션으로 항상 추가해주어야 하는 부분도 있고',
+          amount: 5000,
+        },
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 5,
+          content: '생각보다 옵션이 많아서 계속 찾게되는 경향이 있었습니다.',
+          amount: 9000,
+        },
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 5,
+          content: '트랜잭션을 키면 왜 쿼리에 옵션으로 넣어 연결해야하는지도 잘 모르겠습니다.',
+          amount: -1500,
+        },
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 5,
+          content: '자료가 많은 이유가 이러한 이유지 않을까 싶습니다.',
+          amount: 9000,
+        },
+        {
+          userId,
+          paymentTypeId: paymentTypes[Math.floor(Math.random() * paymentTypes.length)],
+          categoryId: Math.floor(Math.random() * 10) + 1,
+          date: basicYearMonth + 5,
+          content: '다음부터는 다른 ORM을 사용할 계획입니다. :)',
+          amount: -1500,
+        },
+      ];
+
+      await Ledger.bulkCreate(initData);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
