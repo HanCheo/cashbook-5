@@ -38,7 +38,7 @@ export default class Header extends Component<IState, IProp> {
     return html`
       <div class="header-wrap">
         <ul>
-          <li class="left">Woowa<br />Money Diary</li>
+          <li class="left page-router" data-page="/">Woowa<br />Money Diary</li>
           <li class="center">
             <div class="arrow" data-click="prev">
               <div class="month">${MONTH_SHORT[prevDate.getMonth()]}</div>
@@ -54,11 +54,11 @@ export default class Header extends Component<IState, IProp> {
             </div>
           </li>
           <li class="header-wrap-right">
-            <div class="svg-icon" data-page="/">${SvgIcon.fileText}</div>
-            <div class="svg-icon" data-page="/calendar">${SvgIcon.calendar}</div>
-            <div class="svg-icon" data-page="/statistic">${SvgIcon.chart}</div>
+            <div class="svg-icon page-router" data-page="/">${SvgIcon.fileText}</div>
+            <div class="svg-icon page-router" data-page="/calendar">${SvgIcon.calendar}</div>
+            <div class="svg-icon page-router" data-page="/statistic">${SvgIcon.chart}</div>
             ${this.$state.user
-              ? html` <div class="avatar svg-icon" data-page="/wallet">
+              ? html` <div class="avatar page-router" data-page="/wallet">
                   <img id="userAvatar" src="${this.$state.user.avatarURL}" />
                 </div>`
               : ''}
@@ -74,12 +74,14 @@ export default class Header extends Component<IState, IProp> {
   async mounted() {
     const dataWrap = document.querySelector('.date-wrap') as HTMLElement;
     const iconsWrap = qs('.header-wrap-right', this.$target) as HTMLElement;
+    const logoPageRouters = qs('.left.page-router', this.$target) as HTMLElement;
     const themeToggleButton = qs('.theme-changer--button', this.$target) as HTMLElement;
     dataWrap.addEventListener('click', () => this.showMonthPiceker(dataWrap));
 
     (iconsWrap.querySelector(`[data-page="${location.pathname}"]`) as HTMLElement).classList.add('selected');
     //router
     iconsWrap.addEventListener('click', this.pageRouteClickHandler);
+    logoPageRouters.addEventListener('click', this.pageRouteClickHandler);
     //month-picker
     const headerCenter = qs('.header-wrap .center', this.$target) as HTMLElement;
     headerCenter.addEventListener('click', this.monthChangeClickHandler);

@@ -31,8 +31,8 @@ export default class CategoryList extends Component<IState, IProps> {
     return html`
       <div class="category-container">
         <h1 class="category-container--title">
-          ${selectDate.getFullYear() + '년 ' + (selectDate.getMonth() + 1) + '월'}
-          <div><span class="${totalCost > 0 ? 'plus' : 'minus'}">${addComma(totalCost)}</span> 원</div>
+          ${selectDate.getFullYear() + '년 ' + (selectDate.getMonth() + 1) + '월 지출'}
+          <div><span class="minus">${addComma(totalCost)}</span> 원</div>
         </h1>
         <ul class="category-container--list">
           ${items &&

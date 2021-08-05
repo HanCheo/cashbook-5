@@ -57,7 +57,9 @@ export default class LedgerContainer extends Component<IState, IProps> {
             </div>
           </div>
         </div>
-        <div class="ledger-list-wrapper">${!totalCount ? html` <div class="no-data">No Data</div> ` : ''}</div>
+        <div class="ledger-list-wrapper">
+          ${!totalCount ? html` <div class="no-data">데이터가 없습니다.</div> ` : ''}
+        </div>
       </div>
     `;
   }
