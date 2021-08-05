@@ -6,7 +6,7 @@ import apiRouter from '../router/index';
 import env from '../config';
 
 const CORS_OPTION = {
-  origin: [env.DEV_CLIENT_URL, env.AWS_CLIENT_URL], // 접근 권한을 부여하는 도메인
+  origin: [env.CORS_ALLOW_URL], // 접근 권한을 부여하는 도메인
   credentials: true, // 응답 헤더에 Access-Control-Allow-Credentials 추가 for JWT http access
 };
 

@@ -16,7 +16,7 @@ class AuthController {
 
     res.append('Set-Cookie', `refreshToken=${jwtRefreshToken}; Path=/; HttpOnly;`);
     res.append('Set-Cookie', `accessToken=${jwtAccessToken}; Path=/; HttpOnly;`);
-    res.redirect(env.DEV_CLIENT_URL);
+    res.redirect(env.CORS_ALLOW_URL);
     res.end();
   }
 
