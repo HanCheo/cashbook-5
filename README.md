@@ -24,14 +24,17 @@
 
 # Stack
 
-<center>
-
-
+<p align="center">
 <img src="https://img.shields.io/badge/-Typescript-4075bb?&logo=TypeScript&logoColor=white"> <img src="https://img.shields.io/badge/-Babel-F9DC3E?&logo=Babel&logoColor=white"> <img src="https://img.shields.io/badge/-Webpack-8DD6F9?&logo=Webpack&logoColor=black"> <img src="https://img.shields.io/badge/-MySQL-4479A1?&logo=MySQL&logoColor=white"> <img src="https://img.shields.io/badge/-Amazon AWS-232F3E?&logo=Amazon AWS&logoColor=white"> <img src="https://img.shields.io/badge/-Express-000000?&logo=Express&logoColor=white"> <img src="https://img.shields.io/badge/-Prettier-F7B93E?&logo=Prettier&logoColor=white"> <img src="https://img.shields.io/badge/-ESLint-4B32C3?&logo=ESLint&logoColor=white"> <img src="https://img.shields.io/badge/-Sass-CC6699?&logo=Sass&logoColor=white"> <img src="https://img.shields.io/badge/-JWT-000000?&logo=JSONWebTokens&logoColor=white"> <img src="https://img.shields.io/badge/-Sequelize-52B0E7?&logo=Sequelize&logoColor=white">
 <img src="https://img.shields.io/badge/-PM2-2B037A?&logo=PM2&logoColor=white">
+</p>
 
+<br>
 
-</center>
+# Preview
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/38929712/128448312-7ff82e0d-9a1c-497a-89d5-db1981d1b214.gif"/>
+</p>
 
 <br>
 
