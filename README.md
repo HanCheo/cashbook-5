@@ -1,24 +1,23 @@
 # Woowa Money Diary
-<center>
-<img width="100%" alt="woowa-money-diary" src="https://user-images.githubusercontent.com/38929712/128442680-e9b74172-a19e-4278-8688-97eeb7e1c2b1.png">
-</center>
 
-<br>
+<p align="center">
+<img width="100%" alt="woowa-money-diary" src="https://user-images.githubusercontent.com/38929712/128442680-e9b74172-a19e-4278-8688-97eeb7e1c2b1.png">
+</p>
+
 <br>
 
 # Demo
-<center>
- <h2><a href="http://13.125.105.157">Welcome to Woowa Money Diary</a></h2>
-</center>
+<p align="center">
+ <a href="http://13.125.105.157">Welcome to Woowa Money Diary</a>
+</p>
 
-<br>
 <br>
 
 # 팀원
 
 - 손지호 [@peanut-lover](https://github.com/peanut-lover)
 - 김한철 [@hancheo](https://github.com/HanCheo)   
-<br>
+
 <br>
 
 # Stack
@@ -32,7 +31,6 @@
 
 </center>
 
-<br>
 <br>
 
 # 프로젝트 구조
