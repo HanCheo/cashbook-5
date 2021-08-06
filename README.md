@@ -1,7 +1,9 @@
 # Woowa Money Diary
 
 <p align="center">
+  <a href="http://13.125.105.157">
 <img width="100%" alt="woowa-money-diary" src="https://user-images.githubusercontent.com/38929712/128442680-e9b74172-a19e-4278-8688-97eeb7e1c2b1.png">
+ </a>
 </p>
 
 <br>
